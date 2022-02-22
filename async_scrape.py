@@ -10,7 +10,7 @@
 
 # # Import modules
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
@@ -21,91 +21,10 @@ import asyncio
 
 # # Helper functions
 
-# ## Helper Functions for links
+# ## General helper functions
 
-# In[ ]:
+# In[2]:
 
-
-async def scrape_url(s, url, items='author_links'):
-    """
-    Async scrape URL. 
-    Items = ['paper_links', 'author_links', 'papers', 'authors']
-    """
-    # print(f"Scraping url: {url}")
-    r = await s.get(url)
-    table = r.html.find('div.panel.panel-info table.table', first=True)
-    rows = table.find('tr')
-    
-    result_list = []
-    
-    for row in rows:
-        # Get columns in row
-        columns = row.find('td')
-        # Skip if empty row
-        if len(columns) == 0:
-            continue
-            
-        if items == 'paper_links':
-            # Get paper link
-            paper_link = columns[1].find('a')[0].attrs['href']
-            scrape_item = paper_link
-            
-        elif items == 'author_links':
-            # Get paper link
-            author_link = columns[0].find('a')[0].attrs['href']
-            scrape_item = author_link
-            
-        elif items == 'papers':
-            # Get paper data
-            paper_date    = columns[0].text
-            paper_title   = columns[1].text
-            paper_authors = columns[2].text
-            paper_type    = columns[3].text
-
-            paper = {}
-            paper['date'] = paper_date
-            paper['title'] = paper_title
-            paper['type'] = paper_type
-
-            paper_authors_list= paper_authors.split(';')
-            for i, author in enumerate(paper_authors_list):
-                paper[f"author_{i}"] = author
-
-            scrape_item = paper
-
-        elif items == 'authors':
-            # Get author data
-            author_name = columns[0].text
-            author_last = author_name.split(',')[0]
-
-            try:
-                author_first = author_name.split(',')[1]
-            except IndexError:  # If there is no comma in the name
-                author_first = ''
-
-            author_inst = columns[1].text
-
-            author_dict = {
-                'Last Name': author_last,
-                'First Name': author_first,
-                'Institution': author_inst,
-                }
-
-            scrape_item = author_dict
-            
-        # Append to paper links list
-        result_list.append(scrape_item)
-        
-    return result_list
-
-
-async def main(urls, items='author_links'):
-    """
-    Async main loop. Run withn await main(urls) in Jupyter Notebook.
-    """
-    s = AsyncHTMLSession()
-    tasks = (scrape_url(s, url, items) for url in urls)
-    return await asyncio.gather(*tasks)
 
 def get_max_pages(url):
     """
@@ -118,44 +37,121 @@ def get_max_pages(url):
     max_pages = pagination_items[-2].text.replace('.','').replace(',','')
     return int(max_pages)
 
-async def scrape(items='author_links', n_pages=None):
+
+# ## Helper functions for individual and groups of pages
+
+# In[2]:
+
+
+async def scrape_url(s, url, items='author_links'):
     """
-    Scrape Portal de la Reserca.
-    Options:
-        items   = ['paper_links', 'author_links', 'papers', 'authors']
-        n_pages = Number of pages to scrape.
+    Async scrape URL. 
+    Items = ['paper_links', 'author_links', 'papers', 'authors']
     """
-    print(f"Scraping {items} from Portal de la Reserca.")
+    # print(f"Scraping url: {url}")
     
-    # Url root for authors
-    url_root =         'https://portalrecerca.csuc.cat/simple-search?' +         'query='                                        +         '&location=crisrp'                              +         '&filter_field_1=resourcetype'                  +             '&filter_type_1=equals'                     +             '&filter_value_1=Researchers'               +         '&sort_by=crisrp.fullName_sort'                 +             '&order=asc'                                +         '&rpp=300'                                      +         '&etal=0'                                       +         '&start='
+    if items == 'authors':
+        result = await asyncio.gather(
+                scrape_author_page(s, url, 'name'),
+                scrape_author_page(s, url, 'id'),
+                scrape_author_page(s, url, 'institution'),
+                scrape_author_page(s, url, 'projects'),
+                scrape_author_page(s, url, 'groups')
+            )
 
-    if not n_pages:
-        print("Calculating number of pages to scrape.")
-        max_pages = get_max_pages(url_root + '0')
-        n_pages = max_pages
+        author = {}
+        author['name'] = result[0]
+        author['id'] = result[1]
+        try:
+            author['department'] = result[2]['department']
+        except KeyError:
+            pass
+        try:
+            author['institution'] = result[2]['institution']
+        except KeyError:
+            pass
+        author['projects'] = result[3]
+        author['groups'] = result[4]
 
-    urls = [url_root + str(page*300) for page in range(n_pages)]
+        return author
+        
+        
+    else:
+        while True:
+            try:
+                r = await s.get(url)
+                # table = r.html.find('div.panel.panel-info table.table', first=True)
+                table = r.html.find('table.table', first=True)
+                rows = table.find('tr')
+            except AttributeError:
+                with open('errors.txt', 'a') as f:
+                    f.write(f"Could not find row in url: {url}")
+                time.sleep(1)
+                continue
+            break
 
-    items_to_scrape = 'author_links'
+        if items == 'papers':
+            result = {}
+        else:
+            result = []
+            
+        for row in rows:
+            # Get columns in row
+            columns = row.find('td')
+            
+            # Skip if empty row
+            if len(columns) == 0:
+                continue
 
-    print(f"Scraping {len(urls)} URLs...")
-    t1 = time.perf_counter()
-    result = await main(urls, items=items_to_scrape)
-    t2 = time.perf_counter()
-    
-    # Gather all results into single list
-    full_list = [href for sublist in result for href in sublist]
-    
-    print(f"Scraped {len(full_list)} items in {t2-t1:.2f} seconds.")
-    
-    return full_list
-   
+            if items == 'paper_links':
+                # Get paper link
+                paper_link = columns[1].find('a')[0].attrs['href']
+                scrape_item = paper_link
+                # Append to results_list
+                result.append(scrape_item)
+
+            if items == 'author_links':
+                # Get paper link
+                author_link = columns[0].find('a')[0].attrs['href']
+                scrape_item = author_link
+                # Append to results_list
+                result.append(scrape_item)
+            
+            if items == 'papers':
+                
+                attributes = {
+                    'dc.contributor.authors' : 'authors', 
+                    'dc.date.issued'         : 'date',
+                    'dc.publisher'           : 'publisher',
+                    'dc.identifier.citation' : 'citation',
+                    'dc.identifier.issn'     : 'issn',
+                    'dc.identifier.uri'      : 'uri',
+                    'dc.identifier.isbn'    : 'isbn',
+                    'dc.relation.ispartof'   : 'published_in',
+                    'dc.title'               : 'title',
+                    'dc.type'                : 'type',
+                    'dc.identifier.doi'      : 'doi', 
+                    'dc.identifier.sourceid' : 'sourceid',
+                    'dc.identifier.sourceref': 'sourceref',
+                    'Appears in Collections:': 'appears_in_collections'}
+                 
+                for row_index in attributes.keys():
+                    if columns[0].text == row_index:
+                        result[attributes[row_index]] = columns[1].text
+                
+
+        return result
 
 
-# ## Helper functions for Author pages
+async def scrape_urls(s, urls, items='author_links'):
+    """Wrapper to scrape a list of urls."""
+    tasks = (scrape_url(s, url, items) for url in urls)
+    return await asyncio.gather(*tasks)
 
-# In[ ]:
+
+# ## Helper functions for author pages
+
+# In[3]:
 
 
 async def scrape_author_tab(s, url, selector):
@@ -222,112 +218,177 @@ async def scrape_author_page(s, url, item='name'):
     return result
 
 
-async def scrape_author(s, url):
-    result = await asyncio.gather(
-            scrape_author_page(s, url, 'name'),
-            scrape_author_page(s, url, 'id'),
-            scrape_author_page(s, url, 'institution'),
-            scrape_author_page(s, url, 'projects'),
-            scrape_author_page(s, url, 'groups')
-        )
+# ## Main Entrypoint
+
+# In[2]:
+
+
+async def scrape(urls=None, items='authors', n_pages=None, start_pos=0, batch_size=None, out_file=None):
+    """
+    Main entry function to scrape Portal de la Reserca.
+    Options:
+        urls: list of urls. If items='paper_links' this is not needed.
+        items: [authors, papers, author_links, paper_links]
+        start_pos: starting position
+        batch_size: batch size
+        out_file: output file 
+    """
     
-    author = {}
-    author['name'] = result[0]
-    author['id'] = result[1]
-    try:
-        author['department'] = result[2]['department']
-    except KeyError:
-        pass
-    try:
-        author['institution'] = result[2]['institution']
-    except KeyError:
-        pass
-    author['projects'] = result[3]
-    author['groups'] = result[4]
-    
-    return author
+    if items == 'author_links':
+        url_root =                                                        'https://portalrecerca.csuc.cat/simple-search?' +             'query='                                        +             '&location=crisrp'                              +             '&filter_field_1=resourcetype'                  +                 '&filter_type_1=equals'                     +                 '&filter_value_1=Researchers'               +             '&sort_by=crisrp.fullName_sort'                 +                 '&order=asc'                                +             '&rpp=300'                                      +             '&etal=0'                                       +             '&start='
         
-    
-async def scrape_authors(urls):
-    s = AsyncHTMLSession()
-    tasks = (scrape_author(s, url) for url in urls)
-    
-    return await asyncio.gather(*tasks)
+        if not n_pages:
+            print("Calculating number of pages to scrape.")
+            max_pages = get_max_pages(url_root + '0')
+            n_pages = max_pages
+            
+            
+    elif items == 'paper_links':
+        url_root =                                                        'https://portalrecerca.csuc.cat/simple-search?' +             'query='                                        +             '&location=publications'                        +             '&filter_field_1=resourcetype'                  +                 '&filter_type_1=equals'                     +                 '&filter_value_1=Items'                     +             '&filter_field_2=itemtype'                      +                 '&filter_type_2=notequals'                  +                 '&filter_value_2=Phd+Thesis'                +             '&sort_by=dc.contributor.authors_sort'          +                 '&order=asc'                                +             '&rpp=300'                                      +             '&etal=0'                                       +             '&start='
 
-
-# In[ ]:
-
-
-async def scrape_authors_batch(urls, start_pos=0, batch_size=100, out_file=None):
-    """Scrape author pages in batches."""
-    
-    batch_urls = [urls[i:i+batch_size] for i in range(0, len(urls), batch_size)]
-    
-    print(f"Scraping {len(urls)-start_pos} author pages in {len(batch_urls)} batches of {batch_size}.")
-    if out_file:
-        print(f"Saving results to {out_file}.")
-    
-    if out_file:
-        result_df = pd.DataFrame(columns=['name', 'id', 'department', 'institution', 'projects', 'groups'])
+        if not n_pages:
+            print("Calculating number of pages to scrape.")
+            max_pages = get_max_pages(url_root + '0')
+            n_pages = max_pages
         
-    result = []
-    for i, batch in enumerate(batch_urls):
-        print(f"Scraping batch: {i+1}/{len(batch_urls)}. Authors: {i*batch_size}-{(i+1)*batch_size-1}.", end="\r")
+            if not urls:
+                urls = [url_root + str(page*300) for page in range(n_pages)]
         
+    if not batch_size:
+        print(f"Scraping {items} from Portal de la Reserca.")
+
+        urls = [url_root + str(page*300) for page in range(n_pages)]
+
+        s = AsyncHTMLSession()
+
+        print(f"Scraping {len(urls)} URLs...")
         t1 = time.perf_counter()
-        author_result = await scrape_authors(batch)
+        result = await scrape_urls(s, urls, items=items)
         t2 = time.perf_counter()
-        
-        # Print estimated time left
-        seconds_left = (len(batch_urls)-i)*(t2-t1)
-        m, s = divmod(seconds_left, 60)
-        h, m = divmod(m, 60)
-        
-        print(f"Last batch: {t2-t1:.2f} seconds. Estimated time left: {h:.0f}h{m:.0f}m{s:.0f}s.", end=" ")
-        
-        result.extend(author_result)
+
+        # Gather all results into single list
+        result = [href for sublist in result for href in sublist]
+
+        print(f"Scraped {len(result)} items in {t2-t1:.2f} seconds.")
         
         if out_file:
-            result_df = result_df.append(author_result, ignore_index=True)
+            result_df = pd.DataFrame(result)
             result_df.to_csv(out_file, index=None)
+            print(f"Saved results to {out_file}.")
 
-    print("\nDone.")
+   
+    if batch_size: 
+
+        if not urls:
+            raise TypeError("Must provide list of urls or set items='paper_links'")
+
+        batch_urls = [urls[i:i+batch_size] for i in range(0, len(urls), batch_size)]
+
+        print(f"Scraping {len(urls)-start_pos} {items} in {len(batch_urls)} batches of {batch_size}.")
+        if out_file:
+            print(f"Saving results to {out_file}.")
+            if items == 'authors':
+                result_df = pd.DataFrame(columns=['name', 'id', 'department', 'institution', 'projects', 'groups'])
+            elif items == 'paper_links':
+                result_df = pd.DataFrame()
+            elif items == 'papers':
+                result_df = pd.DataFrame()
+
+        result = []
+        for i, batch in enumerate(batch_urls):
+            print(f"Scraping batch: {i+1}/{len(batch_urls)}. {items}: {i*batch_size}-{(i+1)*batch_size-1}.", end="\r")
+            s = AsyncHTMLSession()
+
+            t1 = time.perf_counter()
+            batch_result = await scrape_urls(s, batch, items=items)
+            t2 = time.perf_counter()
+
+            if items == 'paper_links':
+                # Flatten result
+                batch_result = [i for sublist in batch_result for i in sublist]
+
+            # Print estimated time left
+            seconds_left = (len(batch_urls)-i)*(t2-t1)
+            m, s = divmod(seconds_left, 60)
+            h, m = divmod(m, 60)
+
+            print(f"Last batch: {t2-t1:.2f} seconds. Estimated time left: {h:.0f}h{m:.0f}m{s:.0f}s.", end=" ")
+
+            result.extend(batch_result)
+
+            if out_file:
+                result_df = result_df.append(batch_result, ignore_index=True)
+                result_df.to_csv(out_file, index=None)
+
+        print("\nDone.")
+        
     return result
 
 
-# # Nodelist: Scrape authors
+# # Run Scraper
 
-# ## Get links to author pages
+# ## Nodelist: Scrape authors
 
-# In[ ]:
+# ### Get links to author pages
+
+# In[7]:
 
 
 # Get links to author pages (takes 1m30s)
-# author_urls = asyncio.run(scrape('author_links'))
-
-## Save author URLs
-
-# author_urls_df = pd.DataFrame(author_urls, columns=['author_urls'])
-# author_urls_df.to_csv('./data/author_urls.csv', index=False)
-
-## Read author URLs
-
-author_urls = pd.read_csv('./data/author_urls.csv')
-author_urls = list(author_urls['author_urls'])
+items = 'author_links'
+out_file = './data/author_urls_test.csv'
+author_urls = await scrape(items=items, out_file=out_file)
 
 
-# ## Scrape author pages
+# ### Scrape author pages
 
-# In[ ]:
+# In[8]:
 
 
 # Build urls
+author_urls = pd.read_csv('./data/author_urls.csv')
+author_urls = list(author_urls['author_urls'])
 url_root = 'https://portalrecerca.csuc.cat'
 urls = [url_root + url for url in author_urls]
 
-# Run in batch
-batch_size=100
-out_file = './data/nodelist_batch.csv'
+# Get author data in batch
+items = 'authors'
+batch_size = 20
+out_file = './data/nodelist_test.csv'
 
-# author_data = await scrape_authors_batch(urls, start_pos=0, batch_size=batch_size, out_file=out_file)
-author_data = asyncio.run(scrape_authors_batch(urls, start_pos=0, batch_size=batch_size, out_file=out_file))
+author_data = await scrape(urls=urls, items=items, batch_size=batch_size, out_file=out_file)
+
+
+# ## Edgelist: scrape publications
+
+# ### Get links to papers
+
+# In[9]:
+
+
+# Get links to papers in batch
+items = 'paper_links'
+batch_size = 20
+out_file = './data/paper_links_test.csv'
+
+paper_links = await scrape(items=items, batch_size=batch_size, out_file=out_file)
+
+
+# ### Get coauthors in paper pages
+
+# In[11]:
+
+
+# Build urls
+paper_urls = pd.read_csv('./data/paper_links.csv')
+paper_urls = list(paper_urls['0'])
+url_root = 'https://portalrecerca.csuc.cat'
+urls = [url_root + url + '?mode=full' for url in paper_urls]
+
+# Run in batch
+items = 'papers'
+batch_size = 200
+out_file = './data/coauthors.csv'
+
+papers = await scrape(urls=urls, items=items, batch_size=batch_size, out_file=out_file)
+
