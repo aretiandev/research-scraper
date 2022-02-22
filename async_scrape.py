@@ -10,7 +10,7 @@
 
 # # Import modules
 
-# In[1]:
+# In[15]:
 
 
 import pandas as pd
@@ -23,7 +23,7 @@ import asyncio
 
 # ## General helper functions
 
-# In[2]:
+# In[16]:
 
 
 def get_max_pages(url):
@@ -40,7 +40,7 @@ def get_max_pages(url):
 
 # ## Helper functions for individual and groups of pages
 
-# In[2]:
+# In[29]:
 
 
 async def scrape_url(s, url, items='author_links'):
@@ -75,12 +75,10 @@ async def scrape_url(s, url, items='author_links'):
 
         return author
         
-        
-    else:
+    elif items == 'papers':
         while True:
             try:
                 r = await s.get(url)
-                # table = r.html.find('div.panel.panel-info table.table', first=True)
                 table = r.html.find('table.table', first=True)
                 rows = table.find('tr')
             except AttributeError:
@@ -90,10 +88,76 @@ async def scrape_url(s, url, items='author_links'):
                 continue
             break
 
-        if items == 'papers':
-            result = {}
-        else:
-            result = []
+        paper = {}
+        paper['url']    = url
+        paper['url_id'] = url[31:].split('?')[0]
+        
+        for row in rows:
+            # Get columns in row
+            columns = row.find('td')
+            
+            # Skip if empty row
+            if len(columns) == 0:
+                continue
+            
+            attributes = {
+                'dc.contributor.authors' : 'authors', 
+                'dc.date.issued'         : 'date',
+                'dc.publisher'           : 'publisher',
+                'dc.identifier.citation' : 'citation',
+                'dc.identifier.issn'     : 'issn',
+                'dc.identifier.uri'      : 'uri',
+                'dc.identifier.isbn'    : 'isbn',
+                'dc.relation.ispartof'   : 'published_in',
+                'dc.title'               : 'title',
+                'dc.type'                : 'type',
+                'dc.identifier.doi'      : 'doi', 
+                'dc.identifier.sourceid' : 'sourceid',
+                'dc.identifier.sourceref': 'sourceref',
+                'Appears in Collections:': 'appears_in_collections'}
+
+            for row_index in attributes.keys():
+                if columns[0].text == row_index:
+                    paper[attributes[row_index]] = columns[1].text
+
+        # Get authors ORCid'ss
+        simple_url = url.split('?')[0] + '?mode=simple'
+        while True:
+            try:
+                r = await s.get(simple_url)
+                authors = r.html.find('table.table a.authority.author')
+                author_hrefs = []
+                for author in authors:
+                    href = author.attrs['href']
+                    if href[:7] == '/orcid/':
+                        href = href[7:]
+                    author_hrefs.append(href)
+            except AttributeError:
+                with open('errors.txt', 'a') as f:
+                    f.write(f"Could not find row in url: {url}")
+                time.sleep(1)
+                continue
+            break
+            
+        paper['orcids'] = author_hrefs
+        
+        return paper
+            
+        
+    else: # paper_links or author_links
+        while True:
+            try:
+                r = await s.get(url)
+                table = r.html.find('div.panel.panel-info table.table', first=True)
+                rows = table.find('tr')
+            except AttributeError:
+                with open('errors.txt', 'a') as f:
+                    f.write(f"Could not find row in url: {url}")
+                time.sleep(1)
+                continue
+            break
+
+        result = []
             
         for row in rows:
             # Get columns in row
@@ -107,39 +171,15 @@ async def scrape_url(s, url, items='author_links'):
                 # Get paper link
                 paper_link = columns[1].find('a')[0].attrs['href']
                 scrape_item = paper_link
-                # Append to results_list
-                result.append(scrape_item)
 
             if items == 'author_links':
                 # Get paper link
                 author_link = columns[0].find('a')[0].attrs['href']
                 scrape_item = author_link
-                # Append to results_list
-                result.append(scrape_item)
+                
+            # Append to results_list
+            result.append(scrape_item)
             
-            if items == 'papers':
-                
-                attributes = {
-                    'dc.contributor.authors' : 'authors', 
-                    'dc.date.issued'         : 'date',
-                    'dc.publisher'           : 'publisher',
-                    'dc.identifier.citation' : 'citation',
-                    'dc.identifier.issn'     : 'issn',
-                    'dc.identifier.uri'      : 'uri',
-                    'dc.identifier.isbn'    : 'isbn',
-                    'dc.relation.ispartof'   : 'published_in',
-                    'dc.title'               : 'title',
-                    'dc.type'                : 'type',
-                    'dc.identifier.doi'      : 'doi', 
-                    'dc.identifier.sourceid' : 'sourceid',
-                    'dc.identifier.sourceref': 'sourceref',
-                    'Appears in Collections:': 'appears_in_collections'}
-                 
-                for row_index in attributes.keys():
-                    if columns[0].text == row_index:
-                        result[attributes[row_index]] = columns[1].text
-                
-
         return result
 
 
@@ -151,7 +191,7 @@ async def scrape_urls(s, urls, items='author_links'):
 
 # ## Helper functions for author pages
 
-# In[3]:
+# In[18]:
 
 
 async def scrape_author_tab(s, url, selector):
@@ -220,7 +260,7 @@ async def scrape_author_page(s, url, item='name'):
 
 # ## Main Entrypoint
 
-# In[2]:
+# In[19]:
 
 
 async def scrape(urls=None, items='authors', n_pages=None, start_pos=0, batch_size=None, out_file=None):
@@ -376,7 +416,7 @@ paper_links = await scrape(items=items, batch_size=batch_size, out_file=out_file
 
 # ### Get coauthors in paper pages
 
-# In[11]:
+# In[30]:
 
 
 # Build urls
@@ -387,7 +427,7 @@ urls = [url_root + url + '?mode=full' for url in paper_urls]
 
 # Run in batch
 items = 'papers'
-batch_size = 200
+batch_size = 20
 out_file = './data/coauthors.csv'
 
 papers = await scrape(urls=urls, items=items, batch_size=batch_size, out_file=out_file)
