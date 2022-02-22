@@ -10,7 +10,7 @@
 
 # # Import modules
 
-# In[15]:
+# In[ ]:
 
 
 import pandas as pd
@@ -23,7 +23,7 @@ import asyncio
 
 # ## General helper functions
 
-# In[16]:
+# In[ ]:
 
 
 def get_max_pages(url):
@@ -40,7 +40,7 @@ def get_max_pages(url):
 
 # ## Helper functions for individual and groups of pages
 
-# In[29]:
+# In[ ]:
 
 
 async def scrape_url(s, url, items='author_links'):
@@ -79,11 +79,18 @@ async def scrape_url(s, url, items='author_links'):
         while True:
             try:
                 r = await s.get(url)
+                title = r.html.find('title', first=True)
+                not_found_msg = 'No ha estat possible trobar el que esteu buscant'
+                if not_found_msg in title.text:
+                    print(f"URL not found: {url}")
+                    with open('url_not_found.txt', 'a') as f:
+                        f.write(url)
+                    return {}
                 table = r.html.find('table.table', first=True)
                 rows = table.find('tr')
             except AttributeError:
                 with open('errors.txt', 'a') as f:
-                    f.write(f"Could not find row in url: {url}")
+                    f.write(url)
                 time.sleep(1)
                 continue
             break
@@ -125,6 +132,14 @@ async def scrape_url(s, url, items='author_links'):
         while True:
             try:
                 r = await s.get(simple_url)
+                title = r.html.find('title', first=True)
+                not_found_msg = 'No ha estat possible trobar el que esteu buscant'
+                if not_found_msg in title.text:
+                    print(f"URL not found: {url}")
+                    with open('url_not_found.txt', 'a') as f:
+                        f.write(url)
+                    author_hrefs = []
+                    break
                 authors = r.html.find('table.table a.authority.author')
                 author_hrefs = []
                 for author in authors:
@@ -134,7 +149,7 @@ async def scrape_url(s, url, items='author_links'):
                     author_hrefs.append(href)
             except AttributeError:
                 with open('errors.txt', 'a') as f:
-                    f.write(f"Could not find row in url: {url}")
+                    f.write(url)
                 time.sleep(1)
                 continue
             break
@@ -191,7 +206,7 @@ async def scrape_urls(s, urls, items='author_links'):
 
 # ## Helper functions for author pages
 
-# In[18]:
+# In[ ]:
 
 
 async def scrape_author_tab(s, url, selector):
@@ -260,7 +275,7 @@ async def scrape_author_page(s, url, item='name'):
 
 # ## Main Entrypoint
 
-# In[19]:
+# In[ ]:
 
 
 async def scrape(urls=None, items='authors', n_pages=None, start_pos=0, batch_size=None, out_file=None):
@@ -371,7 +386,7 @@ async def scrape(urls=None, items='authors', n_pages=None, start_pos=0, batch_si
 
 # ### Get links to author pages
 
-# In[7]:
+# In[ ]:
 
 
 # Get links to author pages (takes 1m30s)
@@ -382,7 +397,7 @@ author_urls = await scrape(items=items, out_file=out_file)
 
 # ### Scrape author pages
 
-# In[8]:
+# In[ ]:
 
 
 # Build urls
@@ -403,7 +418,7 @@ author_data = await scrape(urls=urls, items=items, batch_size=batch_size, out_fi
 
 # ### Get links to papers
 
-# In[9]:
+# In[ ]:
 
 
 # Get links to papers in batch
@@ -416,7 +431,7 @@ paper_links = await scrape(items=items, batch_size=batch_size, out_file=out_file
 
 # ### Get coauthors in paper pages
 
-# In[30]:
+# In[ ]:
 
 
 # Build urls
