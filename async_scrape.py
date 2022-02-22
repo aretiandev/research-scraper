@@ -303,7 +303,7 @@ async def scrape_authors_batch(urls, start_pos=0, batch_size=100, out_file=None)
 
 
 # Get links to author pages (takes 1m30s)
-# author_urls = await scrape('author_links')
+# author_urls = asyncio.run(scrape('author_links'))
 
 ## Save author URLs
 
