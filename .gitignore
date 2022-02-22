@@ -4,3 +4,4 @@ __pycache__/
 data/
 .venv/
 errors.txt
+url_not_found.txt
