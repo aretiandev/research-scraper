@@ -26,14 +26,6 @@ import asyncio
 # In[ ]:
 
 
-def is_interactive():
-    """
-    Returns True if run in interactive mode (Jupyter, IPython or Python terminal prompt)
-    Returns False if run in script.
-    """
-    import __main__ as main
-    return not hasattr(main, '__file__')
-
 def get_max_pages(url):
     """
     Get max pages from pagination box in footer.
@@ -467,14 +459,8 @@ batch_size = 200
 # start_pos = 0
 out_file = './data/papers.csv'
 
-if is_interactive():
-    papers = await scrape(urls=urls, items=items, batch_size=batch_size, out_file=out_file)
-else:
+try:
+    exec('papers = await scrape(urls=urls, items=items, batch_size=batch_size, out_file=out_file)')
+except SyntaxError:
     papers = asyncio.run(scrape(urls=urls, items=items, batch_size=batch_size, out_file=out_file))
-
-
-# In[ ]:
-
-
-
 
