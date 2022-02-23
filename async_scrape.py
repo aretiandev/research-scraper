@@ -43,7 +43,7 @@ def get_max_pages(url):
 # In[ ]:
 
 
-async def scrape_url(s, url, items='author_links'):
+async def scrape_url(s, url, items='author_links', attempts=10):
     """
     Async scrape URL. 
     Items = ['paper_links', 'author_links', 'papers', 'authors']
@@ -76,24 +76,30 @@ async def scrape_url(s, url, items='author_links'):
         return author
         
     elif items == 'papers':
-        while True:
+        not_found_msg = 'No ha estat possible trobar el que esteu buscant'
+        
+        for _ in range(attempts):
             try:
                 r = await s.get(url)
                 title = r.html.find('title', first=True)
-                not_found_msg = 'No ha estat possible trobar el que esteu buscant'
-                if not_found_msg in title.text:
-                    print(f"URL not found: {url}")
-                    with open('url_not_found.txt', 'a') as f:
-                        f.write(url)
-                    return {}
                 table = r.html.find('table.table', first=True)
                 rows = table.find('tr')
-            except AttributeError:
-                with open('errors.txt', 'a') as f:
-                    f.write(url)
+                break
+            except:
                 time.sleep(1)
-                continue
-            break
+        else: # Failed all attempts
+            paper = {}
+            paper['url']         = url
+            paper['url_id']      = url[31:].split('?')[0]
+            paper['status code'] = r.status_code
+            
+            try:
+                if not_found_msg in title.text:
+                    paper['status description'] = 'Title: not found'
+            except:
+                pass
+            
+            return paper
 
         paper = {}
         paper['url']    = url
@@ -129,17 +135,12 @@ async def scrape_url(s, url, items='author_links'):
 
         # Get authors ORCid'ss
         simple_url = url.split('?')[0] + '?mode=simple'
-        while True:
+        for _ in range(attempts):
             try:
                 r = await s.get(simple_url)
                 title = r.html.find('title', first=True)
-                not_found_msg = 'No ha estat possible trobar el que esteu buscant'
-                if not_found_msg in title.text:
-                    print(f"URL not found: {url}")
-                    with open('url_not_found.txt', 'a') as f:
-                        f.write(url)
-                    author_hrefs = []
-                    break
+                table = r.html.find('table.table', first=True)
+                rows = table.find('tr')
                 authors = r.html.find('table.table a.authority.author')
                 author_hrefs = []
                 for author in authors:
@@ -147,13 +148,23 @@ async def scrape_url(s, url, items='author_links'):
                     if href[:7] == '/orcid/':
                         href = href[7:]
                     author_hrefs.append(href)
-            except AttributeError:
-                with open('errors.txt', 'a') as f:
-                    f.write(url)
+                break
+            except:
                 time.sleep(1)
-                continue
-            break
+        else: # Failed all attempts
+            paper = {}
+            paper['url']         = url
+            paper['url_id']      = url[31:].split('?')[0]
+            paper['status code'] = r.status_code
             
+            try:
+                if not_found_msg in title.text:
+                    paper['status description'] = 'Title: not found'
+            except:
+                pass
+            
+            return paper
+        
         paper['orcids'] = author_hrefs
         
         return paper
@@ -337,9 +348,10 @@ async def scrape(urls=None, items='authors', n_pages=None, start_pos=0, batch_si
         if not urls:
             raise TypeError("Must provide list of urls or set items='paper_links'")
 
-        batch_urls = [urls[i:i+batch_size] for i in range(0, len(urls), batch_size)]
+        batch_urls = [urls[i:i+batch_size] for i in range(start_pos, len(urls), batch_size)]
 
-        print(f"Scraping {len(urls)-start_pos} {items} in {len(batch_urls)} batches of {batch_size}.")
+        print(f"Scraping {len(urls)-start_pos} {items} in {len(batch_urls)} batches of {batch_size}, starting in position {start_pos}.")
+        
         if out_file:
             print(f"Saving results to {out_file}.")
             if items == 'authors':
@@ -443,7 +455,9 @@ urls = [url_root + url + '?mode=full' for url in paper_urls]
 # Run in batch
 items = 'papers'
 batch_size = 20
-out_file = './data/coauthors.csv'
+# start_pos = 56040 # old starting position with problems
+start_pos = 0
+out_file = './data/papers.csv'
 
-papers = await scrape(urls=urls, items=items, batch_size=batch_size, out_file=out_file)
+papers = await scrape(urls=urls, items=items, start_pos=start_pos, batch_size=batch_size, out_file=out_file)
 
