@@ -117,7 +117,7 @@ async def scrape_author(s, url, item='name', attempts=10):
     return result
 
 
-# ## Helper for project pages
+# ## Helper for project and group pages
 
 # In[ ]:
 
@@ -199,6 +199,95 @@ async def scrape_project(s, url, tab='information', attempts=10):
     return project
 
 
+# In[ ]:
+
+
+async def scrape_group(s, url, tab='information', attempts=10):
+    if tab == 'information':
+        r = await retry_url(s, url, attempts)
+        
+        selector = 'div#collapseOneorgcard'
+        table = r.html.find(selector, first=True)
+        
+        group = {}
+        
+        attributes = {
+            '#nameDiv' : 'name', 
+            '#acronymDiv': 'acronym',
+            '#sgrDiv': 'sgr',
+            '#urlDiv': 'url',
+            '#universityDiv': 'institution',
+            # '#startdateDiv': 'start date',
+            # '#expdateDiv': 'end date',
+        }
+        
+        for selector in attributes.keys():
+            try:
+                attribute_value = table.find(selector, first=True).text
+            except AttributeError:
+                continue
+            
+            attribute       = attributes[selector]
+            group[attribute] = attribute_value
+            
+            
+    elif tab == 'researchers':
+        r = await retry_url(s, url, attempts)
+        
+        # Get next tab url
+        selector = 'div#tabs ul li'
+        next_tab_url = r.html.find(selector)[1].find('a', first=True).attrs['href']
+        url_root = 'https://portalrecerca.csuc.cat'
+        next_tab_url = url_root + next_tab_url
+                                                                
+        r = await retry_url(s, next_tab_url, attempts)
+        
+        selector = 'table.table'
+        tables = r.html.find(selector)
+        
+        group = {}
+        
+        # Principal researchers
+        rows = tables[0].find('tr')
+        principal_names = []
+        principal_ids = []
+        
+        for row in rows[1:]:
+            name_object = row.find('td', first=True)
+            principal_names.append(name_object.text)
+            try:
+                orcid = name_object.find('a', first=True).attrs['href'][7:]
+                principal_ids.append(orcid)
+            except:
+                pass
+            
+        group['principal names'] = principal_names
+        group['principal ids'] = principal_ids
+        
+        # Researchers
+        try:
+            rows = tables[1].find('tr')
+            res_names = []
+            res_ids = []
+
+            for row in rows[1:]:
+                name_object = row.find('td', first=True)
+                res_names.append(name_object.text)
+                try:
+                    orcid = name_object.find('a', first=True).attrs['href'][7:]
+                    res_ids.append(orcid)
+                except:
+                    pass
+                
+            group['researcher names'] = res_names
+            group['researcher ids'] = res_ids
+        except:
+            pass
+        
+                
+    return group
+
+
 # ## Scrape single URL
 
 # In[ ]:
@@ -250,6 +339,22 @@ async def scrape_url(s, url, items='authors', attempts=10):
         project['url_id'] = url[31:].split('?')[0]
         
         return project
+    
+    
+    elif items == 'groups':    
+        result = await asyncio.gather(
+                scrape_group(s, url, tab='information', attempts=attempts),
+                scrape_group(s, url, tab='researchers', attempts=attempts),
+            )
+
+        group = {}
+        for d in result:
+            group.update(d)
+            
+        group['url']    = url
+        group['url_id'] = url[31:].split('?')[0]
+        
+        return group
     
         
     elif items == 'papers':
@@ -660,8 +765,7 @@ url_root = 'https://portalrecerca.csuc.cat'
 urls = [url_root + url for url in group_urls]
 
 
-# ### TODO: Scrape groups
-# Complete if condition in scrape_url function when items == 'groups'
+# ###  Scrape groups
 
 # In[ ]:
 
