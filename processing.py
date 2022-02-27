@@ -1,71 +1,19 @@
 #!/usr/bin/env python
-# coding: utf-8
-
-# # Post processing scraped data
-# 
-# This notebook processes the scraped data from Portal de la Reserca to create the Nodelist and Edgelist to plot in Gephi.
-
-# # Import modules
-
-# In[16]:
-
 
 import numpy as np
 import pandas as pd
 from ast import literal_eval
+from itertools import combinations
 
-
-# # Get researchers of interest
-
-# In[17]:
-
-
-res_df = pd.read_csv('./data/nodelist.csv')
-res_df_IGTP = res_df.loc[res_df['institution'] == 'IGTP']
-res_IGTP = res_df_IGTP['id'].unique()
-
-
-# # Get edgelist
-
-# In[18]:
-
-
-# papers0_df = pd.read_csv('./data/papers_0.csv')
-# papers1_df = pd.read_csv('./data/papers_1.csv')
-# papers_df = papers0_df.append(papers1_df)
-# papers_df = papers_df.drop_duplicates()
-# papers_df.to_csv('./data/papers.csv', index=False)
-
-
-# In[19]:
-
-
-papers_df = pd.read_csv('./data/papers.csv')
-
-
-# In[22]:
-
-
-# papers_df_backup = papers_df.copy()
-papers_df = papers_df_backup.copy()
-
-
-# # Merge
-
-# In[23]:
-
-
-# Convert strings to lists
+# Helper functions
 def convert_to_list(x):
+    """Convert string column to list"""
     try:
         result = literal_eval(x)
     except ValueError:
         result = np.nan
     return result
 
-papers_df['orcids'] = papers_df['orcids'].apply(lambda x: convert_to_list(x))
-
-# Check if any coauthor is in institution
 def belongs_to_list(row, df):
     try:
         result = bool(set(row['orcids']) & set(df))
@@ -73,340 +21,115 @@ def belongs_to_list(row, df):
         result = False
     return result
 
-mask = papers_df.apply(lambda x: belongs_to_list(x, res_IGTP), axis=1)
+# Main function
+def calculate_collaborations(institution, papers_df, res_df, save=False, threshold=None):
 
-selected_df = papers_df[mask]
+    # Filter researchers
+    res_df_inst = res_df.loc[res_df['institution'] == institution]
+    res_inst = res_df_inst['id'].unique()
 
+    # Convert strings to list of coauthors
+    papers_df['orcids'] = papers_df['orcids'].apply(lambda x: convert_to_list(x))
 
-# # Todo
-# 1. Create boolean vector P for each paper of len(authors) that identifies coauthors.
-# 2. Create boolean vector C of coauthor focus. inner(C,P) = 1 if there is collaboration.
+    # Identify authors in institution
+    print(f"Extracting papers with authors from {institution}.")
+    institution_df = res_inst
+    mask = papers_df.apply(lambda x: belongs_to_list(x, institution_df), axis=1)
 
-# ### Create bollean vector P for each paper
+    selected_df = papers_df[mask]
+    
+    # Test with n papers for debugging (max 2800)
+    if threshold:
+        selected_df = selected_df[:threshold]
 
-# In[135]:
+    # Get papers column
+    papers = selected_df['orcids'].copy()
+    papers = papers.reset_index(drop=True)
 
+    # Get unique list of authors from papers
+    authors_index = list(set(papers.sum()))
 
-# Test with n authors for debugging
-# n = 5
+    authors_index.sort()
 
+    # Create boolean matrix with papers
+    paper_bool_df = pd.DataFrame(columns=authors_index, index=range(len(papers)))
 
-# In[157]:
+    for i, paper in enumerate(papers):
+        paper_bool_df.loc[i,:] = 0
+        for orcid in paper:
+            paper_bool_df.loc[i,orcid] = 1
 
+    # Create papers matrix in numpy
+    papers_mat = paper_bool_df.to_numpy()
 
-# Get papers of authors in instutition
-papers = selected_df['orcids'].copy()
+    # Build collaboration vector to store results
+    n_authors = len(authors_index)
+    collabs_length = int(n_authors*(n_authors+1)/2 - n_authors) 
+    collabs = np.zeros(shape=(collabs_length))
 
+    # Store copy of papers_mat for iterative updating
+    papers_mat_i = papers_mat
 
-# In[158]:
+    # Initialize writing position
+    start_pos = 0
 
+    for i in range(0, n_authors-1): #last author loop is unnecessary
+        print(f"Progress: {i/(n_authors-2)*100:.0f}%.", end="\r")
 
-# Create subselection for debugging
-# papers = papers[:n]
+        # Initialize matrix
+        C = np.identity(n_authors-i)
+        C = C[:,1:]
+        C[0] = 1
 
+        # Main inner product
+        result = np.dot(papers_mat_i, C)
 
-# In[159]:
+        # Calculate number of collaborations
+        result = result - 1
+        result = result.clip(0)
+        collabs_author = result.sum(axis=0)
 
+        # Store in collabs vector
+        end_pos = start_pos + n_authors - i - 1
 
-papers = papers.reset_index(drop=True)
+        collabs[start_pos:end_pos] = collabs_author
 
+        # Update start_pos for writing next loop
+        start_pos = end_pos 
 
-# In[160]:
+        # Remove first author from papers_mat for next loop
+        papers_mat_i = papers_mat_i[:,1:]
 
+    print("Done.")
+    
+    author_combinations = combinations(authors_index,2)
+    collabs_df = pd.DataFrame(list(author_combinations), columns=['source', 'target'])
+    collabs_df['value']=collabs
 
-# Get unique list of authors
-authors_index = list(set(papers.sum()))
-authors_index.sort()
+    if save:
+        collabs_df.to_csv(f'./data/edgelist_{institution}.csv', index=None)
+        print(f'Saved output to ./data/edgelist_{institution}.csv')
 
-
-# In[161]:
-
-
-# Create boolean matrix with papers
-paper_bool_df = pd.DataFrame(index=authors_index)
-
-
-# In[162]:
-
-
-for i, paper in enumerate(papers):
-    paper_bool_df.loc[:,i] = 0
-    for orcid in paper:
-        paper_bool_df.loc[orcid, i] = 1
-
-
-# ### Create boolean matrix of coauthor combinations
-
-# In[163]:
-
-
-# Identify coauthors of the first paper
-# paper = paper_bool_df[[0]].values.flatten()
-# np.where(paper == 1)
-
-
-# In[164]:
-
-
-# Create custom vector to check
-# C = np.zeros(len(authors_index))
-# C[61] = 1
-# C[97] = 1
-
-
-# In[165]:
-
-
-# Check inner product
-# paper.dot(C)
-
-
-# In[166]:
-
-
-# M = np.zeros((3,9))
-
-
-# In[167]:
-
-
-# M[:,:3] = np.identity(3)
-
-
-# In[ ]:
-
-
-# n = 4
-n = len(authors_index)
-
-combinations_mat = np.zeros((n,n*n))
-
-# Creation combination matrix
-C0 = np.identity(n)
-for i in range(n):
-    print(f"Progress: {i/n*100:.0f}%.", end="\r")
-    C = C0
-    # Set rows
-    C[i] = 1
-    if i>=1:
-        C[i-1] = 0
-    # Set columns
-        for j in range(i):
-            C[:,j] = 0
+   
+if __name__ == "__main__":
+    # Institution list
+    institution_list = ['IGTP', 'UPC', 'UB', 'UPF', 'UVic-UCC', 'UOC']
+    print(f"Institution list: {institution_list}")
+    
+    # Threshold
+    import sys
+    if len(sys.argv) > 1:
+        threshold = int(sys.argv[1])
+        print(f"threshold: {threshold}.")
+    else:
+        threshold = None
+    
+    # Load edgelist
+    print("Loading papers.csv")
+    papers_df = pd.read_csv('./data/papers.csv')
+    print("Loading nodelist.csv")
+    res_df = pd.read_csv('./data/nodelist.csv')
         
-    combinations_mat[:,i*n:(i+1)*n] = C
-        
-    C0 = C
-
-
-# In[ ]:
-
-
-combinations_mat
-
-
-# In[ ]:
-
-
-papers_mat = paper_bool_df.to_numpy()
-
-
-# In[ ]:
-
-
-result = np.dot(papers_mat, combinations_mat)
-
-
-# In[ ]:
-
-
-papers_mat.shape
-
-
-# In[ ]:
-
-
-combinations_mat.shape
-
-
-# In[ ]:
-
-
-result = result-1
-result = result.clip(0)
-links = result.sum(axis=1)
-
-
-# In[ ]:
-
-
-links
-
-
-# In[1]:
-
-
-# links
-
-
-# In[2]:
-
-
-# paper_bool_df
-
-
-# In[3]:
-
-
-# papers_test = np.array([[1,1,0,0],[1,1,0,0], [1,0,1,0]])
-
-
-# In[4]:
-
-
-# papers_test
-
-
-# In[5]:
-
-
-# result = np.dot(papers_test, M)
-# result
-
-
-# In[6]:
-
-
-# result = result-1
-# result
-
-
-# In[7]:
-
-
-# result = result.clip(0)
-# result
-
-
-# In[8]:
-
-
-# result.sum(axis=0)
-
-
-# In[9]:
-
-
-# max(result-1,0)
-
-
-# In[416]:
-
-
-# C0.shape
-
-
-# In[10]:
-
-
-# C1 = np.identity(4)
-# C[0] = 1
-
-# C2 = np.identity(4)
-# C2[1]=1
-# C2[:,0]=0
-# C2
-
-# C3 = C2
-# C3[1] = 0
-# C3[2] = 1
-# C3[:,0]=0
-# C3[:,1]=0
-# C3
-
-
-# In[12]:
-
-
-# np.hstack((C, C))
-
-
-# In[13]:
-
-
-# for i in range(len(authors_index):
-    # for j in 
-
-
-# In[14]:
-
-
-# authors_index
-
-
-# # Loop over papers to create edgelist
-
-# In[ ]:
-
-
-
-
-
-# # EXTRA CODE
-
-# In[ ]:
-
-
-
-
-
-# In[249]:
-
-
-type(authors_index)
-
-
-# In[251]:
-
-
-len(authors_index)
-
-
-# In[241]:
-
-
-mylist = authors_index[:10]
-
-
-# In[242]:
-
-
-mylist
-
-
-# In[244]:
-
-
-mylist.sort()
-
-
-# In[246]:
-
-
-# sort(mylist)
-cars = ['Ford', 'BMW', 'Volvo']
-
-cars.sort(reverse=True)
-
-
-# In[247]:
-
-
-cars
-
-
-# In[ ]:
-
-
-
-
+    for institution in institution_list:
+        print(f"Institution: {institution}.")
+        calculate_collaborations(institution, papers_df, res_df, save=True, threshold=threshold)
