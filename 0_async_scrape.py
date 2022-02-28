@@ -614,7 +614,7 @@ async def scrape(
 
 # # Run Scraper
 
-# ## Nodelist: Scrape authors
+# ## Nodes: Scrape authors
 
 # ### Get links to author pages
 
@@ -642,7 +642,7 @@ urls = [url_root + url for url in author_urls]
 # Get author data in batch
 items = 'authors'
 batch_size = 10
-out_file = './data/nodelist_test.csv'
+out_file = './data/nodes_test.csv'
 
 author_data = await scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file)
 
@@ -682,7 +682,7 @@ out_file = './data/papers_test.csv'
 papers = await scrape(items=items, urls=urls, start_pos=start_pos, batch_size=batch_size, out_file=out_file)
 
 
-# ## Nodelist: Scrape projects
+# ## Nodes: Scrape projects
 
 # ### Get links to projects from Portal de la Reserca
 
@@ -695,14 +695,14 @@ out_file = './data/project_links_test.csv'
 project_urls = await scrape(items=items, batch_size=batch_size, out_file=out_file)
 
 
-# ### Alternative: get links to projects from nodelist
+# ### Alternative: get links to projects from nodes
 
 # In[ ]:
 
 
-# nodelist_df = pd.read_csv("./data/nodelist.csv")
+# nodes_df = pd.read_csv("./data/nodes.csv")
 # projects = set()
-# for projects_string in nodelist_df['projects']:
+# for projects_string in nodes_df['projects']:
 #     projects_list = ast.literal_eval(projects_string)
 #     projects.update(projects_list)
 
@@ -729,7 +729,7 @@ out_file = './data/projects_test.csv'
 projects = await scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file)
 
 
-# ## Nodelist: Scrape groups
+# ## Node: Scrape groups
 
 # ### Get links to groups from Portal de la Reserca
 
@@ -742,14 +742,14 @@ out_file = './data/group_links_test.csv'
 group_urls = await scrape(items=items, batch_size=batch_size, out_file=out_file)
 
 
-# ### Alternative: get links to groups from nodelist
+# ### Alternative: get links to groups from nodes
 
 # In[ ]:
 
 
-# nodelist_df = pd.read_csv("./data/nodelist.csv")
+# nodes_df = pd.read_csv("./data/nodes.csv")
 # groups = set()
-# for groups_string in nodelist_df['groups']:
+# for groups_string in nodes_df['groups']:
 #     groups_list = ast.literal_eval(groups_string)
 #     groups.update(groups_list)
 

@@ -127,8 +127,8 @@ if __name__ == "__main__":
     # Load edgelist
     print("Loading papers.csv")
     papers_df = pd.read_csv('./data/papers.csv')
-    print("Loading nodelist.csv")
-    res_df = pd.read_csv('./data/nodelist.csv')
+    print("Loading nodes.csv")
+    res_df = pd.read_csv('./data/nodes.csv')
         
     for institution in institution_list:
         print(f"Institution: {institution}.")
