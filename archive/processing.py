@@ -107,8 +107,8 @@ def calculate_collaborations(institution, papers_df, res_df, save=False, thresho
     collabs_df['value']=collabs
 
     if save:
-        collabs_df.to_csv(f'./data/edgelist_{institution}.csv', index=None)
-        print(f'Saved output to ./data/edgelist_{institution}.csv')
+        collabs_df.to_csv(f'./data/edges_{institution}.csv', index=None)
+        print(f'Saved output to ./data/edges_{institution}.csv')
 
    
 if __name__ == "__main__":
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     else:
         threshold = None
     
-    # Load edgelist
+    # Load edges
     print("Loading papers.csv")
     papers_df = pd.read_csv('./data/papers.csv')
     print("Loading nodes.csv")

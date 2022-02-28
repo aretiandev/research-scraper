@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Create edgetlist
+# # Create edges
 # 
-# This notebook creates the edgelist based on scraped data from Portal de la Reserca.
+# This notebook creates the edges based on scraped data from Portal de la Reserca.
 
 # # Import modules
 
@@ -107,8 +107,8 @@ for institution in institution_list:
     # In[ ]:
 
 
-    collabs_df.to_csv(f'./data/edgelist_{institution}.csv', index=None)
-    print(f"{institution} - Done. Saved './data/edgelist_{institution}.csv'.")
+    collabs_df.to_csv(f'./data/edges_{institution}.csv', index=None)
+    print(f"{institution} - Done. Saved './data/edges_{institution}.csv'.")
 
 # # Check results
 
