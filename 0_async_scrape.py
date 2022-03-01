@@ -31,12 +31,11 @@ def get_max_pages(url):
     """
     Get max pages from pagination box in footer.
     """
-    print("Retrieving number of URLs to scrape:", end=" ")
+    print("Retrieving number of URLs to scrape:", end=" ", flush=True)
     session = HTMLSession()
     r = session.get(url)
-    pagination_box = r.html.find('ul.pagination.pull-right')
-    pagination_items = pagination_box[0].find('li')
-    max_pages_str = pagination_items[-2].text.replace('.','').replace(',','')
+    pagination_items = r.html.find('div.discovery-result-pagination ul.pagination li')
+    max_pages_str = pagination_items[-2].text.split("\n")[0].strip().replace('.','').replace(',','')
     max_pages = int(max_pages_str)
     print(f"{max_pages:,d}.")
     return max_pages
