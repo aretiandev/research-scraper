@@ -18,7 +18,7 @@ from requests_html import HTMLSession, AsyncHTMLSession
 import time
 import asyncio
 import ast
-
+from datetime import date
 
 # # Helper functions
 
@@ -54,7 +54,6 @@ async def retry_url(s, url, attempts=10):
         r = {}
     return r
 
-
 # ## Helper for author pages
 
 # In[ ]:
@@ -82,39 +81,42 @@ async def scrape_author(s, url, item='name', attempts=10):
     elif item == 'affiliation':
         url = url + '/researcherdepartaments.html?onlytab=true'
         r = await retry_url(s, url, attempts)
-        selector = 'table.table tr td'
-        scraped_objects = r.html.find(selector)
+        selector = 'table.table tr'
+        rows = r.html.find(selector)
         result = {}
         try:
-            result['department'] = scraped_objects[0].text
-            result['institution'] = scraped_objects[1].text
-        except:
+            departments = []
+            institutions = []
+            for row in rows:
+                columns = row.find('td')
+                departments.append(columns[0].text)
+                institutions.append(columns[1].text)
+            result['department'] = departments
+            result['institution'] = institutions
+        except: # rows object is empty
             pass
     
     elif item == 'projects':
         url = url + '/publicresearcherprojects.html?onlytab=true'
         r = await retry_url(s, url, attempts)
         selector = 'table.table tr'
-        scraped_objects = r.html.find(selector)
-        project_list = []
-        for i in range(1,len(scraped_objects)):
-            project = scraped_objects[i].find('td a')[0].attrs['href']
-            project_list.append(project)
-        result = project_list
+        rows = r.html.find(selector)
+        result = []
+        for row in rows:
+            project = row.find('td a')[0].attrs['href']
+            result.append(project)
     
     elif item == 'groups':
         url = url + '/orgs.html?onlytab=true'
         r = await retry_url(s, url, attempts)
         selector = 'table.table tr'
-        scraped_objects = r.html.find(selector)
-        group_list = []
-        for i in range(1,len(scraped_objects)):
-            group = scraped_objects[i].find('td a')[0].attrs['href']
-            group_list.append(group)
-        result = group_list
+        rows = r.html.find(selector)
+        result = []
+        for row in rows:
+            group = row.find('td a')[0].attrs['href']
+            result.append(group)
     
     return result
-
 
 # ## Helper for project and group pages
 
@@ -196,7 +198,6 @@ async def scrape_project(s, url, tab='information', attempts=10):
         
                 
     return project
-
 
 # In[ ]:
 
@@ -286,7 +287,6 @@ async def scrape_group(s, url, tab='information', attempts=10):
                 
     return group
 
-
 # ## Scrape single URL
 
 # In[ ]:
@@ -295,7 +295,7 @@ async def scrape_group(s, url, tab='information', attempts=10):
 async def scrape_url(s, url, items='authors', attempts=10):
     """
     Async scrape URL. 
-    Items = ['authors', 'papers', 'paper_links', 'author_links']
+    Items: [paper_links, papers, author_links, authors, project_links, projects, group_links, groups]
     """
     
     if items == 'authors':
@@ -439,7 +439,7 @@ async def scrape_url(s, url, items='authors', attempts=10):
             
         
     else: # paper_links, author_links, project_links or group_links
-        r = await retry_url(s, url, attempts)
+        r = await retry_url(s, url, attempts=10)
         
         try:
             table = r.html.find('div.panel.panel-info table.table', first=True)
@@ -468,7 +468,6 @@ async def scrape_url(s, url, items='authors', attempts=10):
             
         return result
 
-
 # ## Main Entrypoint
 
 # In[ ]:
@@ -484,24 +483,38 @@ async def scrape(
     """
     Main entry function to scrape Portal de la Reserca.
     Options:
-        urls: list of urls. Not needed if items in ['author_links', 'paper_links'].
         items: [authors, papers, author_links, paper_links]
-        n_pages: max pages to scrape.
+        urls: list of urls. Not needed if items in ['author_links', 'paper_links'].
         start_pos: starting position.
+        n_pages: max pages to scrape.
         batch_size: batch size.
-        out_file: output file .
+        out_file: output file.
     """
     
     print(f"Scraping {items} from Portal de la Reserca.")
     if out_file:
         print(f"Saving results to {out_file}.")
     
-    
+
     # Get list of URLs to scrape hyperlinks
     if items in ['author_links', 'paper_links', 'project_links', 'group_links']:
         
         if not urls:
-            url_template =                                                        'https://portalrecerca.csuc.cat/simple-search?' +                 'query='                                        +                 '&location={location}'                          +                 '&filter_field_1={filter_field_1}'              +                     '&filter_type_1={filter_type_1}'            +                     '&filter_value_1={filter_value_1}'          +                 '&filter_field_2={filter_field_2}'              +                     '&filter_type_2={filter_type_2}'            +                     '&filter_value_2={filter_value_2}'          +                 '&sort_by={sort_by}'                            +                     '&order={order}'                            +                 '&rpp={rpp}'                                    +                 '&etal=0'                                       +                 '&start='
+            url_template =                                        \
+                'https://portalrecerca.csuc.cat/simple-search?' + \
+                'query='                                        + \
+                '&location={location}'                          + \
+                '&filter_field_1={filter_field_1}'              + \
+                    '&filter_type_1={filter_type_1}'            + \
+                    '&filter_value_1={filter_value_1}'          + \
+                '&filter_field_2={filter_field_2}'              + \
+                    '&filter_type_2={filter_type_2}'            + \
+                    '&filter_value_2={filter_value_2}'          + \
+                '&sort_by={sort_by}'                            + \
+                    '&order={order}'                            + \
+                '&rpp={rpp}'                                    + \
+                '&etal=0'                                       + \
+                '&start='
             
             if items == 'author_links':
                 search_fields = {
@@ -604,12 +617,11 @@ async def scrape(
         
         print(
             f"Progress: {(i+1)/len(batch_urls)*100:.0f}% ({i+1}/{len(batch_urls):,d}). URLs: {i*batch_size}-{(i+1)*batch_size-1}. " +
-            f"Batch time: {t2-t1:.2f}s. Time left: {h:.0f}h{m:.0f}m{s:.0f}s.", end="\r")
+            f"Batch time: {t2-t1:.2f}s. Time left: {h:.0f}h{m:.0f}m{s:.0f}s.", end="\r", flush=True)
         
     print("\nDone.")
         
     return result
-
 
 # # Run Scraper
 
@@ -620,157 +632,226 @@ async def scrape(
 # In[ ]:
 
 
-items = 'author_links'
-batch_size = 10
-out_file = './data/author_urls_test.csv'
-# author_urls = await scrape(items=items, out_file=out_file)
-author_urls = await scrape(items=items, batch_size=batch_size, out_file=out_file)
+# items = 'author_links'
+# batch_size = 20
+# date_today = date.today().strftime("%Y%m%d")
+# out_file = f'./data/author_urls_{date_today}.csv'
+# author_urls = await scrape(items=items, batch_size=batch_size, out_file=out_file)
+
+# # ### Scrape author pages
+
+# # In[ ]:
 
 
-# ### Scrape author pages
+# # Build urls
+# date_today = date.today().strftime("%Y%m%d")
+# author_urls = pd.read_csv(f'./data/author_urls_{date_today}.csv')
+# author_urls = list(author_urls['author_urls'])
+# url_root = 'https://portalrecerca.csuc.cat'
+# urls = [url_root + url for url in author_urls]
+
+# # Get author data in batch
+# items = 'authors'
+# batch_size = 20
+# date_today = date.today().strftime("%Y%m%d")
+# out_file = f'./data/nodes_{date_today}.csv'
+# author_data = await scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file)
+
+# # ## Nodes: Scrape projects
+
+# # ### Get links to projects from Portal de la Reserca
+
+# # In[ ]:
+
+
+# items = 'project_links'
+# batch_size = 10
+# date_today = date.today().strftime("%Y%m%d")
+# out_file = f'./data/project_links_{date_today}.csv'
+# project_urls = await scrape(items=items, batch_size=batch_size, out_file=out_file)
+
+# # ### Alternative: get links to projects from nodes
+
+# # In[ ]:
+
+
+# # nodes_df = pd.read_csv("./data/nodes.csv")
+# # projects = set()
+# # for projects_string in nodes_df['projects']:
+# #     projects_list = ast.literal_eval(projects_string)
+# #     projects.update(projects_list)
+
+# # ### Build URLS
+
+# # In[ ]:
+
+
+# project_urls = pd.read_csv(f'./data/project_links_{date_today}.csv')
+# project_urls = list(project_urls['0'])
+# url_root = 'https://portalrecerca.csuc.cat'
+# urls = [url_root + url for url in project_urls]
+
+# # ### Scrape projects
+
+# # In[ ]:
+
+
+# items = 'projects'
+# batch_size = 10
+# date_today = date.today().strftime("%Y%m%d")
+# out_file = f'./data/projects_{date_today}.csv'
+# projects = await scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file)
+
+# # ## Nodes: Scrape groups
+
+# # ### Get links to groups from Portal de la Reserca
+
+# # In[ ]:
+
+
+# items = 'group_links'
+# batch_size = 10
+# date_today = date.today().strftime("%Y%m%d")
+# out_file = f'./data/group_links_{date_today}.csv'
+# group_urls = await scrape(items=items, batch_size=batch_size, out_file=out_file)
+
+# # ### Alternative: get links to groups from nodes
+
+# # In[ ]:
+
+
+# # nodes_df = pd.read_csv("./data/nodes.csv")
+# # groups = set()
+# # for groups_string in nodes_df['groups']:
+# #     groups_list = ast.literal_eval(groups_string)
+# #     groups.update(groups_list)
+
+# # ### Build URLs
+
+# # In[ ]:
+
+
+# group_urls = pd.read_csv(f'./data/group_links_{date_today}.csv')
+# group_urls = list(group_urls['0'])
+# url_root = 'https://portalrecerca.csuc.cat'
+# urls = [url_root + url for url in group_urls]
+
+# # ###  Scrape groups
+
+# # In[ ]:
+
+
+# items = 'groups'
+# batch_size = 10
+# date_today = date.today().strftime("%Y%m%d")
+# out_file = f'./data/groups_{date_today}.csv'
+# groups = await scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file)
+
+# # ## Edgelist: scrape publications
+
+# # ### Get links to papers
+
+# # In[ ]:
+
+
+# items = 'paper_links'
+# batch_size = 10
+# date_today = date.today().strftime("%Y%m%d")
+# out_file = f'./data/paper_links_{date_today}.csv'
+
+# paper_urls = await scrape(items=items, batch_size=batch_size, out_file=out_file)
+
+# # ### Get coauthors in paper pages
+
+# # In[ ]:
+
+
+# # Build urls
+# paper_urls = pd.read_csv(f'./data/paper_links_{date_today}.csv')
+# paper_urls = list(paper_urls['0'])
+# url_root = 'https://portalrecerca.csuc.cat'
+# urls = [url_root + url + '?mode=full' for url in paper_urls]
+
+# # Run in batch
+# items = 'papers'
+# batch_size = 10
+# start_pos = 56040 # old starting position with problems
+# # start_pos = 0
+# date_today = date.today().strftime("%Y%m%d")
+# out_file = f'./data/papers_{date_today}.csv'
+
+# papers = await scrape(items=items, urls=urls, start_pos=start_pos, batch_size=batch_size, out_file=out_file)
+
+# # For script execution
 
 # In[ ]:
 
 
-# Build urls
-author_urls = pd.read_csv('./data/author_urls.csv')
-author_urls = list(author_urls['author_urls'])
-url_root = 'https://portalrecerca.csuc.cat'
-urls = [url_root + url for url in author_urls]
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) == 2:
+        items = sys.argv[1]
+        batch_size = 20
+    elif len(sys.argv) == 3:
+        items = sys.argv[1]
+        if sys.argv[2] == "":
+            batch_size = 0
+        else:
+            batch_size = int(sys.argv[2])
+    elif len(sys.argv) > 3:
+        print("Too many arguments. Choose argument 1: author_links, paper_links, authors, papers, projects, groups. Choose argument 2: batch size.")
+        sys.exit(1)
+    else:
+        print("Choose argument 1: author_links, paper_links, authors, papers, projects, groups. Choose argument 2: batch size.")
+        sys.exit(1)
 
-# Get author data in batch
-items = 'authors'
-batch_size = 10
-out_file = './data/nodes_test.csv'
+    date_today = date.today().strftime("%Y%m%d")
+    url_root = 'https://portalrecerca.csuc.cat'
+    
+    if items == 'author_links':
+        urls = None
+        out_file = f'./data/author_urls_{date_today}.csv'
+        
+    elif items == 'authors':
+        author_urls = pd.read_csv(f'./data/author_urls_{date_today}.csv')
+        author_urls = list(author_urls['0'])
+        urls = [url_root + url for url in author_urls]
+        out_file = f'./data/nodes_{date_today}.csv'
+        
+    elif items == 'project_links':
+        urls=None
+        out_file = f'./data/project_links_{date_today}.csv'
+        
+    elif items == 'projects':
+        project_urls = pd.read_csv(f'./data/project_links_{date_today}.csv')
+        project_urls = list(project_urls['0'])
+        urls = [url_root + url for url in project_urls]
+        out_file = f'./data/projects_{date_today}.csv'
+    
+    elif items == 'group_links':
+        urls=None
+        out_file = f'./data/group_links_{date_today}.csv'
+        
+    elif items == 'groups':
+        group_urls = pd.read_csv(f'./data/group_links_{date_today}.csv')
+        group_urls = list(group_urls['0'])
+        urls = [url_root + url for url in group_urls]
+        out_file = f'./data/groups_{date_today}.csv'
+    
+    elif items == 'paper_links':
+        urls = None
+        out_file = f'./data/paper_links_{date_today}.csv'
+        
+    elif items == 'papers':
+        paper_urls = pd.read_csv(f'./data/paper_links_{date_today}.csv')
+        paper_urls = list(paper_urls['0'])
+        urls = [url_root + url + '?mode=full' for url in paper_urls]
+        out_file = f'./data/papers_{date_today}.csv'
 
-author_data = await scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file)
-
-
-# ## Edgelist: scrape publications
-
-# ### Get links to papers
-
-# In[ ]:
-
-
-items = 'paper_links'
-batch_size = 10
-out_file = './data/paper_links_test.csv'
-
-paper_urls = await scrape(items=items, batch_size=batch_size, out_file=out_file)
-
-
-# ### Get coauthors in paper pages
-
-# In[ ]:
-
-
-# Build urls
-paper_urls = pd.read_csv('./data/paper_links.csv')
-paper_urls = list(paper_urls['0'])
-url_root = 'https://portalrecerca.csuc.cat'
-urls = [url_root + url + '?mode=full' for url in paper_urls]
-
-# Run in batch
-items = 'papers'
-batch_size = 10
-start_pos = 56040 # old starting position with problems
-# start_pos = 0
-out_file = './data/papers_test.csv'
-
-papers = await scrape(items=items, urls=urls, start_pos=start_pos, batch_size=batch_size, out_file=out_file)
-
-
-# ## Nodes: Scrape projects
-
-# ### Get links to projects from Portal de la Reserca
-
-# In[ ]:
-
-
-items = 'project_links'
-batch_size = 10
-out_file = './data/project_links_test.csv'
-project_urls = await scrape(items=items, batch_size=batch_size, out_file=out_file)
-
-
-# ### Alternative: get links to projects from nodes
-
-# In[ ]:
-
-
-# nodes_df = pd.read_csv("./data/nodes.csv")
-# projects = set()
-# for projects_string in nodes_df['projects']:
-#     projects_list = ast.literal_eval(projects_string)
-#     projects.update(projects_list)
-
-
-# ### Build URLS
-
-# In[ ]:
-
-
-project_urls = pd.read_csv('./data/project_links.csv')
-project_urls = list(project_urls['0'])
-url_root = 'https://portalrecerca.csuc.cat'
-urls = [url_root + url for url in project_urls]
-
-
-# ### Scrape projects
-
-# In[ ]:
-
-
-items = 'projects'
-batch_size = 10
-out_file = './data/projects_test.csv'
-projects = await scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file)
-
-
-# ## Node: Scrape groups
-
-# ### Get links to groups from Portal de la Reserca
-
-# In[ ]:
-
-
-items = 'group_links'
-batch_size = 10
-out_file = './data/group_links_test.csv'
-group_urls = await scrape(items=items, batch_size=batch_size, out_file=out_file)
-
-
-# ### Alternative: get links to groups from nodes
-
-# In[ ]:
-
-
-# nodes_df = pd.read_csv("./data/nodes.csv")
-# groups = set()
-# for groups_string in nodes_df['groups']:
-#     groups_list = ast.literal_eval(groups_string)
-#     groups.update(groups_list)
-
-
-# ### Build URLS
-
-# In[ ]:
-
-
-group_urls = pd.read_csv('./data/group_links.csv')
-group_urls = list(group_urls['0'])
-url_root = 'https://portalrecerca.csuc.cat'
-urls = [url_root + url for url in group_urls]
-
-
-# ###  Scrape groups
-
-# In[ ]:
-
-
-items = 'groups'
-batch_size = 10
-out_file = './data/groups_test.csv'
-groups = await scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file)
-
+#     elif items == 'test':
+#         url = 'https://portalrecerca.csuc.cat/simple-search?query=&location=crisrp&filter_field_1=resourcetype&filter_type_1=equals&filter_value_1=Researchers&filter_field_2=&filter_type_2=&filter_value_2=&sort_by=crisrp.fullName_sort&order=asc&rpp=300&etal=0&start=0'
+#         n_pages = get_max_pages(url)
+#         print(n_pages)
+#         sys.exit()
+        
+    asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file))
