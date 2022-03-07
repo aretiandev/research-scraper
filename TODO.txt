@@ -1,10 +1,11 @@
 TODO:
 
 DONE 0. correct bug that was not collecting groups and projects because it was skipping the first line. Then re-run everything to get author_links and get authors. (this was left running overnight)
+- Check if this completed running.
 
-1. Build networks.
+1. Redo networks with the new nodes data that includes the correct research groups and projects.
 2. Get departments from IGTP by using the information on their website.
-3. Calculate additional KPIs (number of papers, books, etc)
-4. Color networks by department
-5. Check if isolated nodes are important. If they are we might need to recalculate edges based not only on joint publications but also affiliation to same department.
-6. Expand definition of projects and groups to use as colors in the visualization.
+3. Recalculate KPIs (groups and projects) and add additional: books vs papers.
+4. Check if isolated nodes are important. If they are we might need to recalculate edges based not only on joint publications but also affiliation to same department.
+5. Expand definition of projects and groups to use as colors in the visualization.
+6. Get startups from DNB.
