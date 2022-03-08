@@ -6,3 +6,7 @@ data/
 errors.txt
 url_not_found.txt
 .DS_Store
+selenium/*.csv
+selenium/*.xlsx
+selenium/chromedriver
+nohup.out
