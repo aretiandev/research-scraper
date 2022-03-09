@@ -27,7 +27,6 @@ async def retry_url(s, url, attempts=10):
     """Retry fetching URL a given number of times."""
     for _ in range(attempts):
         try:
-            # print(f"Debug: Attempt {_}.")
             r = await s.get(url)
             break
         except Exception:
@@ -72,18 +71,7 @@ async def scrape_author(s, url, item='profile', attempts=10):
             result = {}
 
             for label, pattern in scrape_dict.items():
-                # try:
-                # print(f"Debug: {table[pattern]}")
                 result[label] = table[pattern]
-                # except KeyError as e:
-                    # title = r.html.find('title', first=True).text
-                    # print(f"Debug: title: {title}")
-                    # print(f"Debug: url: {url}")
-                    # print(f"Debug: result: {result}")
-                    # print(f"Debug: label: {label}")
-                    # print(f"Debug: table: {table}")
-                    # print(f"Debug: pattern: {pattern}")
-                    # raise e
         except IndexError:
             result = None
 
@@ -431,7 +419,6 @@ async def scrape_url(s, url, items='authors', attempts=10):
         return paper
 
     else:  # paper_links, author_links, project_links or group_links
-        # print(f"Debug: trying url: {url}")
         r = await retry_url(s, url, attempts)
 
         try:
@@ -441,7 +428,6 @@ async def scrape_url(s, url, items='authors', attempts=10):
             result = []
 
             for i, row in enumerate(rows):
-                # print(f"Debug: parsing row {i}/{len(rows)}.", end="\r")
                 if i >= 300:  # Hardcoded: ignore results after row 300
                     continue
                 # Get columns in row
