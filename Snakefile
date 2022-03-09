@@ -26,9 +26,11 @@ rule authors:
         urls = [url_root + url for url in author_urls]
 
         items = 'authors'
+        start_pos = 13100
         batch_size = 100
-        out_file = f'data/nodes_{date_today}.csv'
-        asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file))
+        out_file = f'data/nodes_{date_today}_2.csv'
+        asyncio.run(scrape(
+            items=items, urls=urls, start_pos=start_pos, batch_size=batch_size, out_file=out_file))
 
 rule clean_authors:
     input:
