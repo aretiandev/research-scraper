@@ -44,6 +44,13 @@ async def scrape_author(s, url, item='profile', attempts=10):
         # TODO: automate locale as a url_template to be added to all URLs
         url = url + "?locale=en"
         r = await retry_url(s, url, attempts)
+
+        title = r.html.find('title', first=True).text
+        title_error = 'Portal de la Recerca de Catalunya: Malformed Request'
+        if title_error in title:
+            result = {'status description': 'System Error: Malformed Request'}
+            return result
+
         selector = 'div#collapseOneresearcherprofile table.table tr'
         rows = r.html.find(selector)
         scrape_dict = {
@@ -65,7 +72,18 @@ async def scrape_author(s, url, item='profile', attempts=10):
             result = {}
 
             for label, pattern in scrape_dict.items():
+                # try:
+                # print(f"Debug: {table[pattern]}")
                 result[label] = table[pattern]
+                # except KeyError as e:
+                    # title = r.html.find('title', first=True).text
+                    # print(f"Debug: title: {title}")
+                    # print(f"Debug: url: {url}")
+                    # print(f"Debug: result: {result}")
+                    # print(f"Debug: label: {label}")
+                    # print(f"Debug: table: {table}")
+                    # print(f"Debug: pattern: {pattern}")
+                    # raise e
         except IndexError:
             result = None
 
