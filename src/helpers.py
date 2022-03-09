@@ -6,8 +6,6 @@ import pandas as pd
 from requests_html import HTMLSession, AsyncHTMLSession
 import time
 import asyncio
-import ast
-from datetime import date
 
 
 # General Helper functions
@@ -19,7 +17,7 @@ def get_max_pages(url):
     session = HTMLSession()
     r = session.get(url)
     pagination_items = r.html.find('div.discovery-result-pagination ul.pagination li')
-    max_pages_str = pagination_items[-2].text.split("\n")[0].strip().replace('.','').replace(',','')
+    max_pages_str = pagination_items[-2].text.split("\n")[0].strip().replace('.', '').replace(',', '')
     max_pages = int(max_pages_str)
     print(f"{max_pages:,d}.")
     return max_pages
@@ -70,7 +68,7 @@ async def scrape_author(s, url, item='profile', attempts=10):
                 result[label] = table[pattern]
         except IndexError:
             result = None
-    
+
     elif item == 'affiliation':
         url = url + '/researcherdepartaments.html?onlytab=true'
         r = await retry_url(s, url, attempts)
@@ -86,9 +84,9 @@ async def scrape_author(s, url, item='profile', attempts=10):
                 institutions.append(columns[1].text)
             result['department'] = departments
             result['institution'] = institutions
-        except: # rows object is empty
+        except Exception:  # rows object is empty
             pass
-    
+
     elif item == 'projects':
         url = url + '/publicresearcherprojects.html?onlytab=true'
         r = await retry_url(s, url, attempts)
@@ -98,7 +96,7 @@ async def scrape_author(s, url, item='profile', attempts=10):
         for row in rows:
             project = row.find('td a')[0].attrs['href']
             result.append(project)
-    
+
     elif item == 'groups':
         url = url + '/orgs.html?onlytab=true'
         r = await retry_url(s, url, attempts)
@@ -108,63 +106,63 @@ async def scrape_author(s, url, item='profile', attempts=10):
         for row in rows:
             group = row.find('td a')[0].attrs['href']
             result.append(group)
-    
+
     return result
 
-# Helper for project page
+
 async def scrape_project(s, url, tab='information', attempts=10):
     if tab == 'information':
         r = await retry_url(s, url, attempts)
-        
+
         selector = 'div#collapseOneprimarydata'
         table = r.html.find(selector, first=True)
-        
+
         project = {}
-        
+
         attributes = {
-            '#titleDiv' : 'title', 
+            '#titleDiv': 'title',
             '#oficialcodeDiv': 'official code',
             '#programDiv': 'program',
             '#startdateDiv': 'start date',
             '#expdateDiv': 'end date',
             '#universityDiv': 'institution',
         }
-        
+
         for selector in attributes.keys():
             try:
                 attribute_value = table.find(selector, first=True).text
             except AttributeError:
                 continue
-            
-            attribute       = attributes[selector]
+
+            attribute          = attributes[selector]
             project[attribute] = attribute_value
-            
+
     elif tab == 'researchers':
         url = url + '/researchersprj.html?onlytab=true'
         r = await retry_url(s, url, attempts)
-        
+
         selector = 'table.table'
         tables = r.html.find(selector)
-        
+
         project = {}
-        
+
         # Principal researchers
         rows = tables[0].find('tr')
         principal_names = []
         principal_ids = []
-        
+
         for row in rows[1:]:
             name_object = row.find('td', first=True)
             principal_names.append(name_object.text)
             try:
                 orcid = name_object.find('a', first=True).attrs['href'][7:]
                 principal_ids.append(orcid)
-            except:
+            except Exception:
                 pass
-            
+
         project['principal names'] = principal_names
         project['principal ids'] = principal_ids
-        
+
         # Researchers
         try:
             rows = tables[1].find('tr')
@@ -177,15 +175,14 @@ async def scrape_project(s, url, tab='information', attempts=10):
                 try:
                     orcid = name_object.find('a', first=True).attrs['href'][7:]
                     res_ids.append(orcid)
-                except:
+                except Exception:
                     pass
-                
+
             project['researcher names'] = res_names
             project['researcher ids'] = res_ids
-        except:
+        except Exception:
             pass
-        
-                
+
     return project
 
 
@@ -193,14 +190,14 @@ async def scrape_project(s, url, tab='information', attempts=10):
 async def scrape_group(s, url, tab='information', attempts=10):
     if tab == 'information':
         r = await retry_url(s, url, attempts)
-        
+
         selector = 'div#collapseOneorgcard'
         table = r.html.find(selector, first=True)
-        
+
         group = {}
-        
+
         attributes = {
-            '#nameDiv' : 'name', 
+            '#nameDiv': 'name',
             '#acronymDiv': 'acronym',
             '#sgrDiv': 'sgr',
             '#urlDiv': 'url',
@@ -208,50 +205,49 @@ async def scrape_group(s, url, tab='information', attempts=10):
             # '#startdateDiv': 'start date',
             # '#expdateDiv': 'end date',
         }
-        
+
         for selector in attributes.keys():
             try:
                 attribute_value = table.find(selector, first=True).text
             except AttributeError:
                 continue
-            
+
             attribute       = attributes[selector]
             group[attribute] = attribute_value
-            
-            
+
     elif tab == 'researchers':
         r = await retry_url(s, url, attempts)
-        
+
         # Get next tab url
         selector = 'div#tabs ul li'
         next_tab_url = r.html.find(selector)[1].find('a', first=True).attrs['href']
         url_root = 'https://portalrecerca.csuc.cat'
         next_tab_url = url_root + next_tab_url
-                                                                
+
         r = await retry_url(s, next_tab_url, attempts)
-        
+
         selector = 'table.table'
         tables = r.html.find(selector)
-        
+
         group = {}
-        
+
         # Principal researchers
         rows = tables[0].find('tr')
         principal_names = []
         principal_ids = []
-        
+
         for row in rows[1:]:
             name_object = row.find('td', first=True)
             principal_names.append(name_object.text)
             try:
                 orcid = name_object.find('a', first=True).attrs['href'][7:]
                 principal_ids.append(orcid)
-            except:
+            except Exception:
                 pass
-            
+
         group['principal names'] = principal_names
         group['principal ids'] = principal_ids
-        
+
         # Researchers
         try:
             rows = tables[1].find('tr')
@@ -264,15 +260,14 @@ async def scrape_group(s, url, tab='information', attempts=10):
                 try:
                     orcid = name_object.find('a', first=True).attrs['href'][7:]
                     res_ids.append(orcid)
-                except:
+                except Exception:
                     pass
-                
+
             group['researcher names'] = res_names
             group['researcher ids'] = res_ids
-        except:
+        except Exception:
             pass
-        
-                
+
     return group
 
 
@@ -280,7 +275,8 @@ async def scrape_group(s, url, tab='information', attempts=10):
 async def scrape_url(s, url, items='authors', attempts=10):
     """
     Async scrape URL.
-    Items: [paper_links, papers, author_links, authors, project_links, projects, group_links, groups]
+    Items: [paper_links, papers, author_links, authors,
+            project_links, projects, group_links, groups]
     """
 
     if items == 'authors':
@@ -291,7 +287,7 @@ async def scrape_url(s, url, items='authors', attempts=10):
                 scrape_author(s, url, 'groups')
             )
 
-        author = result[0] # name and id
+        author = result[0]  # name and id
         try:
             author['department'] = result[1]['department']
         except KeyError:
@@ -348,12 +344,12 @@ async def scrape_url(s, url, items='authors', attempts=10):
             title = r.html.find('title', first=True)
             table = r.html.find('table.table', first=True)
             rows = table.find('tr')
-        except:
+        except Exception:
             paper['status code'] = r.status_code
             try:
                 if not_found_msg in title.text:
                     paper['status description'] = 'Title: not found'
-            except:
+            except Exception:
                 pass
 
             return paper
@@ -367,7 +363,7 @@ async def scrape_url(s, url, items='authors', attempts=10):
                 continue
 
             attributes = {
-                'dc.contributor.authors' : 'authors', 
+                'dc.contributor.authors' : 'authors',
                 'dc.date.issued'         : 'date',
                 'dc.publisher'           : 'publisher',
                 'dc.identifier.citation' : 'citation',
@@ -377,7 +373,7 @@ async def scrape_url(s, url, items='authors', attempts=10):
                 'dc.relation.ispartof'   : 'published_in',
                 'dc.title'               : 'title',
                 'dc.type'                : 'type',
-                'dc.identifier.doi'      : 'doi', 
+                'dc.identifier.doi'      : 'doi',
                 'dc.identifier.sourceid' : 'sourceid',
                 'dc.identifier.sourceref': 'sourceref',
                 'Appears in Collections:': 'appears_in_collections'}
@@ -402,12 +398,12 @@ async def scrape_url(s, url, items='authors', attempts=10):
                 if href[:7] == '/orcid/':
                     href = href[7:]
                 author_hrefs.append(href)
-        except:
+        except Exception:
             paper['status code'] = r.status_code
             try:
                 if not_found_msg in title.text:
                     paper['status description'] = 'Title: not found'
-            except:
+            except Exception:
                 pass
 
             return paper
@@ -450,16 +446,16 @@ async def scrape_url(s, url, items='authors', attempts=10):
             result = []
 
         return result
-    
-    
+
+
 # Main Entrypoint
 async def scrape(
-    items='authors', 
-    urls=None, 
-    start_pos=0, 
-    n_pages=None, 
-    batch_size=None, 
-    out_file=None):
+        items='authors',
+        urls=None,
+        start_pos=0,
+        n_pages=None,
+        batch_size=None,
+        out_file=None):
     """
     Main entry function to scrape Portal de la Reserca.
     Options:
@@ -470,15 +466,14 @@ async def scrape(
         batch_size: batch size.
         out_file: output file.
     """
-    
+
     print(f"Scraping {items} from Portal de la Reserca.")
     if out_file:
         print(f"Saving results to {out_file}.")
-    
 
     # Get list of URLs to scrape hyperlinks
     if items in ['author_links', 'paper_links', 'project_links', 'group_links']:
-        
+
         if not urls:
             url_template =                                        \
                 'https://portalrecerca.csuc.cat/simple-search?' + \
@@ -495,7 +490,7 @@ async def scrape(
                 '&rpp={rpp}'                                    + \
                 '&etal=0'                                       + \
                 '&start='
-            
+
             if items == 'author_links':
                 search_fields = {
                     'location'      : 'crisrp',
@@ -509,7 +504,7 @@ async def scrape(
                     'order'         : 'asc',
                     'rpp'           : '300'
                 }
-                
+
             elif items == 'paper_links':
                 search_fields = {
                     'location'      : 'publications',
@@ -523,7 +518,7 @@ async def scrape(
                     'order'         : 'asc',
                     'rpp'           : '300'
                 }
-                
+
             elif items == 'project_links':
                 search_fields = {
                     'location'      : 'crisproject',
@@ -551,20 +546,19 @@ async def scrape(
                     'order'         : 'asc',
                     'rpp'           : '300'
                 }
-            
+
             url_root = url_template.format(**search_fields)
 
             if not n_pages:
                 n_pages = get_max_pages(url_root + '0')
-        
+
             urls = [url_root + str(page*300) for page in range(n_pages)]
-                
 
     if not batch_size:
         batch_size = len(urls)
 
     batch_urls = [urls[i:i+batch_size] for i in range(start_pos, len(urls), batch_size)]
-    
+
     print(f"Scraping {items} from {len(urls)-start_pos:,d} URLs in {len(batch_urls):,d} batches of {batch_size:,d}, starting at {start_pos:,d}.")
 
     if out_file:
@@ -594,11 +588,11 @@ async def scrape(
         seconds_left = (len(batch_urls)-i)*(t2-t1)
         m, s = divmod(seconds_left, 60)
         h, m = divmod(m, 60)
-        
+
         print(
             f"Progress: {(i+1)/len(batch_urls)*100:.0f}% ({i+1}/{len(batch_urls):,d}). URLs: {i*batch_size}-{(i+1)*batch_size-1}. " +
             f"Batch time: {t2-t1:.2f}s. Time left: {h:.0f}h{m:.0f}m{s:.0f}s.", end="\r")
-        
+
     print("\nDone.")
-        
+
     return result
