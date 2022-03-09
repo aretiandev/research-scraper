@@ -10,3 +10,4 @@ selenium/*.csv
 selenium/*.xlsx
 selenium/chromedriver
 nohup.out
+.snakemake/
