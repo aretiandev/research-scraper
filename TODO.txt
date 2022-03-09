@@ -1,14 +1,39 @@
-TODO:
+# TODO:
 
-DONE 0. correct bug that was not collecting groups and projects because it was skipping the first line. Then re-run everything to get author_links and get authors. (this was left running overnight)
-- Check if this completed running.
+## Update researcher-level networks
 
-First: add books, articles, and additional columns to share with Jeremy.
-Second: download startups.
+DONE. Correct bug that was not collecting groups and projects because it was skipping the first line.
 
-1. Redo networks with the new nodes data that includes the correct research groups and projects.
-2. Get departments from IGTP by using the information on their website.
-3. Recalculate KPIs (groups and projects) and add additional: books vs papers.
-4. Check if isolated nodes are important. If they are we might need to recalculate edges based not only on joint publications but also affiliation to same department.
-5. Expand definition of projects and groups to use as colors in the visualization.
-6. Get startups from DNB.
+RUNNING. Re-run everything to get author_links and get authors.
+
+- Nodelist: Recalculate number of groups and number of projects
+
+- Nodelist: Add number of publications by type to nodelist
+
+- Redo networks with the new nodes data that includes the correct research groups, projects and type of publication.
+
+
+## Create Research Group networks
+
+- Expand definition of projects and groups to use as colors in the visualization.
+
+- Get startups from DNB.
+
+
+## OTHER
+
+- Get departments from IGTP by using the information on their website.
+
+- Check if isolated nodes are important. If they are we might need to recalculate edges based not only on joint publications but also affiliation to same department.
+
+
+## OTHER 2
+ Finish downloading missing DNB startups.
+
+
+## NOTES:
+Problem:
+- Running the scraper from JupyterLab or directly from a script produces different results. 
+Solution:
+- This is actually because JupyterLab is inside in a Docker container. If you run the script from inside the docker container you get identical results.
+
