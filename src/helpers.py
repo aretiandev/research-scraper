@@ -29,9 +29,10 @@ async def retry_url(s, url, attempts=10):
     """Retry fetching URL a given number of times."""
     for _ in range(attempts):
         try:
+            # print(f"Debug: Attempt {_}.")
             r = await s.get(url)
             break
-        except:
+        except Exception:
             time.sleep(1)
             pass
     else:
@@ -48,10 +49,11 @@ async def scrape_author(s, url, item='profile', attempts=10):
         selector = 'div#collapseOneresearcherprofile table.table tr'
         rows = r.html.find(selector)
         scrape_dict = {
-            'label': 'Surnames, Name', 
+            'label': 'Surnames, Name',
             'id': 'ORCID',
             'institution_2': 'Universities or CERCA centres'
         }
+
         try:
             # TODO: modularize the following code to a separate get_table function
             table = {}
@@ -60,10 +62,11 @@ async def scrape_author(s, url, item='profile', attempts=10):
                 columns1_text = columns[1].text.split("\n")
                 if len(columns1_text) == 1:
                     table[columns[0].text] = columns1_text[0]
-                else: # if more than one university
+                else:  # if more than one university
                     table[columns[0].text] = columns1_text
             result = {}
-            for label,pattern in scrape_dict.items():
+
+            for label, pattern in scrape_dict.items():
                 result[label] = table[pattern]
         except IndexError:
             result = None
@@ -276,10 +279,10 @@ async def scrape_group(s, url, tab='information', attempts=10):
 # Scrape single URL
 async def scrape_url(s, url, items='authors', attempts=10):
     """
-    Async scrape URL. 
+    Async scrape URL.
     Items: [paper_links, papers, author_links, authors, project_links, projects, group_links, groups]
     """
-    
+
     if items == 'authors':
         result = await asyncio.gather(
                 scrape_author(s, url, 'profile'),
@@ -287,7 +290,7 @@ async def scrape_url(s, url, items='authors', attempts=10):
                 scrape_author(s, url, 'projects'),
                 scrape_author(s, url, 'groups')
             )
-        
+
         author = result[0] # name and id
         try:
             author['department'] = result[1]['department']
@@ -301,9 +304,8 @@ async def scrape_url(s, url, items='authors', attempts=10):
         author['groups'] = result[3]
 
         return author
-        
-        
-    elif items == 'projects':    
+
+    elif items == 'projects':
         result = await asyncio.gather(
                 scrape_project(s, url, tab='information', attempts=attempts),
                 scrape_project(s, url, tab='researchers', attempts=attempts),
@@ -312,14 +314,13 @@ async def scrape_url(s, url, items='authors', attempts=10):
         project = {}
         for d in result:
             project.update(d)
-            
+
         project['url']    = url
         project['url_id'] = url[31:].split('?')[0]
-        
+
         return project
-    
-    
-    elif items == 'groups':    
+
+    elif items == 'groups':
         result = await asyncio.gather(
                 scrape_group(s, url, tab='information', attempts=attempts),
                 scrape_group(s, url, tab='researchers', attempts=attempts),
@@ -328,22 +329,21 @@ async def scrape_url(s, url, items='authors', attempts=10):
         group = {}
         for d in result:
             group.update(d)
-            
+
         group['url']    = url
         group['url_id'] = url[31:].split('?')[0]
-        
+
         return group
-    
-        
+
     elif items == 'papers':
         paper = {}
         paper['url']         = url
         paper['url_id']      = url[31:].split('?')[0]
-        
+
         not_found_msg = 'No ha estat possible trobar el que esteu buscant'
-        
+
         r = await retry_url(s, url, attempts)
-        
+
         try:
             title = r.html.find('title', first=True)
             table = r.html.find('table.table', first=True)
@@ -355,17 +355,17 @@ async def scrape_url(s, url, items='authors', attempts=10):
                     paper['status description'] = 'Title: not found'
             except:
                 pass
-            
+
             return paper
-            
+
         for row in rows:
             # Get columns in row
             columns = row.find('td')
-            
+
             # Skip if empty row
             if len(columns) == 0:
                 continue
-            
+
             attributes = {
                 'dc.contributor.authors' : 'authors', 
                 'dc.date.issued'         : 'date',
@@ -388,9 +388,9 @@ async def scrape_url(s, url, items='authors', attempts=10):
 
         # Get authors ORCid'ss
         simple_url = url.split('?')[0] + '?mode=simple'
-        
+
         r = await retry_url(s, simple_url, attempts)
-        
+
         try:
             title = r.html.find('title', first=True)
             table = r.html.find('table.table', first=True)
@@ -409,24 +409,27 @@ async def scrape_url(s, url, items='authors', attempts=10):
                     paper['status description'] = 'Title: not found'
             except:
                 pass
-            
+
             return paper
-            
+
         paper['orcids'] = author_hrefs
-        
+
         return paper
-            
-        
-    else: # paper_links, author_links, project_links or group_links
+
+    else:  # paper_links, author_links, project_links or group_links
+        # print(f"Debug: trying url: {url}")
         r = await retry_url(s, url, attempts)
-        
+
         try:
             table = r.html.find('div.panel.panel-info table.table', first=True)
             rows = table.find('tr')
-            
+
             result = []
 
-            for row in rows:
+            for i, row in enumerate(rows):
+                # print(f"Debug: parsing row {i}/{len(rows)}.", end="\r")
+                if i >= 300:  # Hardcoded: ignore results after row 300
+                    continue
                 # Get columns in row
                 columns = row.find('td')
 
@@ -441,10 +444,11 @@ async def scrape_url(s, url, items='authors', attempts=10):
 
                 # Append to results_list
                 result.append(scrape_item)
-            
-        except:
+
+        except Exception as e:
+            print(f"Exception: {e}.")
             result = []
-            
+
         return result
     
     
