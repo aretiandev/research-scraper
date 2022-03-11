@@ -34,6 +34,6 @@ async def test_scrape_authors():
     out_file = f'./data/nodes_{date_today}.csv'
     return await scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file)
 
-    
+
 if __name__ == "__main__":
     asyncio.run(test_scrape_authors())
