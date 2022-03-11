@@ -24,13 +24,12 @@
 # To run everthing:
 #   snakemake -c1
 
-# Load modules
 import pandas as pd
 from datetime import date
 import asyncio
 
 from src.scrape import scrape
-from src.process import filter_authors_and_papers, add_variables_to_nodelist
+from src.process import add_publication_stats, clean_authors, clean_papers, filter_authors, filter_papers
 from src.edges import create_edgelist
 
 # Setup global variables
@@ -78,25 +77,48 @@ rule item_data:
             urls = [url_root + url for url in item_urls]
         asyncio.run(scrape(items=wildcards.item_name, urls=urls, batch_size=batch_size, out_file=output[0]))
 
-rule filter_authors_and_papers:
+rule clean_authors:
     input:
-        "data/papers.csv",
-        f'./data/nodes_{date_today}.csv'
+        f'data/nodes_{date_today}.csv')
+    output:
+        f'data/nodes_clean_{date_today}.csv',
+    run:
+        clean_authors()
+
+rule clean_papers:
+    input:
+        f'data/papers_{date_today}.csv',
+    output:
+        f'data/papers_clean_{date_today}.csv',
+    run:
+        clean_papers()
+
+rule filter_authors:
+    input:
+        f'./data/nodes_clean_{date_today}.csv'
+    output:
+        f'data/nodes_{{institution}}_{date_today}.csv'
+    run:
+        filter_authors(wildcards.institution)
+
+rule filter_papers:
+    input:
+        f'data/nodes_{{institution}}_{date_today}.csv'
+        f'data/papers_clean_{date_today}.csv',
     output:
         f'data/papers_{{institution}}_{date_today}.csv',
         f'data/papers_{{institution}}_2plus_{date_today}.csv',
-        f'data/nodes_{{institution}}_{date_today}.csv'
     run:
-        filter_authors_and_papers()
+        filter_papers(wildcards.institution)
 
-rule add_variables_to_nodelist:
+rule add_publication_stats:
     input: 
         f'./data/nodes_{{institution}}_{date_today}.csv',
         f'./data/papers_{{institution}}_{date_today}.csv'
     output:
-        f'./data/nodes_{{institution}}_{date_today}.csv'
+        f'./data/nodes_{{institution}}_full_{date_today}.csv'
     run:
-        add_variables_to_nodelist()
+        add_publication_stats(wildcards.institution)
 
 rule create_edges:
     input:
@@ -105,4 +127,4 @@ rule create_edges:
     output:
         f'./data/edges_{{institution}}_{date_today}.csv'
     run:
-        create_edgelist(institution)
+        create_edgelist(wildcards.institution)

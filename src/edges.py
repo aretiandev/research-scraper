@@ -1,24 +1,29 @@
 #!/usr/bin/env python
 # coding: utf-8
+"""
+Edges module: collection of helper functions to create edgelists.
+"""
 
-# # Create edges
-# 
-# This notebook processes the publications data and achieves the following:
-# 
-# - Creates the edges between authors
-
-# # Import modules
 import pandas as pd
 from itertools import combinations
 
 
-# # Select institution
-def create_edgelist(institution, save=True):
-    print(f"Institution: {institution}.")
-    ## Get authors from papers
+def get_date():
+    import os
+    import time
+    from datetime import date
+    os.environ['TZ'] = 'America/New_York'
+    time.tzset()
+    date_today = date.today().strftime("%Y%m%d")
+    return date_today
+    
 
-    # Set date for file versions
-    date_today = '20220309'
+def create_edgelist(institution, date_today=None, save=True):
+    """Create edgelist."""
+    print(f"Institution: {institution}.")
+
+    if not date_today:
+        date_today = get_date()
 
     # Load papers with coauthors list
     print(f"{institution} - Loading papers.")
@@ -29,24 +34,18 @@ def create_edgelist(institution, save=True):
     authors_papers = list(set(papers.sum()))
     authors_papers.sort()
 
-    ## Get authors from institution
-
     # Get list of authors from institution
     print(f"{institution} - Loading nodes.")
     authors_inst_df = pd.read_csv(f'./data/nodes_{institution}_{date_today}.csv')
-
     authors_inst = authors_inst_df['id']
     authors_inst = authors_inst.unique()
     authors_inst.sort()
-
-    ## Combine authors
 
     # Combine both
     authors_index = list(set(authors_papers) & set(authors_inst))
     authors_index.sort()
     
-    ## Create df to store collaborations
-
+    # Create df to store collaborations
     print(f"{institution} - Calculting combinations of authors.")
     author_combinations = combinations(authors_index,2)
     collabs_df = pd.DataFrame(list(author_combinations), columns=['Source', 'Target'])
@@ -54,9 +53,6 @@ def create_edgelist(institution, save=True):
     collabs_df = collabs_df.set_index(['Source', 'Target'])
 
     # Calculate collaborations
-
-    ## Main loop: add collaborations to df
-
     print(f"{institution} - Main loop: counting collaborations.")
     for i, paper in enumerate(papers):
         print(f"{institution} - Progress: {i/len(papers)*100:.0f}%. ({i:,.0f}/{len(papers):,.0f}).", end="\r")
@@ -73,17 +69,12 @@ def create_edgelist(institution, save=True):
     collabs_df = collabs_df.reset_index()
     
     if save:
-        ## Save
         outfile = f'./data/edges_{institution}_{date_today}.csv'
         collabs_df.to_csv(outfile, index=None)
         print(f"{institution} - Done. Saved '{outfile}'.")
-        
-    return collabs_df
 
 
-# # MAIN LOOP: Institution
 if __name__ == "__main__":
-    # Select institution
     institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
     for institution in institution_list:
-        collabs_df = create_edgelist(institution)
+        create_edgelist(institution)
