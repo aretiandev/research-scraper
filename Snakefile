@@ -1,97 +1,90 @@
+# Snakefile
+#
+# Instructions:
+# 
+# There are 8 target items: 
+#   author and author_links
+#   paper and paper_links
+#   project and project_links
+#   group and group_links
+#
+# List of rules:
+#   snakemake data/author_data_202203011.csv -c1
+#   snakemake data/author_links_202203011.csv -c1
+#   snakemake data/paper_data_202203011.csv -c1
+#   snakemake data/paper_links_data_202203011.csv -c1
+#   snakemake data/project_data_202203011.csv -c1
+#   snakemake data/project_links_202203011.csv -c1
+#   snakemake data/group_data_202203011.csv -c1
+#   snakemake data/group_links_202203011.csv -c1
+#   snakemake clean_links -c1
+#   snakemake filter_authors_and_papers -c1
+#   snakemake add_variables_to_nodelist -c1
+#   snakemake create_edges -c1
+
+rule filter_authors_and_papers:
+    run:
+        filter_authors_and_papers()
+
+rule add_variables_to_nodelist:
+    run:
+        add_variables_to_nodelist()
+
+rule create_edges:
+# This will first scrape author_links and then scrape data inside links
+
+# Load modules
 import pandas as pd
 from datetime import date
-from src.helpers import scrape
 import asyncio
 
+from src.scrape import scrape
+from src.process import filter_authors_and_papers, add_variables_to_nodelist
+from src.edges import create_edgelist
+
+# Setup global variables
 date_today = date.today().strftime("%Y%m%d")
 url_root = 'https://portalrecerca.csuc.cat'
 
-rule author_links:
+rule item_links:
     output:
-        f'data/author_urls_{date_today}.csv'
+        f"data/{{item_name}}_links_{date_today}.csv"
     run:
-        items = 'author_links'
-        batch_size = 2
-        asyncio.run(scrape(items=items, batch_size=batch_size, out_file={output}))
+        batch_size = 10
+        # item_name_links = wildcards.item_name + '_links'
+        asyncio.run(scrape(items=wildcards.item_name+'_links', batch_size=batch_size, out_file=output[0]))
 
-rule authors:
+rule clean_links:
     input:
-        f'data/author_urls_{date_today}.csv'
-    output:
-        f'data/nodes_{date_today}.csv'
-    run:
-        author_urls = pd.read_csv({input})
-        author_urls = list(author_urls['0'])
-        urls = [url_root + url for url in author_urls]
-        items = 'authors'
-        batch_size = 100
-        asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file={output}))
-
-rule clean_authors:
-    input:
-        f'data/nodes_{date_today}.csv'
+        f"data/{{item_name}}_links_{date_today}.csv"
     shell:
         "rm {input}"
 
-rule project_links:
-    output:
-        f'data/project_links_{date_today}.csv'
-    run:
-        items = 'project_links'
-        batch_size = 10
-        asyncio.run(scrape(items=items, batch_size=batch_size, out_file={output}))
-
-rule projects:
+rule item_data:
     input:
-        f'data/project_links_{date_today}.csv'
+        f'data/{{item_name}}_links_{date_today}.csv'
     output:
-        f'data/projects_{date_today}.csv'
+        f'data/{{item_name}}_data_{date_today}.csv'
     run:
-        project_urls = pd.read_csv({input})
-        project_urls = list(project_urls['0'])
-        urls = [url_root + url for url in project_urls]
-        items = 'projects'
         batch_size = 10
-        asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file={output}))
+        item_urls = pd.read_csv(input[0])
+        item_urls = list(item_urls['0'])
+        if wildcards.item_name == 'paper':
+            urls = [url_root + url + '?mode=full' for url in item_urls]
+        else:
+            urls = [url_root + url for url in item_urls]
+        asyncio.run(scrape(items=wildcards.item_name, urls=urls, batch_size=batch_size, out_file=output[0]))
 
-rule group_links:
-    output:
-        f'data/group_links_{date_today}.csv'
+rule filter_authors_and_papers:
     run:
-        items = 'group_links'
-        batch_size = 10
-        asyncio.run(scrape(items=items, batch_size=batch_size, out_file={output}))
+        filter_authors_and_papers()
 
-rule groups:
-    input:
-        f'data/group_links_{date_today}.csv'
-    output:
-        f'data/groups_{date_today}.csv'
+rule add_variables_to_nodelist:
     run:
-        group_urls = pd.read_csv({input})
-        group_urls = list(group_urls['0'])
-        urls = [url_root + url for url in group_urls]
-        items = 'groups'
-        batch_size = 10
-        asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file={output}))
+        add_variables_to_nodelist()
 
-rule paper_links:
-    output:
-        f'data/paper_links_{date_today}.csv'
+rule create_edges:
     run:
-        items = 'paper_links'
-        batch_size = 10
-        asyncio.run(scrape(items=items, batch_size=batch_size, out_file={output}))
-
-rule papers:
-    input:
-        f'data/paper_links_{date_today}.csv'
-    output:
-        f'data/papers_{date_today}.csv'
-    run:
-        paper_urls = pd.read_csv({input})
-        paper_urls = list(paper_urls['0'])
-        urls = [url_root + url + '?mode=full' for url in paper_urls]
-        items = 'papers'
-        batch_size = 10
-        asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file={output}))
+        institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
+        for institution in institution_list:
+            create_edgelist(institution)
