@@ -12,3 +12,4 @@ selenium/chromedriver
 nohup.out
 .snakemake/
 .vscode/
+figs/
