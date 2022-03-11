@@ -304,6 +304,7 @@ async def scrape_url(s, url, items='authors', attempts=10):
             pass
         author['projects'] = result[2]
         author['groups'] = result[3]
+        author['url'] = url
 
         return author
 
