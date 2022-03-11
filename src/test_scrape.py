@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import date
-from src.helpers import scrape
+from src.scrape import scrape
 import asyncio
 
 date_today = date.today().strftime("%Y%m%d")

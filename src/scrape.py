@@ -93,7 +93,7 @@ async def scrape_author(s, url, item='profile', attempts=10):
         except Exception:  # rows object is empty
             pass
 
-    elif item == 'projects':
+    elif item == 'project':
         url = url + '/publicresearcherprojects.html?onlytab=true'
         r = await retry_url(s, url, attempts)
         selector = 'table.table tr'
@@ -103,7 +103,7 @@ async def scrape_author(s, url, item='profile', attempts=10):
             project = row.find('td a')[0].attrs['href']
             result.append(project)
 
-    elif item == 'groups':
+    elif item == 'group':
         url = url + '/orgs.html?onlytab=true'
         r = await retry_url(s, url, attempts)
         selector = 'table.table tr'
@@ -278,19 +278,19 @@ async def scrape_group(s, url, tab='information', attempts=10):
 
 
 # Scrape single URL
-async def scrape_url(s, url, items='authors', attempts=10):
+async def scrape_url(s, url, items='author', attempts=10):
     """
     Async scrape URL.
-    Items: [paper_links, papers, author_links, authors,
-            project_links, projects, group_links, groups]
+    Items: [paper_links, paper, author_links, author,
+            project_links, project, group_links, group]
     """
 
-    if items == 'authors':
+    if items == 'author':
         result = await asyncio.gather(
                 scrape_author(s, url, 'profile'),
                 scrape_author(s, url, 'affiliation'),
-                scrape_author(s, url, 'projects'),
-                scrape_author(s, url, 'groups')
+                scrape_author(s, url, 'project'),
+                scrape_author(s, url, 'group')
             )
 
         author = result[0]  # name and id
@@ -302,13 +302,13 @@ async def scrape_url(s, url, items='authors', attempts=10):
             author['institution'] = result[1]['institution']
         except KeyError:
             pass
-        author['projects'] = result[2]
-        author['groups'] = result[3]
+        author['project'] = result[2]
+        author['group'] = result[3]
         author['url'] = url
 
         return author
 
-    elif items == 'projects':
+    elif items == 'project':
         result = await asyncio.gather(
                 scrape_project(s, url, tab='information', attempts=attempts),
                 scrape_project(s, url, tab='researchers', attempts=attempts),
@@ -323,7 +323,7 @@ async def scrape_url(s, url, items='authors', attempts=10):
 
         return project
 
-    elif items == 'groups':
+    elif items == 'group':
         result = await asyncio.gather(
                 scrape_group(s, url, tab='information', attempts=attempts),
                 scrape_group(s, url, tab='researchers', attempts=attempts),
@@ -338,7 +338,7 @@ async def scrape_url(s, url, items='authors', attempts=10):
 
         return group
 
-    elif items == 'papers':
+    elif items == 'paper':
         paper = {}
         paper['url']         = url
         paper['url_id']      = url[31:].split('?')[0]
@@ -370,7 +370,7 @@ async def scrape_url(s, url, items='authors', attempts=10):
                 continue
 
             attributes = {
-                'dc.contributor.authors' : 'authors',
+                'dc.contributor.authors' : 'author',
                 'dc.date.issued'         : 'date',
                 'dc.publisher'           : 'publisher',
                 'dc.identifier.citation' : 'citation',
@@ -455,7 +455,7 @@ async def scrape_url(s, url, items='authors', attempts=10):
 
 # Main Entrypoint
 async def scrape(
-        items='authors',
+        items='author',
         urls=None,
         start_pos=0,
         n_pages=None,
@@ -464,7 +464,7 @@ async def scrape(
     """
     Main entry function to scrape Portal de la Reserca.
     Options:
-        items: [authors, papers, author_links, paper_links]
+        items: [author, paper, author_links, paper_links]
         urls: list of urls. Not needed if items in ['author_links', 'paper_links'].
         start_pos: starting position.
         n_pages: max pages to scrape.
