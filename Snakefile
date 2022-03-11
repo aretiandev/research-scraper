@@ -4,6 +4,7 @@ from src.helpers import scrape
 import asyncio
 
 date_today = date.today().strftime("%Y%m%d")
+url_root = 'https://portalrecerca.csuc.cat'
 
 rule author_links:
     output:
@@ -11,27 +12,44 @@ rule author_links:
     run:
         items = 'author_links'
         batch_size = 2
-        out_file = f'data/author_urls_{date_today}.csv'
-        asyncio.run(scrape(items=items, batch_size=batch_size, out_file=out_file))
+        asyncio.run(scrape(items=items, batch_size=batch_size, out_file={output}))
 
 rule authors:
     input:
         f'data/author_urls_{date_today}.csv'
     output:
-        f'data/nodes_{date_today}_0.csv'
+        f'data/nodes_{date_today}.csv'
     run:
-        author_urls = pd.read_csv(f'data/author_urls_{date_today}.csv')
+        author_urls = pd.read_csv({input})
         author_urls = list(author_urls['0'])
-        url_root = 'https://portalrecerca.csuc.cat'
         urls = [url_root + url for url in author_urls]
-
         items = 'authors'
         batch_size = 100
-        out_file = f'data/nodes_{date_today}_0.csv'
-        asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file))
+        asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file={output}))
 
 rule clean_authors:
     input:
         f'data/nodes_{date_today}.csv'
     shell:
         "rm {input}"
+
+rule project_links:
+    output:
+        f'data/project_links_{date_today}.csv'
+    run:
+        items = 'project_links'
+        batch_size = 10
+        asyncio.run(scrape(items=items, batch_size=batch_size, out_file={output}))
+
+rule projects:
+    input:
+        f'data/project_links_{date_today}.csv'
+    output:
+        f'data/projects_{date_today}.csv'
+    run:
+        project_urls = pd.read_csv({input})
+        project_urls = list(project_urls['0'])
+        urls = [url_root + url for url in project_urls]
+        items = 'projects'
+        batch_size = 10
+        asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file={output}))
