@@ -21,17 +21,8 @@
 #   snakemake filter_authors_and_papers -c1
 #   snakemake add_variables_to_nodelist -c1
 #   snakemake create_edges -c1
-
-rule filter_authors_and_papers:
-    run:
-        filter_authors_and_papers()
-
-rule add_variables_to_nodelist:
-    run:
-        add_variables_to_nodelist()
-
-rule create_edges:
-# This will first scrape author_links and then scrape data inside links
+# To run everthing:
+#   snakemake -c1
 
 # Load modules
 import pandas as pd
@@ -45,6 +36,15 @@ from src.edges import create_edgelist
 # Setup global variables
 date_today = date.today().strftime("%Y%m%d")
 url_root = 'https://portalrecerca.csuc.cat'
+institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
+
+rule all:
+    input:
+        f'data/paper_data_{date_today}.csv',
+        f'data/author_data_{date_today}.csv',
+        f'data/project_data_{date_today}.csv',
+        f'data/group_data_{date_today}.csv',
+        expand(f'./data/edges_{{institution}}_{date_today}.csv', institution=institution_list)
 
 rule item_links:
     output:
@@ -66,7 +66,10 @@ rule item_data:
     output:
         f'data/{{item_name}}_data_{date_today}.csv'
     run:
-        batch_size = 10
+        if wilcards.item_name == 'author':
+            batch_size = 100
+        else:
+            batch_size = 10
         item_urls = pd.read_csv(input[0])
         item_urls = list(item_urls['0'])
         if wildcards.item_name == 'paper':
@@ -76,15 +79,30 @@ rule item_data:
         asyncio.run(scrape(items=wildcards.item_name, urls=urls, batch_size=batch_size, out_file=output[0]))
 
 rule filter_authors_and_papers:
+    input:
+        "data/papers.csv",
+        f'./data/nodes_{date_today}.csv'
+    output:
+        f'data/papers_{{institution}}_{date_today}.csv',
+        f'data/papers_{{institution}}_2plus_{date_today}.csv',
+        f'data/nodes_{{institution}}_{date_today}.csv'
     run:
         filter_authors_and_papers()
 
 rule add_variables_to_nodelist:
+    input: 
+        f'./data/nodes_{{institution}}_{date_today}.csv',
+        f'./data/papers_{{institution}}_{date_today}.csv'
+    output:
+        f'./data/nodes_{{institution}}_{date_today}.csv'
     run:
         add_variables_to_nodelist()
 
 rule create_edges:
+    input:
+        f'data/papers_{{institution}}_2plus_{date_today}.csv',
+        f'data/nodes_{{institution}}_{date_today}.csv'
+    output:
+        f'./data/edges_{{institution}}_{date_today}.csv'
     run:
-        institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
-        for institution in institution_list:
-            create_edgelist(institution)
+        create_edgelist(institution)
