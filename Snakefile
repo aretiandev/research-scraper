@@ -53,3 +53,45 @@ rule projects:
         items = 'projects'
         batch_size = 10
         asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file={output}))
+
+rule group_links:
+    output:
+        f'data/group_links_{date_today}.csv'
+    run:
+        items = 'group_links'
+        batch_size = 10
+        asyncio.run(scrape(items=items, batch_size=batch_size, out_file={output}))
+
+rule groups:
+    input:
+        f'data/group_links_{date_today}.csv'
+    output:
+        f'data/groups_{date_today}.csv'
+    run:
+        group_urls = pd.read_csv({input})
+        group_urls = list(group_urls['0'])
+        urls = [url_root + url for url in group_urls]
+        items = 'groups'
+        batch_size = 10
+        asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file={output}))
+
+rule paper_links:
+    output:
+        f'data/paper_links_{date_today}.csv'
+    run:
+        items = 'paper_links'
+        batch_size = 10
+        asyncio.run(scrape(items=items, batch_size=batch_size, out_file={output}))
+
+rule papers:
+    input:
+        f'data/paper_links_{date_today}.csv'
+    output:
+        f'data/papers_{date_today}.csv'
+    run:
+        paper_urls = pd.read_csv({input})
+        paper_urls = list(paper_urls['0'])
+        urls = [url_root + url + '?mode=full' for url in paper_urls]
+        items = 'papers'
+        batch_size = 10
+        asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file={output}))
