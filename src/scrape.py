@@ -302,8 +302,8 @@ async def scrape_url(s, url, items='author', attempts=10):
             author['institution'] = result[1]['institution']
         except KeyError:
             pass
-        author['project'] = result[2]
-        author['group'] = result[3]
+        author['projects'] = result[2]
+        author['groups'] = result[3]
         author['url'] = url
 
         return author
