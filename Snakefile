@@ -29,28 +29,28 @@ from datetime import date
 import asyncio
 
 from src.scrape import scrape
-from src.process import add_publication_stats, clean_authors, clean_papers, filter_authors, filter_papers
+from src.process import ( clean_authors, clean_papers, filter_authors, filter_papers,
+                          add_publication_stats, get_date )
 from src.edges import create_edgelist
 
 # Setup global variables
-date_today = date.today().strftime("%Y%m%d")
+date_today = get_date()
+# date_today = '20220311'
 url_root = 'https://portalrecerca.csuc.cat'
 institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
 
 rule all:
     input:
         f'data/paper_data_{date_today}.csv',
-        f'data/author_data_{date_today}.csv',
         f'data/project_data_{date_today}.csv',
         f'data/group_data_{date_today}.csv',
-        expand(f'./data/edges_{{institution}}_{date_today}.csv', institution=institution_list)
+        expand(f'data/edges_{{institution}}_{date_today}.csv', institution=institution_list)
 
 rule item_links:
     output:
         f"data/{{item_name}}_links_{date_today}.csv"
     run:
-        batch_size = 10
-        # item_name_links = wildcards.item_name + '_links'
+        batch_size = 20
         asyncio.run(scrape(items=wildcards.item_name+'_links', batch_size=batch_size, out_file=output[0]))
 
 rule clean_links:
@@ -65,10 +65,10 @@ rule item_data:
     output:
         f'data/{{item_name}}_data_{date_today}.csv'
     run:
-        if wilcards.item_name == 'author':
+        if wildcards.item_name == 'author':
             batch_size = 100
         else:
-            batch_size = 10
+            batch_size = 20
         item_urls = pd.read_csv(input[0])
         item_urls = list(item_urls['0'])
         if wildcards.item_name == 'paper':
@@ -125,6 +125,6 @@ rule create_edges:
         f'data/papers_{{institution}}_2plus_{date_today}.csv',
         f'data/nodes_{{institution}}_{date_today}.csv'
     output:
-        f'./data/edges_{{institution}}_{date_today}.csv'
+        f'data/edges_{{institution}}_{date_today}.csv'
     run:
         create_edgelist(wildcards.institution)
