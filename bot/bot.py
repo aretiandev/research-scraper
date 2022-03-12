@@ -16,36 +16,44 @@ import time
 import os
 
 
-def ping_and_wait(wait_time):
+def ping_and_wait(url, status_code=None, wait_time=300):
     """Ping and wait
-    
+
     Args:
-        wait_time: number of seconds to wait.
+        url: url to ping.
+        wait_time: number of seconds to wait. Default: 5 mins.
     """
-    # Setup
-    tz_NY = pytz.timezone('America/New_York') 
+    tz_NY = pytz.timezone('America/New_York')
 
     print("Pinging Portal de la Reserca...")
     while True:
-        url = 'https://portalrecerca.csuc.cat/'
         try:
             r = requests.get(url)
 
             now = datetime.now(tz_NY)
             dt_string = now.strftime("%Y-%m-%d - %H:%M:%S")
             print(f"{dt_string} - Ping! Response status: {r.status_code}")
-        except Exception:
+        except Exception as e:
+            print("There was an exception in the response:")
+            print(e)
             pass
 
-        if r.url != 'https://portalrecerca.manteniment.csuc.cat':
-            break
+        # if r.url != 'https://portalrecerca.manteniment.csuc.cat':
+            # break
 
-        if not r.history[0].is_redirect:
-            break
+        # Break when response differs from status_code provided by user
+        if status_code:
+            if r.status_code != status_code:
+                break
+
+        # Always break when 200 OK and no redirects
+        if r.status_code == 200:
+            if not r.history:  # there were no redirects
+                break
 
         time.sleep(wait_time - 30 + random.random()*60)
 
-    print("There was and exception. Stop pinging and exit.")
+    print("Success conditions satisfied, website seems to be back online. Breaking from loop.")
 
 
 def send_slack_message(channel, message, slack_token):
@@ -53,11 +61,17 @@ def send_slack_message(channel, message, slack_token):
     print(f"channel: {channel}.")
     print(f"message: {message}.")
 
+    # Add date and time to message
+    tz_NY = pytz.timezone('America/New_York') 
+    now = datetime.now(tz_NY)
+    dt_string = now.strftime("%Y-%m-%d - %H:%M:%S")
+    date_message = dt_string + ' - ' + message
+
     client = WebClient(token=slack_token)
     try:
         client.chat_postMessage(
             channel=channel,
-            text=message
+            text=date_message
         )
     except SlackApiError as e:
         # You will get a SlackApiError if "ok" is False
@@ -71,8 +85,8 @@ if __name__ == "__main__":
 
     # channel = "#proj-city_barcelona"
     channel = slack_member_id
-
     message = ":globe_with_meridians: Seems like Portal de la Reserca is back online: https://portalrecerca.csuc.cat"
 
-    ping_and_wait(300)
+    url = 'https://portalrecerca.csuc.cat/'
+    ping_and_wait(url)
     send_slack_message(channel, message, slack_token)
