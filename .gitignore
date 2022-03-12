@@ -13,3 +13,4 @@ nohup.out
 .snakemake/
 .vscode/
 figs/
+.env
