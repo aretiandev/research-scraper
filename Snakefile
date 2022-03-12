@@ -32,6 +32,7 @@ from src.scrape import scrape
 from src.process import ( clean_authors, clean_papers, filter_authors, filter_papers,
                           add_publication_stats, get_date )
 from src.edges import create_edgelist
+from src.bot import send_slack_message
 
 # Setup global variables
 date_today = get_date()
@@ -41,7 +42,9 @@ institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
 
 rule all:
     input:
-        expand(f'data/edges_{{institution}}_{date_today}.csv', institution=institution_list)
+        expand(f'data/edges_{{institution}}_{date_today}.csv', institution=institution_list),
+        f'data/project_data_{date_today}.csv',
+        f'data/group_data_{date_today}.csv'
 
 rule author_links:
     output:
@@ -56,7 +59,7 @@ rule paper_links:
     output:
         f"data/paper_links_{date_today}.csv"
     run:
-        batch_size = 20
+        batch_size = 50
         asyncio.run(scrape(items='paper_links', batch_size=batch_size, out_file=output[0]))
 
 rule project_links:
@@ -118,7 +121,7 @@ rule project_data:
 
 rule group_data:
     input:
-        f"data/project_data{date_today}.csv",
+        f"data/project_data_{date_today}.csv",
         f'data/group_links_{date_today}.csv'
     output:
         f'data/group_data_{date_today}.csv'
