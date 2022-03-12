@@ -41,41 +41,93 @@ institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
 
 rule all:
     input:
-        f'data/paper_data_{date_today}.csv',
-        f'data/project_data_{date_today}.csv',
-        f'data/group_data_{date_today}.csv',
         expand(f'data/edges_{{institution}}_{date_today}.csv', institution=institution_list)
 
-rule item_links:
+rule author_links:
     output:
-        f"data/{{item_name}}_links_{date_today}.csv"
+        f"data/author_links_{date_today}.csv"
     run:
         batch_size = 20
-        asyncio.run(scrape(items=wildcards.item_name+'_links', batch_size=batch_size, out_file=output[0]))
+        asyncio.run(scrape(items='author_links', batch_size=batch_size, out_file=output[0]))
 
-rule clean_links:
+rule paper_links:
     input:
-        f"data/{{item_name}}_links_{date_today}.csv"
-    shell:
-        "rm {input}"
-
-rule item_data:
-    input:
-        f'data/{{item_name}}_links_{date_today}.csv'
+        f"data/author_links_{date_today}.csv"
     output:
-        f'data/{{item_name}}_data_{date_today}.csv'
+        f"data/paper_links_{date_today}.csv"
     run:
-        if wildcards.item_name == 'author':
-            batch_size = 100
-        else:
-            batch_size = 20
+        batch_size = 20
+        asyncio.run(scrape(items='paper_links', batch_size=batch_size, out_file=output[0]))
+
+rule project_links:
+    input:
+        f"data/paper_links_{date_today}.csv"
+    output:
+        f"data/project_links_{date_today}.csv"
+    run:
+        batch_size = 20
+        asyncio.run(scrape(items='project_links', batch_size=batch_size, out_file=output[0]))
+
+rule group_links:
+    input:
+        f"data/project_links_{date_today}.csv"
+    output:
+        f"data/group_links_{date_today}.csv"
+    run:
+        batch_size = 20
+        asyncio.run(scrape(items='group_links', batch_size=batch_size, out_file=output[0]))
+        
+rule author_data:
+    input:
+        f"data/group_links_{date_today}.csv",
+        f'data/author_links_{date_today}.csv'
+    output:
+        f'data/author_data_{date_today}.csv'
+    run:
+        batch_size = 100
         item_urls = pd.read_csv(input[0])
         item_urls = list(item_urls['0'])
-        if wildcards.item_name == 'paper':
-            urls = [url_root + url + '?mode=full' for url in item_urls]
-        else:
-            urls = [url_root + url for url in item_urls]
-        asyncio.run(scrape(items=wildcards.item_name, urls=urls, batch_size=batch_size, out_file=output[0]))
+        urls = [url_root + url for url in item_urls]
+        asyncio.run(scrape(items='author', urls=urls, batch_size=batch_size, out_file=output[0]))
+        
+rule paper_data:
+    input:
+        f"data/author_data_{date_today}.csv",
+        f'data/paper_links_{date_today}.csv'
+    output:
+        f'data/paper_data_{date_today}.csv'
+    run:
+        batch_size = 100
+        item_urls = pd.read_csv(input[0])
+        item_urls = list(item_urls['0'])
+        urls = [url_root + url + '?mode=full' for url in item_urls]
+        asyncio.run(scrape(items='paper', urls=urls, batch_size=batch_size, out_file=output[0]))
+
+rule project_data:
+    input:
+        f"data/paper_data_{date_today}.csv",
+        f'data/project_links_{date_today}.csv'
+    output:
+        f'data/project_data_{date_today}.csv'
+    run:
+        batch_size = 20
+        item_urls = pd.read_csv(input[0])
+        item_urls = list(item_urls['0'])
+        urls = [url_root + url for url in item_urls]
+        asyncio.run(scrape(items='project', urls=urls, batch_size=batch_size, out_file=output[0]))
+
+rule group_data:
+    input:
+        f"data/project_data{date_today}.csv",
+        f'data/group_links_{date_today}.csv'
+    output:
+        f'data/group_data_{date_today}.csv'
+    run:
+        batch_size = 20
+        item_urls = pd.read_csv(input[0])
+        item_urls = list(item_urls['0'])
+        urls = [url_root + url for url in item_urls]
+        asyncio.run(scrape(items='group', urls=urls, batch_size=batch_size, out_file=output[0]))
 
 rule clean_authors:
     input:
