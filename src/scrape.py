@@ -1,18 +1,23 @@
 #!/user/bin/env python
-# Helpers for Scraping Portal de la Reserca
+"""
+Helper functions for Scraping Portal de la Reserca.
 
-# Load modules
+Main functions:
+    scrape_author()
+    scrape_project()
+    scrape_group()
+    scrape_url()
+    scrape(): Main entrypoint
+"""
+
 import pandas as pd
 from requests_html import HTMLSession, AsyncHTMLSession
 import time
 import asyncio
 
 
-# General Helper functions
 def get_max_pages(url):
-    """
-    Get max pages from pagination box in footer.
-    """
+    """Get max pages from pagination box in footer."""
     print("Retrieving number of URLs to scrape:", end=" ")
     session = HTMLSession()
     r = session.get(url)
@@ -37,8 +42,14 @@ async def retry_url(s, url, attempts=10):
     return r
 
 
-# Helper for author pages
 async def scrape_author(s, url, item='profile', attempts=10):
+    """Scrape author page.
+
+    Args:
+        item: author tab to scrape: [profile, affiliation, project, group]
+    Returns:
+        result (dict): author information.
+    """
     if item == 'profile':
         # TODO: automate locale as a url_template to be added to all URLs
         url = url + "?locale=en"
@@ -117,31 +128,29 @@ async def scrape_author(s, url, item='profile', attempts=10):
 
 
 async def scrape_project(s, url, tab='information', attempts=10):
+    """Scrape project page.
+
+    Args:
+        tab: project tab to scrape: [information, researchers]
+    Returns:
+        project (dict): project information.
+    """
     if tab == 'information':
+        url = url + '?onlytab=true&locale=en'
         r = await retry_url(s, url, attempts)
 
-        selector = 'div#collapseOneprimarydata'
-        table = r.html.find(selector, first=True)
+        tables_lst = pd.read_html(r.text)
+        table = tables_lst[0].set_index(0).to_dict()[1]
 
-        project = {}
+        attr_keys = {
+            'title': 'Title',
+            'official code': 'Official code',
+            'url': 'URL',
+            'start date': 'Start date',
+            'end date': 'End date',
+            'institution': 'Universities or CERCA centres'}
 
-        attributes = {
-            '#titleDiv': 'title',
-            '#oficialcodeDiv': 'official code',
-            '#programDiv': 'program',
-            '#startdateDiv': 'start date',
-            '#expdateDiv': 'end date',
-            '#universityDiv': 'institution',
-        }
-
-        for selector in attributes.keys():
-            try:
-                attribute_value = table.find(selector, first=True).text
-            except AttributeError:
-                continue
-
-            attribute          = attributes[selector]
-            project[attribute] = attribute_value
+        project = {attr_name:table[table_key] for attr_name,table_key in attr_keys.items()}
 
     elif tab == 'researchers':
         url = url + '/researchersprj.html?onlytab=true'
@@ -194,43 +203,31 @@ async def scrape_project(s, url, tab='information', attempts=10):
 
 # Helper for group page
 async def scrape_group(s, url, tab='information', attempts=10):
+    """Scrape group page.
+
+    Args:
+        tab: group tab to scrape: [information, researchers]
+    Returns:
+        group (dict): group information
+    """
     if tab == 'information':
+        url = url + '?onlytab=true&locale=en'
         r = await retry_url(s, url, attempts)
 
-        selector = 'div#collapseOneorgcard'
-        table = r.html.find(selector, first=True)
+        tables_lst = pd.read_html(r.text)
+        table = tables_lst[0].set_index(0).to_dict()[1]
 
-        group = {}
+        attr_keys = {
+            'name': 'Name',
+            'acronym': 'Acronym',
+            'institution': 'Universities or CERCA centres'}
 
-        attributes = {
-            '#nameDiv': 'name',
-            '#acronymDiv': 'acronym',
-            '#sgrDiv': 'sgr',
-            '#urlDiv': 'url',
-            '#universityDiv': 'institution',
-            # '#startdateDiv': 'start date',
-            # '#expdateDiv': 'end date',
-        }
-
-        for selector in attributes.keys():
-            try:
-                attribute_value = table.find(selector, first=True).text
-            except AttributeError:
-                continue
-
-            attribute       = attributes[selector]
-            group[attribute] = attribute_value
+        group = {attr_name: table[table_key]
+                 for attr_name, table_key in attr_keys.items()}
 
     elif tab == 'researchers':
+        url = url + '/researchersorg.html?onlytab=true&locale=en'
         r = await retry_url(s, url, attempts)
-
-        # Get next tab url
-        selector = 'div#tabs ul li'
-        next_tab_url = r.html.find(selector)[1].find('a', first=True).attrs['href']
-        url_root = 'https://portalrecerca.csuc.cat'
-        next_tab_url = url_root + next_tab_url
-
-        r = await retry_url(s, next_tab_url, attempts)
 
         selector = 'table.table'
         tables = r.html.find(selector)
@@ -279,10 +276,13 @@ async def scrape_group(s, url, tab='information', attempts=10):
 
 # Scrape single URL
 async def scrape_url(s, url, items='author', attempts=10):
-    """
-    Async scrape URL.
-    Items: [paper_links, paper, author_links, author,
-            project_links, project, group_links, group]
+    """Scrape URL
+
+    Args:
+        items: paper_links, paper, author_links, author,
+               project_links, project, group_links, group.
+    Returns:
+        (dict): item information.
     """
 
     if items == 'author':
@@ -461,15 +461,18 @@ async def scrape(
         n_pages=None,
         batch_size=None,
         out_file=None):
-    """
-    Main entry function to scrape Portal de la Reserca.
-    Options:
+    """Main entry function to scrape Portal de la Reserca.
+
+    Args:
         items: [author, paper, author_links, paper_links]
         urls: list of urls. Not needed if items in ['author_links', 'paper_links'].
         start_pos: starting position.
         n_pages: max pages to scrape.
         batch_size: batch size.
         out_file: output file.
+    Returns:
+        result(list of dicts): scraping results.
+        out_file (csv): writes DataFrame to csv.
     """
 
     print(f"Scraping {items} from Portal de la Reserca.")
@@ -596,7 +599,7 @@ async def scrape(
 
         print(
             f"Progress: {(i+1)/len(batch_urls)*100:.0f}% ({i+1}/{len(batch_urls):,d}). URLs: {i*batch_size}-{(i+1)*batch_size-1}. " +
-            f"Batch time: {t2-t1:.2f}s. Time left: {h:.0f}h{m:.0f}m{s:.0f}s.", end="\r")
+            f"Batch time: {t2-t1:.2f}s. Time left: {h:.0f}h{m:.0f}m{s:.0f}s.  ", end="\r")
 
     print("\nDone.")
 
