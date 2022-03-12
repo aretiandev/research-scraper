@@ -79,23 +79,23 @@ rule item_data:
 
 rule clean_authors:
     input:
-        f'data/nodes_{date_today}.csv')
+        f'data/author_data_{date_today}.csv'
     output:
-        f'data/nodes_clean_{date_today}.csv',
+        f'data/author_clean_{date_today}.csv'
     run:
         clean_authors()
 
 rule clean_papers:
     input:
-        f'data/papers_{date_today}.csv',
+        f'data/paper_data_{date_today}.csv'
     output:
-        f'data/papers_clean_{date_today}.csv',
+        f'data/paper_clean_{date_today}.csv'
     run:
         clean_papers()
 
 rule filter_authors:
     input:
-        f'./data/nodes_clean_{date_today}.csv'
+        f'data/author_clean_{date_today}.csv'
     output:
         f'data/nodes_{{institution}}_{date_today}.csv'
     run:
@@ -103,20 +103,20 @@ rule filter_authors:
 
 rule filter_papers:
     input:
-        f'data/nodes_{{institution}}_{date_today}.csv'
-        f'data/papers_clean_{date_today}.csv',
+        f'data/nodes_{{institution}}_{date_today}.csv',
+        f'data/paper_clean_{date_today}.csv'
     output:
         f'data/papers_{{institution}}_{date_today}.csv',
-        f'data/papers_{{institution}}_2plus_{date_today}.csv',
+        f'data/papers_{{institution}}_2plus_{date_today}.csv'
     run:
         filter_papers(wildcards.institution)
 
 rule add_publication_stats:
     input: 
-        f'./data/nodes_{{institution}}_{date_today}.csv',
-        f'./data/papers_{{institution}}_{date_today}.csv'
+        f'data/nodes_{{institution}}_{date_today}.csv',
+        f'data/papers_{{institution}}_{date_today}.csv'
     output:
-        f'./data/nodes_{{institution}}_full_{date_today}.csv'
+        f'data/nodes_{{institution}}_full_{date_today}.csv'
     run:
         add_publication_stats(wildcards.institution)
 

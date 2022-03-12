@@ -19,6 +19,7 @@ def convert_to_list(x):
 
 
 def get_date():
+    """Get formatted today's date."""
     import os
     import time
     from datetime import date
@@ -56,7 +57,7 @@ def clean_papers(date_today=None):
         date_today = get_date()
 
     # Load papers
-    papers_df = pd.read_csv(f'./data/papers_{date_today}.csv')
+    papers_df = pd.read_csv(f'./data/paper_data_{date_today}.csv')
     papers_df['orcids'] = papers_df['orcids'].apply(lambda x: convert_to_list(x))
 
     # Replace NaNs to empty lists to avoid loops from breaking
@@ -64,7 +65,7 @@ def clean_papers(date_today=None):
     papers_df.loc[mask, 'orcids'] = pd.Series([[] for _ in range(len(mask))])
 
     # Save
-    out_file = f"data/papers_clean_{date_today}.csv"
+    out_file = f"data/paper_clean_{date_today}.csv"
     papers_df.to_csv(out_file, index=None)
     print(f"Saved '{out_file}'.")
 
@@ -75,7 +76,7 @@ def clean_authors(date_today=None):
         date_today = get_date()
 
     # Load authors
-    authors_df = pd.read_csv(f'./data/nodes_{date_today}.csv')
+    authors_df = pd.read_csv(f'./data/author_data_{date_today}.csv')
     authors_df['institution'] = authors_df['institution'].apply(lambda x: convert_to_list(x))
     authors_df['projects'] = authors_df['projects'].apply(lambda x: convert_to_list(x))
     authors_df['groups'] = authors_df['groups'].apply(lambda x: convert_to_list(x))
@@ -108,7 +109,7 @@ def clean_authors(date_today=None):
                             lambda x: list(set(x)))
     
     # Save
-    out_file = f"data/nodes_clean_{date_today}.csv"
+    out_file = f"data/author_clean_{date_today}.csv"
     authors_df.to_csv(out_file, index=None)
     print(f"Saved '{out_file}'.")
 
@@ -120,7 +121,7 @@ def filter_authors(institution, date_today=None):
         date_today = get_date()
     
     # Load authors
-    authors_df = pd.read_csv(f"data/nodes_clean_{date_today}.csv")
+    authors_df = pd.read_csv(f"data/author_clean_{date_today}.csv")
 
     # Extract authors from institution
     mask = authors_df['institution_group'].apply(lambda x: institution in x)
@@ -152,7 +153,7 @@ def filter_papers(institution, date_today=None):
     # Load authors
     authors_inst_df = pd.read_csv(f'./data/nodes_{institution}_{date_today}.csv')
     # Load papers
-    papers_df = pd.read_csv("data/papers_clean_{date_today}.csv")
+    papers_df = pd.read_csv("data/paper_clean_{date_today}.csv")
 
     # Extract papers with authors from institution
     print(f"Extracting papers of researchers from {institution}.")
