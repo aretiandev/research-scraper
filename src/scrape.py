@@ -458,6 +458,7 @@ async def scrape(
         items='author',
         urls=None,
         start_pos=0,
+        batch_start_pos=0,
         n_pages=None,
         batch_size=None,
         out_file=None):
@@ -466,7 +467,8 @@ async def scrape(
     Args:
         items: [author, paper, author_links, paper_links]
         urls: list of urls. Not needed if items in ['author_links', 'paper_links'].
-        start_pos: starting position.
+        start_pos: URL starting position.
+        batch_start_pos: Batch starting position.
         n_pages: max pages to scrape.
         batch_size: batch size.
         out_file: output file.
@@ -573,13 +575,18 @@ async def scrape(
         result_df = pd.DataFrame()
 
     result = []
-    for i, batch in enumerate(batch_urls):
+    for i, batch in enumerate(batch_urls[batch_start_pos:]):
 
         s = AsyncHTMLSession()
 
         t1 = time.perf_counter()
         tasks = (scrape_url(s, url, items=items) for url in batch)
-        batch_result = await asyncio.gather(*tasks)
+        try:
+            batch_result = await asyncio.gather(*tasks)
+        except Exception as e:
+            print(f"Exception in scrape({items}) for batch number {i}:")
+            print(e)
+            raise e
         t2 = time.perf_counter()
 
         # Flatten result
