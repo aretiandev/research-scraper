@@ -34,7 +34,7 @@ from src.scrape import scrape
 from src.process import ( clean_authors, clean_papers, filter_authors, filter_papers,
                           add_publication_stats, get_date )
 from src.edges import create_edgelist
-from bot.bot import send_slack_message
+from bot.bot import ping_and_wait, send_slack_message
 
 # Setup Slack Bot
 load_dotenv()
@@ -58,17 +58,17 @@ rule all:
         f'data/project_data_{date_today}.csv',
         f'data/group_data_{date_today}.csv'
 
-rule slack_msg:
-    input: 
-        "test_{institution}.csv"
-    output: 
-        "test_{institution}_output.csv"
+rule ping_stackoverflow:
     run:
-        e = "There was an error."
-        # msg = msg_template.format(rule_name=f"'{rule}'",error_msg=e)
-        # send_slack_message(channel, msg, slack_token)
-        rule_name = f"'{rule}:({wildcards.institution})'"
-        send_slack_message(channel,msg_template.format(rule_name=rule_name,error=e),slack_token=slack_token)
+        url = 'https://stackoverflow.com/'
+        ping_and_wait(url)
+        message = ":globe_with_meridians: Stackoverflow is back online."
+        send_slack_message(channel, message, slack_token)
+
+
+rule ping_and_notify:
+    script:
+        "bot/bot.py"
 
 rule author_links:
     output:
@@ -78,7 +78,9 @@ rule author_links:
             batch_size = 20
             asyncio.run(scrape(items='author_links', batch_size=batch_size, out_file=output[0]))
         except Exception as e:
-            send_slack_message(channel,msg_template.format(rule_name={rule},error=e),slack_token=slack_token)
+            send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
+            print(e)
+            raise e
 
 rule paper_links:
     input:
@@ -87,10 +89,12 @@ rule paper_links:
         f"data/paper_links_{date_today}.csv"
     run:
         try:
-            batch_size = 20
+            batch_size = 50
             asyncio.run(scrape(items='paper_links', batch_size=batch_size, out_file=output[0]))
         except Exception as e:
-            send_slack_message(channel,msg_template.format(rule_name={rule},error=e),slack_token=slack_token)
+            send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
+            print(e)
+            raise e
 
 rule project_links:
     input:
@@ -102,7 +106,9 @@ rule project_links:
             batch_size = 20
             asyncio.run(scrape(items='project_links', batch_size=batch_size, out_file=output[0]))
         except Exception as e:
-            send_slack_message(channel,msg_template.format(rule_name={rule},error=e),slack_token=slack_token)
+            send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
+            print(e)
+            raise e
 
 rule group_links:
     input:
@@ -114,7 +120,9 @@ rule group_links:
             batch_size = 20
             asyncio.run(scrape(items='group_links', batch_size=batch_size, out_file=output[0]))
         except Exception as e:
-            send_slack_message(channel,msg_template.format(rule_name={rule},error=e),slack_token=slack_token)
+            send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
+            print(e)
+            raise e
         
 rule author_data:
     input:
@@ -130,7 +138,9 @@ rule author_data:
             urls = [url_root + url for url in item_urls]
             asyncio.run(scrape(items='author', urls=urls, batch_size=batch_size, out_file=output[0]))
         except Exception as e:
-            send_slack_message(channel,msg_template.format(rule_name={rule},error=e),slack_token=slack_token)
+            send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
+            print(e)
+            raise e
         
 rule paper_data:
     input:
@@ -146,7 +156,9 @@ rule paper_data:
             urls = [url_root + url + '?mode=full' for url in item_urls]
             asyncio.run(scrape(items='paper', urls=urls, batch_size=batch_size, out_file=output[0]))
         except Exception as e:
-            send_slack_message(channel,msg_template.format(rule_name={rule},error=e),slack_token=slack_token)
+            send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
+            print(e)
+            raise e
 
 rule project_data:
     input:
@@ -162,7 +174,9 @@ rule project_data:
             urls = [url_root + url for url in item_urls]
             asyncio.run(scrape(items='project', urls=urls, batch_size=batch_size, out_file=output[0]))
         except Exception as e:
-            send_slack_message(channel,msg_template.format(rule_name={rule},error=e),slack_token=slack_token)
+            send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
+            print(e)
+            raise e
 
 rule group_data:
     input:
@@ -178,7 +192,9 @@ rule group_data:
             urls = [url_root + url for url in item_urls]
             asyncio.run(scrape(items='group', urls=urls, batch_size=batch_size, out_file=output[0]))
         except Exception as e:
-            send_slack_message(channel,msg_template.format(rule_name={rule},error=e),slack_token=slack_token)
+            send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
+            print(e)
+            raise e
 
 rule clean_authors:
     input:
@@ -189,7 +205,9 @@ rule clean_authors:
         try:
             clean_authors()
         except Exception as e:
-            send_slack_message(channel,msg_template.format(rule_name={rule},error=e),slack_token=slack_token)
+            send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
+            print(e)
+            raise e
 
 rule clean_papers:
     input:
@@ -200,7 +218,9 @@ rule clean_papers:
         try:
             clean_papers()
         except Exception as e:
-            send_slack_message(channel,msg_template.format(rule_name={rule},error=e),slack_token=slack_token)
+            send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
+            print(e)
+            raise e
 
 rule filter_authors:
     input:
@@ -213,6 +233,8 @@ rule filter_authors:
         except Exception as e:
             rule_name = f"{rule}:({wildards.institution})"
             send_slack_message(channel,msg_template.format(rule_name=rule_name,error=e),slack_token=slack_token)
+            print(e)
+            raise e
 
 rule filter_papers:
     input:
@@ -227,6 +249,8 @@ rule filter_papers:
         except Exception as e:
             rule_name = f"{rule}:({wildards.institution})"
             send_slack_message(channel,msg_template.format(rule_name=rule_name,error=e),slack_token=slack_token)
+            print(e)
+            raise e
 
 rule add_publication_stats:
     input: 
@@ -240,6 +264,8 @@ rule add_publication_stats:
         except Exception as e:
             rule_name = f"{rule}:({wildards.institution})"
             send_slack_message(channel,msg_template.format(rule_name=rule_name,error=e),slack_token=slack_token)
+            print(e)
+            raise e
 
 rule create_edges:
     input:
@@ -253,3 +279,5 @@ rule create_edges:
         except Exception as e:
             rule_name = f"{rule}:({wildards.institution})"
             send_slack_message(channel,msg_template.format(rule_name=rule_name,error=e),slack_token=slack_token)
+            print(e)
+            raise e
