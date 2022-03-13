@@ -14,9 +14,10 @@ import random
 import requests
 import time
 import os
+import subprocess
 
 
-def ping_and_wait(url, status_code=None, wait_time=300):
+def ping_and_wait(url, status_code=None, wait_time=300, notifications=False):
     """Ping and wait
 
     Args:
@@ -25,14 +26,19 @@ def ping_and_wait(url, status_code=None, wait_time=300):
     """
     tz_NY = pytz.timezone('America/New_York')
 
-    print("Pinging Portal de la Reserca...")
+    print(f"Pinging URL: {url}")
     while True:
         try:
             r = requests.get(url)
 
             now = datetime.now(tz_NY)
             dt_string = now.strftime("%Y-%m-%d - %H:%M:%S")
-            print(f"{dt_string} - Ping! Response status: {r.status_code}")
+
+            status_history =""
+            if r.history:
+                status_history = " ".join(str(s.status_code) for s in r.history) + " ->"
+
+            print(f"{dt_string} - Ping! Response: {status_history} {r.status_code}: {r.url}")
         except Exception as e:
             print("There was an exception in the response:")
             print(e)
@@ -50,6 +56,14 @@ def ping_and_wait(url, status_code=None, wait_time=300):
         if r.status_code == 200:
             if not r.history:  # there were no redirects
                 break
+
+        if notifications:
+            load_dotenv()
+            slack_token = os.environ["SLACK_BOT_TOKEN"]
+            slack_member_id = os.environ["SLACK_MEMBER_ID"]
+            channel = slack_member_id
+            message = ":hourglass: Portal de la Reserca is still down."
+            send_slack_message(channel, message, slack_token)
 
         time.sleep(wait_time - 30 + random.random()*60)
 
@@ -85,8 +99,18 @@ if __name__ == "__main__":
 
     # channel = "#proj-city_barcelona"
     channel = slack_member_id
-    message = ":globe_with_meridians: Seems like Portal de la Reserca is back online: https://portalrecerca.csuc.cat"
-
     url = 'https://portalrecerca.csuc.cat/'
-    ping_and_wait(url)
+
+    message = ":bell: Pinging Portal de la Reserca. Will notify when the website is back online: https://portalrecerca.csuc.cat"
     send_slack_message(channel, message, slack_token)
+
+    ping_and_wait(url)
+
+    message = ":globe_with_meridians: Portal de la Reserca is back online: https://portalrecerca.csuc.cat"
+    send_slack_message(channel, message, slack_token)
+
+    message = ":snake: Running Snakemake from sratch with 16 cores."
+    send_slack_message(channel, message, slack_token)
+
+    smk_command = ["snakemake", "--cores", "16"]
+    subprocess.run(smk_command)
