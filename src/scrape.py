@@ -616,11 +616,12 @@ async def scrape(
         seconds_left = (len(batch_urls)-i)*(t2-t1)
         # m, s = divmod(seconds_left, 60)
         # h, m = divmod(m, 60)
-        batch_time = str(datetime.timedelta(round(t2-t1)))
-        time_left = str(datetime.timedelta(round(seconds_left)))
+        batch_time = str(datetime.timedelta(seconds=round(t2-t1)))
+        time_left = str(datetime.timedelta(seconds=round(seconds_left)))
 
         print(
-            f"Progress: {(i+1)/len(batch_urls)*100:.0f}% ({i+1}/{len(batch_urls):,d}). URLs: {i*batch_size}-{(i+1)*batch_size-1}. " +
+            f"Progress: {(i+1)/len(batch_urls)*100:.0f}% ({i+1}/{len(batch_urls):,d}). " +
+            f"URLs: {i*batch_size}-{(i+1)*batch_size-1}. "                              +
             f"Batch time: {batch_time}. Time left: {time_left}.  ", end="\r")
 
     print("\nDone.")
