@@ -12,6 +12,7 @@ Main functions:
 
 import pandas as pd
 from requests_html import HTMLSession, AsyncHTMLSession
+import datetime
 import time
 import asyncio
 
@@ -28,16 +29,22 @@ def get_max_pages(url):
     return max_pages
 
 
-async def retry_url(s, url, attempts=10):
+async def retry_url(s, url, selector=None, attempts=10):
     """Retry fetching URL a given number of times."""
     for _ in range(attempts):
         try:
             r = await s.get(url)
-            break
+            if selector:
+                target = r.html.find(selector, first=True)
+                if target:
+                    break
+            else:
+                break
         except Exception:
             time.sleep(1)
             pass
     else:
+        print(f"No attempts left for url: {url}.")
         r = {}
     return r
 
@@ -276,9 +283,11 @@ async def scrape_group(s, url, tab='information', attempts=10):
 
 # Scrape single URL
 async def scrape_url(s, url, items='author', attempts=10):
-    """Scrape URL
+    """Scrape URL.
 
     Args:
+        s: instance of requests_html.AsyncHTMLSession().
+        url: URL to scrape.
         items: paper_links, paper, author_links, author,
                project_links, project, group_links, group.
     Returns:
@@ -420,7 +429,8 @@ async def scrape_url(s, url, items='author', attempts=10):
         return paper
 
     else:  # paper_links, author_links, project_links or group_links
-        r = await retry_url(s, url, attempts)
+        selector = 'div.panel.panel-info table.table'
+        r = await retry_url(s, url, selector, attempts=20)  # 20 attempts avoid errors
 
         try:
             table = r.html.find('div.panel.panel-info table.table', first=True)
@@ -447,7 +457,8 @@ async def scrape_url(s, url, items='author', attempts=10):
                 result.append(scrape_item)
 
         except Exception as e:
-            print(f"Exception: {e}.")
+            print(f"Exception in scrape_url({items}), url: {url}")
+            print(e)
             result = []
 
         return result
@@ -476,10 +487,6 @@ async def scrape(
         result(list of dicts): scraping results.
         out_file (csv): writes DataFrame to csv.
     """
-
-    print(f"Scraping {items} from Portal de la Reserca.")
-    if out_file:
-        print(f"Saving results to {out_file}.")
 
     # Get list of URLs to scrape hyperlinks
     if items in ['author_links', 'paper_links', 'project_links', 'group_links']:
@@ -569,7 +576,13 @@ async def scrape(
 
     batch_urls = [urls[i:i+batch_size] for i in range(start_pos, len(urls), batch_size)]
 
-    print(f"Scraping {items} from {len(urls)-start_pos:,d} URLs in {len(batch_urls):,d} batches of {batch_size:,d}, starting at {start_pos:,d}.")
+    print(f"""Scraping items: {items}
+    URL count: {len(urls)-start_pos:,d}
+    Batch count: {len(batch_urls):,d}
+    Batch length: {batch_size:,d}
+    Starting URL: {start_pos:,d}
+    Starting batch: {batch_start_pos}
+    Output: {out_file}""")
 
     if out_file:
         result_df = pd.DataFrame()
@@ -601,12 +614,14 @@ async def scrape(
 
         # Print estimated time left
         seconds_left = (len(batch_urls)-i)*(t2-t1)
-        m, s = divmod(seconds_left, 60)
-        h, m = divmod(m, 60)
+        # m, s = divmod(seconds_left, 60)
+        # h, m = divmod(m, 60)
+        batch_time = str(datetime.timedelta(round(t2-t1)))
+        time_left = str(datetime.timedelta(round(seconds_left)))
 
         print(
             f"Progress: {(i+1)/len(batch_urls)*100:.0f}% ({i+1}/{len(batch_urls):,d}). URLs: {i*batch_size}-{(i+1)*batch_size-1}. " +
-            f"Batch time: {t2-t1:.2f}s. Time left: {h:.0f}h{m:.0f}m{s:.0f}s.  ", end="\r")
+            f"Batch time: {batch_time}. Time left: {time_left}.  ", end="\r")
 
     print("\nDone.")
 
