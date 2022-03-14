@@ -8,7 +8,15 @@
 #   project and project_links
 #   group and group_links
 #
-# List of rules:
+# Run everthing:
+#   snakemake --cores 16
+#
+# Test if website is online:
+#   snakemake ping_and_notify -c1
+#
+# Full list of rules/targets:
+#   snakemake -c1
+#   snakemake ping_and_notify -c1
 #   snakemake data/author_data_202203011.csv -c1
 #   snakemake data/author_links_202203011.csv -c1
 #   snakemake data/paper_data_202203011.csv -c1
@@ -21,8 +29,6 @@
 #   snakemake filter_authors_and_papers -c1
 #   snakemake add_variables_to_nodelist -c1
 #   snakemake create_edges -c1
-# To run everthing:
-#   snakemake -c1
 
 import pandas as pd
 from datetime import date
@@ -65,7 +71,6 @@ rule ping_stackoverflow:
         message = ":globe_with_meridians: Stackoverflow is back online."
         send_slack_message(channel, message, slack_token)
 
-
 rule ping_and_notify:
     script:
         "bot/bot.py"
@@ -90,7 +95,9 @@ rule paper_links:
     run:
         try:
             batch_size = 50
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             asyncio.run(scrape(items='paper_links', batch_size=batch_size, out_file=output[0]))
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
             print(e)
@@ -104,7 +111,9 @@ rule project_links:
     run:
         try:
             batch_size = 20
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             asyncio.run(scrape(items='project_links', batch_size=batch_size, out_file=output[0]))
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
             print(e)
@@ -118,7 +127,9 @@ rule group_links:
     run:
         try:
             batch_size = 20
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             asyncio.run(scrape(items='group_links', batch_size=batch_size, out_file=output[0]))
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
             print(e)
@@ -136,7 +147,9 @@ rule author_data:
             item_urls = pd.read_csv(input[0])
             item_urls = list(item_urls['0'])
             urls = [url_root + url for url in item_urls]
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             asyncio.run(scrape(items='author', urls=urls, batch_size=batch_size, out_file=output[0]))
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
             print(e)
@@ -154,7 +167,9 @@ rule paper_data:
             item_urls = pd.read_csv(input[0])
             item_urls = list(item_urls['0'])
             urls = [url_root + url + '?mode=full' for url in item_urls]
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             asyncio.run(scrape(items='paper', urls=urls, batch_size=batch_size, out_file=output[0]))
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
             print(e)
@@ -172,7 +187,9 @@ rule project_data:
             item_urls = pd.read_csv(input[0])
             item_urls = list(item_urls['0'])
             urls = [url_root + url for url in item_urls]
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             asyncio.run(scrape(items='project', urls=urls, batch_size=batch_size, out_file=output[0]))
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
             print(e)
@@ -190,7 +207,9 @@ rule group_data:
             item_urls = pd.read_csv(input[0])
             item_urls = list(item_urls['0'])
             urls = [url_root + url for url in item_urls]
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             asyncio.run(scrape(items='group', urls=urls, batch_size=batch_size, out_file=output[0]))
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
             print(e)
@@ -203,7 +222,9 @@ rule clean_authors:
         f'data/author_clean_{date_today}.csv'
     run:
         try:
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             clean_authors()
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
             print(e)
@@ -216,7 +237,9 @@ rule clean_papers:
         f'data/paper_clean_{date_today}.csv'
     run:
         try:
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             clean_papers()
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,msg_template.format(rule_name=rule,error=e),slack_token=slack_token)
             print(e)
@@ -229,7 +252,9 @@ rule filter_authors:
         f'data/nodes_{{institution}}_{date_today}.csv'
     run:
         try:
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             filter_authors(wildcards.institution)
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             rule_name = f"{rule}:({wildards.institution})"
             send_slack_message(channel,msg_template.format(rule_name=rule_name,error=e),slack_token=slack_token)
@@ -245,7 +270,9 @@ rule filter_papers:
         f'data/papers_{{institution}}_2plus_{date_today}.csv'
     run:
         try:
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             filter_papers(wildcards.institution)
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             rule_name = f"{rule}:({wildards.institution})"
             send_slack_message(channel,msg_template.format(rule_name=rule_name,error=e),slack_token=slack_token)
@@ -260,7 +287,9 @@ rule add_publication_stats:
         f'data/nodes_{{institution}}_full_{date_today}.csv'
     run:
         try:
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             add_publication_stats(wildcards.institution)
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             rule_name = f"{rule}:({wildards.institution})"
             send_slack_message(channel,msg_template.format(rule_name=rule_name,error=e),slack_token=slack_token)
@@ -275,7 +304,9 @@ rule create_edges:
         f'data/edges_{{institution}}_{date_today}.csv'
     run:
         try:
+            send_slack_message(channel,f":snake: Running rule {rule}.",slack_token=slack_token)
             create_edgelist(wildcards.institution)
+            send_slack_message(channel,f":snake: Rule {rule} finished running successfully.",slack_token=slack_token)
         except Exception as e:
             rule_name = f"{rule}:({wildards.institution})"
             send_slack_message(channel,msg_template.format(rule_name=rule_name,error=e),slack_token=slack_token)
