@@ -109,7 +109,7 @@ if __name__ == "__main__":
     message = ":globe_with_meridians: Portal de la Reserca is back online: https://portalrecerca.csuc.cat"
     send_slack_message(channel, message, slack_token)
 
-    message = ":snake: Running Snakemake from sratch with 16 cores."
+    message = ":snake: Running Snakemake from scratch with 16 cores."
     send_slack_message(channel, message, slack_token)
 
     smk_command = ["snakemake", "--cores", "16"]
