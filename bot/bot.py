@@ -71,15 +71,13 @@ def ping_and_wait(url, status_code=None, wait_time=300, notifications=False):
 
 
 def send_slack_message(channel, message, slack_token):
-    print("Sending message to slack.")
-    print(f"channel: {channel}.")
-    print(f"message: {message}.")
+    print(f"Sending Slack message: '{message}' (channel: '{channel}')")
 
     # Add date and time to message
     tz_NY = pytz.timezone('America/New_York') 
     now = datetime.now(tz_NY)
-    dt_string = now.strftime("%Y-%m-%d - %H:%M:%S")
-    date_message = dt_string + ' - ' + message
+    dt_string = now.strftime("%m-%d-%H:%M:%S")
+    date_message = dt_string + ': ' + message
 
     client = WebClient(token=slack_token)
     try:
