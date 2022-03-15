@@ -29,12 +29,15 @@ def get_max_pages(url):
     return max_pages
 
 
-async def retry_url(s, url, selector=None, attempts=10):
+async def retry_url(s, url, attempts=10, selector=None, debug=False):
     """Retry fetching URL a given number of times."""
     for _ in range(attempts):
         try:
             r = await s.get(url)
+            if debug:
+                print(f"{r} Attempt: {_}. URL: {url}")
             if selector:
+                print(f"I should not be here. Selector: {selector}")
                 target = r.html.find(selector, first=True)
                 if target:
                     break
@@ -44,7 +47,7 @@ async def retry_url(s, url, selector=None, attempts=10):
             time.sleep(1)
             pass
     else:
-        print(f"No attempts left for url: {url}.")
+        print(f"No attempts left for url: {url}")
         r = {}
     return r
 
@@ -430,7 +433,7 @@ async def scrape_url(s, url, items='author', attempts=10):
 
     else:  # paper_links, author_links, project_links or group_links
         selector = 'div.panel.panel-info table.table'
-        r = await retry_url(s, url, selector, attempts=20)  # 20 attempts avoid errors
+        r = await retry_url(s, url, attempts=20, selector=selector)  # 20 attempts avoid errors
 
         try:
             table = r.html.find('div.panel.panel-info table.table', first=True)
