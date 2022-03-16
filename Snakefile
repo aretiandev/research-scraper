@@ -53,9 +53,9 @@ running_msg = ":snake::runner: Running rule {rule}."
 success_msg = ":snake::ok_hand: Rule {rule} completed."
 
 # Get date
-date_today = get_date()
+# date_today = get_date()
+date_today = '20220314'  # Debug: pick up where we left off
 
-# date_today = '20220311'
 url_root = 'https://portalrecerca.csuc.cat'
 institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
 
@@ -239,7 +239,7 @@ rule clean_papers:
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            clean_papers()
+            clean_papers(date_today)
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
@@ -272,10 +272,10 @@ rule filter_papers:
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            filter_papers(wildcards.institution)
+            filter_papers(wildcards.institution, date_today)
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
-            rule_name = f"{rule}:({wildards.institution})"
+            rule_name = f"{rule}:({wildcards.institution})"
             send_slack_message(channel,error_msg.format(rule_name=rule_name,error=e),slack_token=slack_token)
             print(e)
             raise e
@@ -306,10 +306,10 @@ rule create_edges:
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            create_edgelist(wildcards.institution)
+            create_edgelist(wildcards.institution, date_today)
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
-            rule_name = f"{rule}:({wildards.institution})"
+            rule_name = f"{rule}:({wildcards.institution})"
             send_slack_message(channel,error_msg.format(rule_name=rule_name,error=e),slack_token=slack_token)
             print(e)
             raise e
