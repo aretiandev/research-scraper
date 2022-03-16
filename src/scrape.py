@@ -36,8 +36,9 @@ async def retry_url(s, url, attempts=10, selector=None, debug=False):
             r = await s.get(url)
             if debug:
                 print(f"{r} Attempt: {_}. URL: {url}")
+
+            # If selector supplied, break only if it is found
             if selector:
-                print(f"I should not be here. Selector: {selector}")
                 target = r.html.find(selector, first=True)
                 if target:
                     break
@@ -147,6 +148,7 @@ async def scrape_project(s, url, tab='information', attempts=10):
     """
     if tab == 'information':
         url = url + '?onlytab=true&locale=en'
+
         r = await retry_url(s, url, attempts)
 
         tables_lst = pd.read_html(r.text)
@@ -160,7 +162,7 @@ async def scrape_project(s, url, tab='information', attempts=10):
             'end date': 'End date',
             'institution': 'Universities or CERCA centres'}
 
-        project = {attr_name:table[table_key] for attr_name,table_key in attr_keys.items()}
+        project = {attr_name:table.get(table_key) for attr_name,table_key in attr_keys.items()}
 
     elif tab == 'researchers':
         url = url + '/researchersprj.html?onlytab=true'
