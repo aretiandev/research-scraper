@@ -9,7 +9,7 @@
 #   group and group_links
 #
 # Run everthing:
-#   snakemake --cores 16
+#   snakemake --cores all
 #
 # Test if website is online:
 #   snakemake ping_and_notify -c1
@@ -29,6 +29,8 @@
 #   snakemake filter_authors_and_papers -c1
 #   snakemake add_variables_to_nodelist -c1
 #   snakemake create_edges -c1
+#   snakemake dag -c1
+#   snakemake rulegraph -c1
 
 import pandas as pd
 from datetime import date
@@ -159,7 +161,7 @@ rule author_data:
 rule paper_data:
     input:
         f'data/paper_links_{date_today}.csv'
-        # f"data/author_data_{date_today}.csv"
+        # f"data/author_data_{date_today}.csv"  # Uncomment this line after rule finishes running
     output:
         f'data/paper_data_{date_today}.csv'
     run:
@@ -172,6 +174,7 @@ rule paper_data:
             urls = [url_root + url + '?mode=full' for url in item_urls]
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
             # asyncio.run(scrape(items='paper', urls=urls, batch_size=batch_size, out_file=output[0]))
+            # Debug: run from start_pos
             asyncio.run(scrape(items='paper', urls=urls, start_pos=start_pos, batch_size=batch_size, out_file=output[0]))
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
