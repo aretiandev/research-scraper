@@ -34,6 +34,29 @@ def checkscrape():
     client.chat_postMessage(channel=channel_id, text=result_chunk)
     return Response(), 200
 
+
+# Attempt to run snakemake using Slack command
+# Problems:
+# 1. Snakemake needs to run inside container, so I need to modify the code below
+# 2. Command /checkstatus does not work if snakemake is run via Slack command, bcause it reads tmux session. I need to modify /checkstatus so that it reads a log file.
+# @app.route("/snakemake", methods=["POST"])
+# def snakemake():
+#     data = request.form
+#     channel_id = data.get('channel_id')
+#     n_cores = '16'
+#     if data.get('text'):
+#         n_cores = data.get('text')
+#     try:
+#         subprocess.run(["/home/fer/miniconda3/envs/analytics/bin/snakemake", "--cores", n_cores])
+#         ["docker", "exec", "barcelona", "snakemake --cores 16
+#     except Exception as e:
+#         error_msg = f"There was an Exception while attempting to run snakemake:\n{e}"
+#         client.chat_postMessage(channel=channel_id, text=error_msg)
+#         raise e
+#     # result_text = result.stdout.decode("utf-8")
+#     # result_chunk = "\n".join(result_text.splitlines()[-n_lines:])
+#     return Response(), 200
+
 # @slack_event_adapter.on('message')
 # def message(payload):
 #     event = payload.get('event', {})
