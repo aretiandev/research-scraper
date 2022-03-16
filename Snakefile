@@ -139,7 +139,6 @@ rule group_links:
 rule author_data:
     input:
         f'data/author_links_{date_today}.csv',
-        f"data/group_links_{date_today}.csv"
     output:
         f'data/author_data_{date_today}.csv'
     run:
@@ -165,6 +164,7 @@ rule paper_data:
     run:
         try:
             batch_size = 200
+            # start_pos = 394600  # Debug(2022-03-15): start where we left off
             item_urls = pd.read_csv(input[0])
             item_urls = list(item_urls['0'])
             urls = [url_root + url + '?mode=full' for url in item_urls]
@@ -184,7 +184,7 @@ rule project_data:
         f'data/project_data_{date_today}.csv'
     run:
         try:
-            batch_size = 20
+            batch_size = 200
             item_urls = pd.read_csv(input[0])
             item_urls = list(item_urls['0'])
             urls = [url_root + url for url in item_urls]
@@ -204,7 +204,7 @@ rule group_data:
         f'data/group_data_{date_today}.csv'
     run:
         try:
-            batch_size = 20
+            batch_size = 50
             item_urls = pd.read_csv(input[0])
             item_urls = list(item_urls['0'])
             urls = [url_root + url for url in item_urls]
