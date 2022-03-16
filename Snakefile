@@ -139,6 +139,7 @@ rule group_links:
 rule author_data:
     input:
         f'data/author_links_{date_today}.csv',
+        f"data/group_links_{date_today}.csv"
     output:
         f'data/author_data_{date_today}.csv'
     run:
