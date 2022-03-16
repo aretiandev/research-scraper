@@ -158,19 +158,21 @@ rule author_data:
         
 rule paper_data:
     input:
-        f'data/paper_links_{date_today}.csv',
-        f"data/author_data_{date_today}.csv"
+        f'data/paper_links_{date_today}.csv'
+        # f"data/author_data_{date_today}.csv"
     output:
         f'data/paper_data_{date_today}.csv'
     run:
         try:
             batch_size = 200
             # start_pos = 394600  # Debug(2022-03-15): start where we left off
+            start_pos = 139359  # Debug(2022-03-16): should run until 394600 (1277 batches of 200)
             item_urls = pd.read_csv(input[0])
             item_urls = list(item_urls['0'])
             urls = [url_root + url + '?mode=full' for url in item_urls]
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            asyncio.run(scrape(items='paper', urls=urls, batch_size=batch_size, out_file=output[0]))
+            # asyncio.run(scrape(items='paper', urls=urls, batch_size=batch_size, out_file=output[0]))
+            asyncio.run(scrape(items='paper', urls=urls, start_pos=start_pos, batch_size=batch_size, out_file=output[0]))
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
