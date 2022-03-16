@@ -232,13 +232,19 @@ async def scrape_group(s, url, tab='information', attempts=10):
         attr_keys = {
             'name': 'Name',
             'acronym': 'Acronym',
-            'institution': 'Universities or CERCA centres'}
+            'institution': 'Universities or CERCA centres',
+            'group_url': 'URL',
+            'sgr_code': 'SGR code'}
 
-        group = {attr_name: table[table_key]
+        group = {attr_name: table.get(table_key)
                  for attr_name, table_key in attr_keys.items()}
 
     elif tab == 'researchers':
-        url = url + '/researchersorg.html?onlytab=true&locale=en'
+        r = await retry_url(s, url, attempts)
+        next_tab_href = r.html.find('#bar-tab-1012900 a', first=True).attrs['href']
+        url_root = 'https://portalrecerca.csuc.cat' 
+        url = url_root + next_tab_href
+
         r = await retry_url(s, url, attempts)
 
         selector = 'table.table'
@@ -248,17 +254,18 @@ async def scrape_group(s, url, tab='information', attempts=10):
 
         # Principal researchers
         rows = tables[0].find('tr')
+
         principal_names = []
         principal_ids = []
 
-        for row in rows[1:]:
+        for row in rows:
             name_object = row.find('td', first=True)
             principal_names.append(name_object.text)
             try:
                 orcid = name_object.find('a', first=True).attrs['href'][7:]
-                principal_ids.append(orcid)
-            except Exception:
-                pass
+            except KeyError:
+                orcid = ""
+            principal_ids.append(orcid)
 
         group['principal names'] = principal_names
         group['principal ids'] = principal_ids
@@ -269,18 +276,18 @@ async def scrape_group(s, url, tab='information', attempts=10):
             res_names = []
             res_ids = []
 
-            for row in rows[1:]:
+            for row in rows:
                 name_object = row.find('td', first=True)
                 res_names.append(name_object.text)
                 try:
                     orcid = name_object.find('a', first=True).attrs['href'][7:]
-                    res_ids.append(orcid)
-                except Exception:
-                    pass
+                except KeyError:
+                    orcid = ""
+                res_ids.append(orcid)
 
             group['researcher names'] = res_names
             group['researcher ids'] = res_ids
-        except Exception:
+        except IndexError:
             pass
 
     return group
