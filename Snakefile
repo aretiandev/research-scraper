@@ -314,3 +314,15 @@ rule create_edges:
             send_slack_message(channel,error_msg.format(rule_name=rule_name,error=e),slack_token=slack_token)
             print(e)
             raise e
+
+rule dag:
+    output:
+        f"figs/dag_{date_today}.png"
+    shell:
+        "snakemake --dag | dot -Tpng > {output}"
+
+rule rulegraph:
+    output:
+        f"figs/rulegraph_{date_today}.png"
+    shell:
+        "snakemake --rulegraph | dot -Tpng > {output}"
