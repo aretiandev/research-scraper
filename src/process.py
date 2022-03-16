@@ -153,7 +153,7 @@ def filter_papers(institution, date_today=None):
     # Load authors
     authors_inst_df = pd.read_csv(f'./data/nodes_{institution}_{date_today}.csv')
     # Load papers
-    papers_df = pd.read_csv("data/paper_clean_{date_today}.csv")
+    papers_df = pd.read_csv(f"data/paper_clean_{date_today}.csv", converters={'orcids':eval})
 
     # Extract papers with authors from institution
     print(f"Extracting papers of researchers from {institution}.")
