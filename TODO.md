@@ -1,9 +1,10 @@
 # TODO:
 
 - Wait until paper_data finished running and combine the following files using debug.ipynb:
-    - data/paper_data_20220314.csv
-    - data/20220314/paper_data_20220314.csv
     - data/20220314/paper_data_20220314_0.csv
+    - data/20220314/paper_data_20220314_1.csv
+    - data/20220314/paper_data_20220314_3.csv
+    - data/paper_data_20220314.csv
     
 - Expand definition of projects and groups.
 - Re-create research group networks.

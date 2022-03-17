@@ -168,7 +168,8 @@ rule paper_data:
         try:
             batch_size = 200
             # start_pos = 394600  # Debug(2022-03-15): start where we left off
-            start_pos = 139359  # Debug(2022-03-16): should run until 394600 (1277 batches of 200)
+            # start_pos = 139359  # Debug(2022-03-16): should run until 394600 (1277 batches of 200)
+            start_pos = 296358  # Debug(2022-03-17): should run until 394600 (492 batches of 200)
             item_urls = pd.read_csv(input[0])
             item_urls = list(item_urls['0'])
             urls = [url_root + url + '?mode=full' for url in item_urls]
