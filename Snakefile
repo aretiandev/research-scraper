@@ -56,7 +56,7 @@ success_msg = ":snake::ok_hand: Rule {rule} completed."
 
 # Get date
 date_today = get_date()
-date_today = '20220314'
+# date_today = '20220314'
 
 url_root = 'https://portalrecerca.csuc.cat'
 institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
