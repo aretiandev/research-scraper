@@ -27,7 +27,7 @@ def create_edgelist(institution, date_today=None, save=True):
 
     # Load papers with coauthors list
     print(f"{institution} - Loading papers.")
-    papers_df = pd.read_csv(f'./data/papers_{institution}_2plus_{date_today}.csv', converters = {'orcids': eval})
+    papers_df = pd.read_csv(f'./data/{date_today}_papers_{institution}_2plus.csv', converters = {'orcids': eval})
     papers = papers_df['orcids'].copy()
 
     # Get unique list of authors from papers
@@ -36,7 +36,7 @@ def create_edgelist(institution, date_today=None, save=True):
 
     # Get list of authors from institution
     print(f"{institution} - Loading nodes.")
-    authors_inst_df = pd.read_csv(f'./data/nodes_{institution}_{date_today}.csv')
+    authors_inst_df = pd.read_csv(f'./data/{date_today}_nodes_{institution}.csv')
     authors_inst = authors_inst_df['id']
     authors_inst = authors_inst.unique()
     authors_inst.sort()
@@ -69,7 +69,7 @@ def create_edgelist(institution, date_today=None, save=True):
     collabs_df = collabs_df.reset_index()
     
     if save:
-        outfile = f'./data/edges_{institution}_{date_today}.csv'
+        outfile = f'./data/{date_today}_edges_{institution}.csv'
         collabs_df.to_csv(outfile, index=None)
         print(f"{institution} - Done. Saved '{outfile}'.")
 

@@ -57,7 +57,7 @@ def clean_papers(date_today=None):
         date_today = get_date()
 
     # Load papers
-    papers_df = pd.read_csv(f'./data/paper_data_{date_today}.csv')
+    papers_df = pd.read_csv(f'./data/{date_today}_paper_data.csv')
     papers_df['orcids'] = papers_df['orcids'].apply(lambda x: convert_to_list(x))
 
     # Replace NaNs to empty lists to avoid loops from breaking
@@ -65,7 +65,7 @@ def clean_papers(date_today=None):
     papers_df.loc[mask, 'orcids'] = pd.Series([[] for _ in range(len(mask))])
 
     # Save
-    out_file = f"data/paper_clean_{date_today}.csv"
+    out_file = f"data/{date_today}_paper_clean.csv"
     papers_df.to_csv(out_file, index=None)
     print(f"Saved '{out_file}'.")
 
@@ -76,7 +76,7 @@ def clean_authors(date_today=None):
         date_today = get_date()
 
     # Load authors
-    authors_df = pd.read_csv(f'./data/author_data_{date_today}.csv')
+    authors_df = pd.read_csv(f'./data/{date_today}_author_data.csv')
     authors_df['institution'] = authors_df['institution'].apply(lambda x: convert_to_list(x))
     authors_df['projects'] = authors_df['projects'].apply(lambda x: convert_to_list(x))
     authors_df['groups'] = authors_df['groups'].apply(lambda x: convert_to_list(x))
@@ -109,7 +109,7 @@ def clean_authors(date_today=None):
                             lambda x: list(set(x)))
     
     # Save
-    out_file = f"data/author_clean_{date_today}.csv"
+    out_file = f"data/{date_today}_author_clean.csv"
     authors_df.to_csv(out_file, index=None)
     print(f"Saved '{out_file}'.")
 
@@ -121,7 +121,7 @@ def filter_authors(institution, date_today=None):
         date_today = get_date()
     
     # Load authors
-    authors_df = pd.read_csv(f"data/author_clean_{date_today}.csv")
+    authors_df = pd.read_csv(f"data/{date_today}_author_clean.csv")
 
     # Extract authors from institution
     mask = authors_df['institution_group'].apply(lambda x: institution in x)
@@ -141,7 +141,7 @@ def filter_authors(institution, date_today=None):
     authors_inst_df['n_groups']   = authors_inst_df['groups'].apply(len)
 
     # Save
-    out_file = f'./data/nodes_{institution}_{date_today}.csv'
+    out_file = f'./data/{date_today}_nodes_{institution}.csv'
     authors_inst_df.to_csv(out_file, index=None)
     print(f"Saved '{out_file}'.")
 
@@ -151,9 +151,9 @@ def filter_papers(institution, date_today=None):
         date_today = get_date()
 
     # Load authors
-    authors_inst_df = pd.read_csv(f'./data/nodes_{institution}_{date_today}.csv')
+    authors_inst_df = pd.read_csv(f'./data/{date_today}_nodes_{institution}.csv')
     # Load papers
-    papers_df = pd.read_csv(f"data/paper_clean_{date_today}.csv", converters={'orcids':eval})
+    papers_df = pd.read_csv(f"data/{date_today}_paper_clean.csv", converters={'orcids':eval})
 
     # Extract papers with authors from institution
     print(f"Extracting papers of researchers from {institution}.")
@@ -168,66 +168,10 @@ def filter_papers(institution, date_today=None):
     papers_inst_2plus_df = papers_df[mask_1plus][mask_2plus]
     
     # Save
-    out_file_1 = f'./data/papers_{institution}_{date_today}.csv'
-    out_file_2 = f'./data/papers_{institution}_2plus_{date_today}.csv'
+    out_file_1 = f'./data/{date_today}_papers_{institution}.csv'
+    out_file_2 = f'./data/{date_today}_papers_{institution}_2plus.csv'
     papers_inst_1plus_df.to_csv(out_file_1, index=None)
     papers_inst_2plus_df.to_csv(out_file_2, index=None)
     print(f"Saved '{out_file_1}'.")
     print(f"Saved '{out_file_2}'.")
-    print("")
-
-
-def add_publication_stats(institution, date_today=None):
-    """Add publication statistics to nodelist."""
-    print(f"Institution: {institution}.")
-
-    if not date_today:
-        date_today = get_date()
-
-    # Load authors
-    authors_inst_df = pd.read_csv(f'./data/nodes_{institution}_{date_today}.csv')
-    authors_inst_df = authors_inst_df.set_index('id')
-    
-    # Load papers
-    papers_inst_df = pd.read_csv(f'./data/papers_{institution}_{date_today}.csv', converters = {'orcids': eval})
-    # Get papers column
-    papers = papers_inst_df[['orcids', 'type']].copy()
-    papers = papers.reset_index(drop=True)
-
-    # Publication type: ['Journal Article', 'Chapter in Book', 'Book', 'NaN']
-    authors_inst_df['n_publications'] = 0
-    authors_inst_df['n_articles'] = 0
-    authors_inst_df['n_chapters'] = 0
-    authors_inst_df['n_books'] = 0
-    authors_inst_df['n_other'] = 0
-    
-    paper_types = {'Journal Article':'n_articles', 'Chapter in Book':'n_chapters', 'Book':'n_books'}
-    
-    def add_publication_stats(paper):
-#         print(f"Progress: {index/len(papers)*100:.0f}%. Paper: {index:,d}/{len(papers):,d}.", end="\r")
-        for orcid in paper['orcids']:
-            # Add publication
-            try:
-                authors_inst_df.loc[orcid, 'n_publications'] += 1
-            except KeyError: # author is not in the institution
-                continue
-                
-            # Assign type
-            assigned_type = False
-            for paper_type, column in paper_types.items():
-                if paper['type'] == paper_type:
-                    authors_inst_df.loc[orcid, column] +=1
-                    assigned_type = True
-                    break
-            if not assigned_type:
-                authors_inst_df.loc[orcid, 'n_other'] +=1
-    
-    print("Adding publications number and types to nodelist. This might take a while...")
-    papers.apply(lambda x: add_publication_stats(x), axis=1)
-                    
-    # Save
-    out_file = f'./data/nodes_{institution}_full_{date_today}.csv'
-    authors_inst_df.to_csv(out_file, index=None)
-    print("Done.")
-    print(f"Saved {out_file}.")
     print("")

@@ -39,8 +39,7 @@ import pytz
 from dotenv import load_dotenv
 
 from src.scrape import scrape
-from src.process import ( clean_authors, clean_papers, filter_authors, filter_papers,
-                          add_publication_stats, get_date )
+from src.process import clean_authors, clean_papers, filter_authors, filter_papers, get_date
 from src.edges import create_edgelist
 from bot.bot import ping_and_wait, send_slack_message
 
@@ -63,9 +62,9 @@ institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
 
 rule all:
     input:
-        expand(f'data/edges_{{institution}}_{date_today}.csv', institution=institution_list),
-        f'data/project_data_{date_today}.csv',
-        f'data/group_data_{date_today}.csv'
+        expand(f'data/{date_today}_edges_{{institution}}.csv', institution=institution_list),
+        f'data/{date_today}_project_data.csv',
+        f'data/{date_today}_group_data.csv'
 
 rule ping_stackoverflow:
     run:
@@ -80,11 +79,13 @@ rule ping_and_notify:
 
 rule author_links:
     output:
-        f"data/author_links_{date_today}.csv"
+        f"data/{date_today}_author_links.csv"
     run:
         try:
             batch_size = 20
+            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
             asyncio.run(scrape(items='author_links', batch_size=batch_size, out_file=output[0]))
+            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
             print(e)
@@ -92,9 +93,9 @@ rule author_links:
 
 rule paper_links:
     input:
-        f"data/author_links_{date_today}.csv"
+        f"data/{date_today}_author_links.csv"
     output:
-        f"data/paper_links_{date_today}.csv"
+        f"data/{date_today}_paper_links.csv"
     run:
         try:
             batch_size = 50
@@ -108,9 +109,9 @@ rule paper_links:
 
 rule project_links:
     input:
-        f"data/paper_links_{date_today}.csv"
+        f"data/{date_today}_paper_links.csv"
     output:
-        f"data/project_links_{date_today}.csv"
+        f"data/{date_today}_project_links.csv"
     run:
         try:
             batch_size = 20
@@ -124,9 +125,9 @@ rule project_links:
 
 rule group_links:
     input:
-        f"data/project_links_{date_today}.csv"
+        f"data/{date_today}_project_links.csv"
     output:
-        f"data/group_links_{date_today}.csv"
+        f"data/{date_today}_group_links.csv"
     run:
         try:
             batch_size = 20
@@ -140,10 +141,10 @@ rule group_links:
         
 rule author_data:
     input:
-        f'data/author_links_{date_today}.csv',
-        f"data/group_links_{date_today}.csv"
+        f'data/{date_today}_author_links.csv',
+        f"data/{date_today}_group_links.csv"
     output:
-        f'data/author_data_{date_today}.csv'
+        f'data/{date_today}_author_data.csv'
     run:
         try:
             batch_size = 200
@@ -160,10 +161,10 @@ rule author_data:
         
 rule paper_data:
     input:
-        f'data/paper_links_{date_today}.csv',
-        f"data/author_data_{date_today}.csv"
+        f'data/{date_today}_paper_links.csv',
+        f"data/{date_today}_author_data.csv"
     output:
-        f'data/paper_data_{date_today}.csv'
+        f'data/{date_today}_paper_data.csv'
     run:
         try:
             batch_size = 200
@@ -180,10 +181,10 @@ rule paper_data:
 
 rule project_data:
     input:
-        f'data/project_links_{date_today}.csv',
-        f"data/paper_data_{date_today}.csv"
+        f'data/{date_today}_project_links.csv',
+        f"data/{date_today}_paper_data.csv"
     output:
-        f'data/project_data_{date_today}.csv'
+        f'data/{date_today}_project_data.csv'
     run:
         try:
             batch_size = 200
@@ -200,10 +201,10 @@ rule project_data:
 
 rule group_data:
     input:
-        f'data/group_links_{date_today}.csv',
-        f"data/project_data_{date_today}.csv"
+        f'data/{date_today}_group_links.csv',
+        f"data/{date_today}_project_data.csv"
     output:
-        f'data/group_data_{date_today}.csv'
+        f'data/{date_today}_group_data.csv'
     run:
         try:
             batch_size = 50
@@ -220,9 +221,9 @@ rule group_data:
 
 rule clean_authors:
     input:
-        f'data/author_data_{date_today}.csv'
+        f'data/{date_today}_author_data.csv'
     output:
-        f'data/author_clean_{date_today}.csv'
+        f'data/{date_today}_author_clean.csv'
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
@@ -235,9 +236,9 @@ rule clean_authors:
 
 rule clean_papers:
     input:
-        f'data/paper_data_{date_today}.csv'
+        f'data/{date_today}_paper_data.csv'
     output:
-        f'data/paper_clean_{date_today}.csv'
+        f'data/{date_today}_paper_clean.csv'
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
@@ -250,9 +251,9 @@ rule clean_papers:
 
 rule filter_authors:
     input:
-        f'data/author_clean_{date_today}.csv'
+        f'data/{date_today}_author_clean.csv'
     output:
-        f'data/nodes_{{institution}}_{date_today}.csv'
+        f'data/{date_today}_nodes_{{institution}}.csv'
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
@@ -266,11 +267,11 @@ rule filter_authors:
 
 rule filter_papers:
     input:
-        f'data/nodes_{{institution}}_{date_today}.csv',  # Debug
-        f'data/paper_clean_{date_today}.csv'
+        f'data/{date_today}_nodes_{{institution}}.csv',
+        f'data/{date_today}_paper_clean.csv'
     output:
-        f'data/papers_{{institution}}_{date_today}.csv',
-        f'data/papers_{{institution}}_2plus_{date_today}.csv'
+        f'data/{date_today}_papers_{{institution}}.csv',
+        f'data/{date_today}_papers_{{institution}}_2plus.csv'
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
@@ -282,29 +283,12 @@ rule filter_papers:
             print(e)
             raise e
 
-# rule add_publication_stats:
-#     input: 
-#         f'data/nodes_{{institution}}_{date_today}.csv',
-#         f'data/papers_{{institution}}_{date_today}.csv'
-#     output:
-#         f'data/nodes_{{institution}}_full_{date_today}.csv'
-#     run:
-#         try:
-#             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-#             add_publication_stats(wildcards.institution)
-#             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-#         except Exception as e:
-#             rule_name = f"{rule}:({wildards.institution})"
-#             send_slack_message(channel,error_msg.format(rule_name=rule_name,error=e),slack_token=slack_token)
-#             print(e)
-#             raise e
-
 rule create_edges:
     input:
-        f'data/papers_{{institution}}_2plus_{date_today}.csv',
-        f'data/nodes_{{institution}}_{date_today}.csv'
+        f'data/{date_today}_papers_{{institution}}_2plus.csv',
+        f'data/{date_today}_nodes_{{institution}}.csv'
     output:
-        f'data/edges_{{institution}}_{date_today}.csv'
+        f'data/{date_today}_edges_{{institution}}.csv'
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
@@ -318,12 +302,12 @@ rule create_edges:
 
 rule dag:
     output:
-        "figs/dag_{date}.png"
+        f"figs/{date_today}_dag.png"
     shell:
         "snakemake --dag | dot -Tpng > {output}"
 
 rule rulegraph:
     output:
-        f"figs/rulegraph_{date_today}.png"
+        f"figs/{date_today}_rulegraph.png"
     shell:
         "snakemake --rulegraph | dot -Tpng > {output}"
