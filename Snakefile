@@ -55,8 +55,8 @@ running_msg = ":snake::runner: Running rule {rule}."
 success_msg = ":snake::ok_hand: Rule {rule} completed."
 
 # Get date
-# date_today = get_date()
-date_today = '20220314'  # Debug: pick up where we left off
+date_today = get_date()
+date_today = '20220314'
 
 url_root = 'https://portalrecerca.csuc.cat'
 institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
@@ -160,23 +160,18 @@ rule author_data:
         
 rule paper_data:
     input:
-        f'data/paper_links_{date_today}.csv'
-        # f"data/author_data_{date_today}.csv"  # Uncomment this line after rule finishes running
+        f'data/paper_links_{date_today}.csv',
+        f"data/author_data_{date_today}.csv"
     output:
         f'data/paper_data_{date_today}.csv'
     run:
         try:
             batch_size = 200
-            # start_pos = 394600  # Debug(2022-03-15): start where we left off
-            # start_pos = 139359  # Debug(2022-03-16): should run until 394600 (1277 batches of 200)
-            start_pos = 296358  # Debug(2022-03-17): should run until 394600 (492 batches of 200)
             item_urls = pd.read_csv(input[0])
             item_urls = list(item_urls['0'])
             urls = [url_root + url + '?mode=full' for url in item_urls]
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            # asyncio.run(scrape(items='paper', urls=urls, batch_size=batch_size, out_file=output[0]))
-            # Debug: run from start_pos
-            asyncio.run(scrape(items='paper', urls=urls, start_pos=start_pos, batch_size=batch_size, out_file=output[0]))
+            asyncio.run(scrape(items='paper', urls=urls, batch_size=batch_size, out_file=output[0]))
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
@@ -231,7 +226,7 @@ rule clean_authors:
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            clean_authors()
+            clean_authors(date_today)
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
@@ -261,7 +256,7 @@ rule filter_authors:
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            filter_authors(wildcards.institution)
+            filter_authors(wildcards.institution, date_today)
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
             rule_name = f"{rule}:({wildards.institution})"
@@ -271,7 +266,7 @@ rule filter_authors:
 
 rule filter_papers:
     input:
-        f'data/nodes_{{institution}}_{date_today}.csv',
+        f'data/nodes_{{institution}}_{date_today}.csv',  # Debug
         f'data/paper_clean_{date_today}.csv'
     output:
         f'data/papers_{{institution}}_{date_today}.csv',
@@ -287,22 +282,22 @@ rule filter_papers:
             print(e)
             raise e
 
-rule add_publication_stats:
-    input: 
-        f'data/nodes_{{institution}}_{date_today}.csv',
-        f'data/papers_{{institution}}_{date_today}.csv'
-    output:
-        f'data/nodes_{{institution}}_full_{date_today}.csv'
-    run:
-        try:
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            add_publication_stats(wildcards.institution)
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            rule_name = f"{rule}:({wildards.institution})"
-            send_slack_message(channel,error_msg.format(rule_name=rule_name,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+# rule add_publication_stats:
+#     input: 
+#         f'data/nodes_{{institution}}_{date_today}.csv',
+#         f'data/papers_{{institution}}_{date_today}.csv'
+#     output:
+#         f'data/nodes_{{institution}}_full_{date_today}.csv'
+#     run:
+#         try:
+#             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
+#             add_publication_stats(wildcards.institution)
+#             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
+#         except Exception as e:
+#             rule_name = f"{rule}:({wildards.institution})"
+#             send_slack_message(channel,error_msg.format(rule_name=rule_name,error=e),slack_token=slack_token)
+#             print(e)
+#             raise e
 
 rule create_edges:
     input:
@@ -323,7 +318,7 @@ rule create_edges:
 
 rule dag:
     output:
-        f"figs/dag_{date_today}.png"
+        "figs/dag_{date}.png"
     shell:
         "snakemake --dag | dot -Tpng > {output}"
 
