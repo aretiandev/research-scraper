@@ -3,11 +3,11 @@
 Helper functions for Scraping Portal de la Reserca.
 
 Main functions:
+    scrape(): Main entrypoint
+    scrape_url()
     scrape_author()
     scrape_project()
     scrape_group()
-    scrape_url()
-    scrape(): Main entrypoint
 """
 
 import pandas as pd
@@ -16,12 +16,20 @@ import datetime
 import time
 import asyncio
 
+import logging
+
+class WebsiteDownException(Exception):
+    pass
+
 
 def get_max_pages(url):
     """Get max pages from pagination box in footer."""
+    logging.debug("Getting max_pages")
     print("Retrieving number of URLs to scrape:", end=" ")
     session = HTMLSession()
     r = session.get(url)
+    if r.url == 'https://portalrecerca.manteniment.csuc.cat':
+        raise WebsiteDownException("Website is down.")
     pagination_items = r.html.find('div.discovery-result-pagination ul.pagination li')
     max_pages_str = pagination_items[-2].text.split("\n")[0].strip().replace('.', '').replace(',', '')
     max_pages = int(max_pages_str)
@@ -34,6 +42,10 @@ async def retry_url(s, url, attempts=10, selector=None, debug=False):
     for _ in range(attempts):
         try:
             r = await s.get(url)
+
+            if r.url == 'https://portalrecerca.manteniment.csuc.cat':
+                raise WebsiteDownException("Website is down.")
+
             if debug:
                 print(f"{r} Attempt: {_}. URL: {url}")
 
@@ -44,12 +56,15 @@ async def retry_url(s, url, attempts=10, selector=None, debug=False):
                     break
             else:
                 break
+        except WebsiteDownException:
+            raise
         except Exception:
             time.sleep(1)
             pass
     else:
         print(f"No attempts left for url: {url}")
-        r = {}
+        r = None
+
     return r
 
 
@@ -488,15 +503,17 @@ async def scrape(
     """Main entry function to scrape Portal de la Reserca.
 
     Args:
-        items: [author, paper, author_links, paper_links]
-        urls: list of urls. Not needed if items in ['author_links', 'paper_links'].
+        items:
+            author, paper, project, group,
+            author_links, paper_links, project_links, group_links.
+        urls: list of urls. Not needed if items in [author_links, paper_links].
         start_pos: URL starting position.
         batch_start_pos: Batch starting position.
         n_pages: max pages to scrape.
         batch_size: batch size.
         out_file: output file.
     Returns:
-        result(list of dicts): scraping results.
+        result (list of dicts): scraping results.
         out_file (csv): writes DataFrame to csv.
     """
 
