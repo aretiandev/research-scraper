@@ -81,15 +81,8 @@ rule author_links:
     output:
         f"data/{date_today}_author_links.csv"
     run:
-        try:
-            batch_size = 20
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            asyncio.run(scrape(items='author_links', batch_size=batch_size, out_file=output[0]))
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        batch_size = 20
+        asyncio.run(scrape(items='author_links', batch_size=batch_size, out_file=output[0]))
 
 rule paper_links:
     input:
@@ -97,15 +90,8 @@ rule paper_links:
     output:
         f"data/{date_today}_paper_links.csv"
     run:
-        try:
-            batch_size = 50
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            asyncio.run(scrape(items='paper_links', batch_size=batch_size, out_file=output[0]))
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        batch_size = 50
+        asyncio.run(scrape(items='paper_links', batch_size=batch_size, out_file=output[0]))
 
 rule project_links:
     input:
@@ -113,15 +99,8 @@ rule project_links:
     output:
         f"data/{date_today}_project_links.csv"
     run:
-        try:
-            batch_size = 20
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            asyncio.run(scrape(items='project_links', batch_size=batch_size, out_file=output[0]))
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        batch_size = 20
+        asyncio.run(scrape(items='project_links', batch_size=batch_size, out_file=output[0]))
 
 rule group_links:
     input:
@@ -129,15 +108,8 @@ rule group_links:
     output:
         f"data/{date_today}_group_links.csv"
     run:
-        try:
-            batch_size = 20
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            asyncio.run(scrape(items='group_links', batch_size=batch_size, out_file=output[0]))
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        batch_size = 20
+        asyncio.run(scrape(items='group_links', batch_size=batch_size, out_file=output[0]))
         
 rule author_data:
     input:
@@ -146,18 +118,11 @@ rule author_data:
     output:
         f'data/{date_today}_author_data.csv'
     run:
-        try:
-            batch_size = 200
-            item_urls = pd.read_csv(input[0])
-            item_urls = list(item_urls['0'])
-            urls = [url_root + url for url in item_urls]
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            asyncio.run(scrape(items='author', urls=urls, batch_size=batch_size, out_file=output[0]))
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        batch_size = 200
+        item_urls = pd.read_csv(input[0])
+        item_urls = list(item_urls['0'])
+        urls = [url_root + url for url in item_urls]
+        asyncio.run(scrape(items='author', urls=urls, batch_size=batch_size, out_file=output[0]))
         
 rule paper_data:
     input:
@@ -166,18 +131,11 @@ rule paper_data:
     output:
         f'data/{date_today}_paper_data.csv'
     run:
-        try:
-            batch_size = 200
-            item_urls = pd.read_csv(input[0])
-            item_urls = list(item_urls['0'])
-            urls = [url_root + url + '?mode=full' for url in item_urls]
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            asyncio.run(scrape(items='paper', urls=urls, batch_size=batch_size, out_file=output[0]))
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        batch_size = 200
+        item_urls = pd.read_csv(input[0])
+        item_urls = list(item_urls['0'])
+        urls = [url_root + url + '?mode=full' for url in item_urls]
+        asyncio.run(scrape(items='paper', urls=urls, batch_size=batch_size, out_file=output[0]))
 
 rule project_data:
     input:
@@ -186,18 +144,11 @@ rule project_data:
     output:
         f'data/{date_today}_project_data.csv'
     run:
-        try:
-            batch_size = 200
-            item_urls = pd.read_csv(input[0])
-            item_urls = list(item_urls['0'])
-            urls = [url_root + url for url in item_urls]
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            asyncio.run(scrape(items='project', urls=urls, batch_size=batch_size, out_file=output[0]))
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        batch_size = 200
+        item_urls = pd.read_csv(input[0])
+        item_urls = list(item_urls['0'])
+        urls = [url_root + url for url in item_urls]
+        asyncio.run(scrape(items='project', urls=urls, batch_size=batch_size, out_file=output[0]))
 
 rule group_data:
     input:
@@ -206,18 +157,11 @@ rule group_data:
     output:
         f'data/{date_today}_group_data.csv'
     run:
-        try:
-            batch_size = 50
-            item_urls = pd.read_csv(input[0])
-            item_urls = list(item_urls['0'])
-            urls = [url_root + url for url in item_urls]
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            asyncio.run(scrape(items='group', urls=urls, batch_size=batch_size, out_file=output[0]))
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        batch_size = 50
+        item_urls = pd.read_csv(input[0])
+        item_urls = list(item_urls['0'])
+        urls = [url_root + url for url in item_urls]
+        asyncio.run(scrape(items='group', urls=urls, batch_size=batch_size, out_file=output[0]))
 
 rule clean_authors:
     input:
@@ -225,14 +169,7 @@ rule clean_authors:
     output:
         f'data/{date_today}_author_clean.csv'
     run:
-        try:
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            clean_authors({input}, {output})
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        clean_authors({input}, {output})
 
 rule clean_papers:
     input:
@@ -240,14 +177,7 @@ rule clean_papers:
     output:
         f'data/{date_today}_paper_clean.csv'
     run:
-        try:
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            clean_papers({input}, {output})
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        clean_papers({input}, {output})
 
 rule filter_authors:
     input:
@@ -255,15 +185,7 @@ rule filter_authors:
     output:
         f'data/{date_today}_nodes_{{institution}}.csv'
     run:
-        try:
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            filter_authors(input, output, wildcards.institution)
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            rule_name = f"{rule}:({wildcards.institution})"
-            send_slack_message(channel,error_msg.format(rule_name=rule_name,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        filter_authors(input, output, wildcards.institution)
 
 rule filter_papers:
     input:
@@ -273,15 +195,7 @@ rule filter_papers:
         f'data/{date_today}_papers_{{institution}}.csv',
         f'data/{date_today}_papers_{{institution}}_2plus.csv'
     run:
-        try:
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            filter_papers(input[0], input[1], output[0], output[1], wildcards.institution)
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            rule_name = f"{rule}:({wildcards.institution})"
-            send_slack_message(channel,error_msg.format(rule_name=rule_name,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        filter_papers(input[0], input[1], output[0], output[1], wildcards.institution)
 
 rule create_edges:
     input:
@@ -290,15 +204,7 @@ rule create_edges:
     output:
         f'data/{date_today}_edges_{{institution}}.csv'
     run:
-        try:
-            send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            create_edgelist(input[0], input[1], output, wildcards.institution)
-            send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
-        except Exception as e:
-            rule_name = f"{rule}:({wildcards.institution})"
-            send_slack_message(channel,error_msg.format(rule_name=rule_name,error=e),slack_token=slack_token)
-            print(e)
-            raise e
+        create_edgelist(input[0], input[1], output, wildcards.institution)
 
 rule dag:
     output:
