@@ -12,11 +12,11 @@
 #   snakemake --cores all
 #
 # Test if website is online:
-#   snakemake ping_and_notify -c1
+#   snakemake ping_and_run -c1
 #
 # Full list of rules/targets:
 #   snakemake -c1
-#   snakemake ping_and_notify -c1
+#   snakemake ping_and_run -c1
 #   snakemake data/author_data_202203011.csv -c1
 #   snakemake data/author_links_202203011.csv -c1
 #   snakemake data/paper_data_202203011.csv -c1
@@ -73,7 +73,7 @@ rule ping_stackoverflow:
         message = ":globe_with_meridians: Stackoverflow is back online."
         send_slack_message(channel, message, slack_token)
 
-rule ping_and_notify:
+rule ping_and_run:
     script:
         "bot/bot.py"
 
@@ -227,7 +227,7 @@ rule clean_authors:
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            clean_authors(date_today)
+            clean_authors({input}, {output})
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
@@ -242,7 +242,7 @@ rule clean_papers:
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            clean_papers(date_today)
+            clean_papers({input}, {output})
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
             send_slack_message(channel,error_msg.format(rule_name=rule,error=e),slack_token=slack_token)
@@ -257,10 +257,10 @@ rule filter_authors:
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            filter_authors(wildcards.institution, date_today)
+            filter_authors(input, output, wildcards.institution)
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
-            rule_name = f"{rule}:({wildards.institution})"
+            rule_name = f"{rule}:({wildcards.institution})"
             send_slack_message(channel,error_msg.format(rule_name=rule_name,error=e),slack_token=slack_token)
             print(e)
             raise e
@@ -275,7 +275,7 @@ rule filter_papers:
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            filter_papers(wildcards.institution, date_today)
+            filter_papers(input[0], input[1], output[0], output[1], wildcards.institution)
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
             rule_name = f"{rule}:({wildcards.institution})"
@@ -285,14 +285,14 @@ rule filter_papers:
 
 rule create_edges:
     input:
-        f'data/{date_today}_papers_{{institution}}_2plus.csv',
-        f'data/{date_today}_nodes_{{institution}}.csv'
+        f'data/{date_today}_nodes_{{institution}}.csv',
+        f'data/{date_today}_papers_{{institution}}_2plus.csv'
     output:
         f'data/{date_today}_edges_{{institution}}.csv'
     run:
         try:
             send_slack_message(channel,running_msg.format(rule=rule),slack_token=slack_token)
-            create_edgelist(wildcards.institution, date_today)
+            create_edgelist(input[0], input[1], output, wildcards.institution)
             send_slack_message(channel,success_msg.format(rule=rule),slack_token=slack_token)
         except Exception as e:
             rule_name = f"{rule}:({wildcards.institution})"

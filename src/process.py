@@ -50,33 +50,15 @@ def add_acronym(row):
     return row['institution']
 
 
-def clean_papers(date_today=None):
-    """Clean scraped papers data."""
+def clean_authors(input, output):
+    """Clean author data
 
-    if not date_today:
-        date_today = get_date()
-
-    # Load papers
-    papers_df = pd.read_csv(f'./data/{date_today}_paper_data.csv')
-    papers_df['orcids'] = papers_df['orcids'].apply(lambda x: convert_to_list(x))
-
-    # Replace NaNs to empty lists to avoid loops from breaking
-    mask = papers_df['orcids'].isna()
-    papers_df.loc[mask, 'orcids'] = pd.Series([[] for _ in range(len(mask))])
-
-    # Save
-    out_file = f"data/{date_today}_paper_clean.csv"
-    papers_df.to_csv(out_file, index=None)
-    print(f"Saved '{out_file}'.")
-
-
-def clean_authors(date_today=None):
-
-    if not date_today:
-        date_today = get_date()
-
+    Args:
+        input (csv):  data/{date}_author_data.csv
+        output (csv): data/{date}_author_clean.csv
+    """
     # Load authors
-    authors_df = pd.read_csv(f'./data/{date_today}_author_data.csv')
+    authors_df = pd.read_csv(input)
     authors_df['institution'] = authors_df['institution'].apply(lambda x: convert_to_list(x))
     authors_df['projects'] = authors_df['projects'].apply(lambda x: convert_to_list(x))
     authors_df['groups'] = authors_df['groups'].apply(lambda x: convert_to_list(x))
@@ -109,19 +91,43 @@ def clean_authors(date_today=None):
                             lambda x: list(set(x)))
     
     # Save
-    out_file = f"data/{date_today}_author_clean.csv"
-    authors_df.to_csv(out_file, index=None)
-    print(f"Saved '{out_file}'.")
+    authors_df.to_csv(output, index=None)
+    print(f"Saved '{output}'.")
 
 
-def filter_authors(institution, date_today=None):
+def clean_papers(input, output):
+    """Clean scraped papers data.
+
+    Args:
+        input (csv):  data/{date}_paper_data.csv
+        output (csv): data/{date}_paper_clean.csv
+    """
+    # Load papers
+    papers_df = pd.read_csv(input)
+    papers_df['orcids'] = papers_df['orcids'].apply(lambda x: convert_to_list(x))
+
+    # Replace NaNs to empty lists to avoid loops from breaking
+    mask = papers_df['orcids'].isna()
+    papers_df.loc[mask, 'orcids'] = pd.Series([[] for _ in range(len(mask))])
+
+    # Save
+    papers_df.to_csv(output, index=None)
+    print(f"Saved '{output}'.")
+
+
+def filter_authors(input, output, institution):
+    """
+    Filter authors by institution.
+
+    Args:
+        input (csv):  data/{date}_author_clean.csv
+        output (csv): data/{date}_nodes_{institution}.csv
+        institution (str): name of institution to filter authors.
+    """
     print(f"Processing institution group: {institution}.")
 
-    if not date_today:
-        date_today = get_date()
-    
     # Load authors
-    authors_df = pd.read_csv(f"data/{date_today}_author_clean.csv")
+    authors_df = pd.read_csv(input)
 
     # Extract authors from institution
     mask = authors_df['institution_group'].apply(lambda x: institution in x)
@@ -141,37 +147,41 @@ def filter_authors(institution, date_today=None):
     authors_inst_df['n_groups']   = authors_inst_df['groups'].apply(len)
 
     # Save
-    out_file = f'./data/{date_today}_nodes_{institution}.csv'
-    authors_inst_df.to_csv(out_file, index=None)
-    print(f"Saved '{out_file}'.")
+    authors_inst_df.to_csv(output, index=None)
+    print(f"Saved '{output}'.")
 
 
-def filter_papers(institution, date_today=None):
-    if not date_today:
-        date_today = get_date()
+def filter_papers(
+    input_authors, input_papers,
+    output_papers, output_papers_2plus,
+        institution):
+    """
+    Filter authors by institution.
 
+    Args:
+        input_authors (csv): data/{date}_nodes_{institution}.csv
+        input_papers (csv):  data/{date}_paper_clean.csv
+        output_papers (csv):       data/{date}_papers_{institution}.csv
+        output_papers_2plus (csv): data/{date}_papers_{institution}_2plus.csv
+        institution (str): name of institution to filter papers.
+    """
     # Load authors
-    authors_inst_df = pd.read_csv(f'./data/{date_today}_nodes_{institution}.csv')
+    authors_inst_df = pd.read_csv(input_authors)
     # Load papers
-    papers_df = pd.read_csv(f"data/{date_today}_paper_clean.csv", converters={'orcids':eval})
+    papers_df = pd.read_csv(input_papers, converters={'orcids': eval})
 
     # Extract papers with authors from institution
     print(f"Extracting papers of researchers from {institution}.")
     authors_inst = authors_inst_df['id'].unique() # Get list of authors
     mask_1plus = papers_df['orcids'].apply(lambda x: bool(set(x) & set(authors_inst)))
-    # Debug:
-#     mask_1plus_backup = mask_1plus.copy()
-#     mask_1plus = mask_1plus_backup.copy()
     print("Extracting papers with more than 2 authors.")
     mask_2plus = papers_df.loc[mask_1plus, 'orcids'].apply(lambda x: len(set(x) & set(authors_inst)) > 1)
     papers_inst_1plus_df = papers_df[mask_1plus]
     papers_inst_2plus_df = papers_df[mask_1plus][mask_2plus]
-    
+
     # Save
-    out_file_1 = f'./data/{date_today}_papers_{institution}.csv'
-    out_file_2 = f'./data/{date_today}_papers_{institution}_2plus.csv'
-    papers_inst_1plus_df.to_csv(out_file_1, index=None)
-    papers_inst_2plus_df.to_csv(out_file_2, index=None)
-    print(f"Saved '{out_file_1}'.")
-    print(f"Saved '{out_file_2}'.")
+    papers_inst_1plus_df.to_csv(output_papers, index=None)
+    papers_inst_2plus_df.to_csv(output_papers_2plus, index=None)
+    print(f"Saved '{output_papers}'.")
+    print(f"Saved '{output_papers_2plus}'.")
     print("")
