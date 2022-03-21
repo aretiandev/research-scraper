@@ -28,7 +28,6 @@ class WebsiteDownError(Exception):
 
 
 def get_max_pages(url):
-    raise WebsiteDownError("Website is down.")
     """Get max pages from pagination box in footer."""
     log.info("Retrieving number of URLs to scrape:")
     session = HTMLSession()
