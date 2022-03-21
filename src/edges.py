@@ -9,7 +9,7 @@ from itertools import combinations
 from src.logging import create_logger
 
 
-log = create_logger(__name__, f"{__name__}.log")
+log = create_logger(__name__, f"log/{__name__}.log")
 
 
 def get_date():

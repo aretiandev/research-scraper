@@ -21,7 +21,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.par
 from src.logging import create_logger
 
 
-log = create_logger(__name__, f"{__name__}.log")
+log = create_logger(__name__, f"log/{__name__}.log")
 
 
 def ping_and_wait(url, status_code=None, wait_time=300, notifications=False):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 """
-Process module: collection of helpers to filter data by institution and add varibables to nodelist.
+Process module: collection of helpers to filter data by institution and add variables to nodelist.
 """
 
 import numpy as np
@@ -9,7 +9,7 @@ import pandas as pd
 from ast import literal_eval
 from src.logging import create_logger
 
-log = create_logger(__name__, f"{__name__}.log")
+log = create_logger(__name__, f"log/{__name__}.log")
 
 
 def convert_to_list(x):
