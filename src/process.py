@@ -118,6 +118,13 @@ def clean_papers(input, output):
     log.info(f"Saved '{output}'.")
 
 
+def clean(items, input, output):
+    if items == 'author':
+        clean_authors(input, output)
+    if items == 'paper':
+        clean_papers(input, output)
+
+
 def filter_authors(input, output, institution):
     """
     Filter authors by institution.
@@ -187,3 +194,11 @@ def filter_papers(
     papers_inst_2plus_df.to_csv(output_papers_2plus, index=None)
     log.info(f"Saved '{output_papers}'.")
     log.info(f"Saved '{output_papers_2plus}'.")
+
+
+def main():
+    pass
+
+
+if __name__ == "__main__":
+    main()

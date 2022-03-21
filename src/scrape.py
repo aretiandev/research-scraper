@@ -659,29 +659,36 @@ async def scrape(
 
 
 def main():
-    # parser = argparse.ArgumentParser(description='Scrapes Portal del la Reserca')
-    # parser.add_argument('items', type=str, help='Items to be scraped: author_links, paper_links, group_links, project_links, author, paper, group, project')
-    # parser.add_argument('-b', '--batch-size', default=20, type=int, help='Number of URLs to be scraped in each batch')
-    # parser.add_argument('-o', '--out', type=str, help='Output file')
-    # args = parser.parse_args()
-
-    # if args.out is None:
-    #     date_today = get_date()
-    #     args.out = f'{date_today}_{args.items}.csv'
-
-    # asyncio.run(scrape(items=args.items, batch_size=args.batch_size, out_file=args.out))
-
-    items = snakemake.rule
-    batch_size = snakemake.params.batch_size
+    items = snakemake.wildcards.item_name + '_links'
+    batch_size = snakemake.params.get('batch_size')
+    if batch_size is None:
+        batch_size = 20
     out_file = snakemake.output[0]
 
-    print(items)
-    print(batch_size)
-    print(out_file)
+    if items in ['author_data', 'paper_data', 'group_data', 'project_data']:
+        item_urls = pd.read_csv(snakemake.input[0])
+        item_urls = list(item_urls['0'])
+        url_root = 'https://portalrecerca.csuc.cat'
+        if items == 'paper_data':
+            urls = [url_root + url + '?mode=full' for url in item_urls]
+        else:
+            urls = [url_root + url for url in item_urls]
+    else:
+        urls = None
 
-    asyncio.run(scrape(items=items, batch_size=batch_size, out_file=out_file))
+    if items in ['author_links', 'paper_links', 'group_links', 'project_links']:
+        if items == 'paper_links':
+            batch_size = 50
+
+    # print()
+    # print("Snakemake parameters")
+    # print(items)
+    # print(batch_size)
+    # print(out_file)
+    # print()
+
+    asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file))
 
 
 if __name__ == "__main__":
     main()
-
