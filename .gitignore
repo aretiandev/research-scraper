@@ -16,3 +16,4 @@ figs/
 .env
 gunicorn.log
 *.log
+log/
