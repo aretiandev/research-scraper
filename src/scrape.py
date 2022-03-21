@@ -15,6 +15,9 @@ from requests_html import HTMLSession, AsyncHTMLSession
 import datetime
 import time
 import asyncio
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 
 from src.logging import create_logger
 
@@ -640,18 +643,45 @@ async def scrape(
             result_df = result_df.append(batch_result, ignore_index=True)
             result_df.to_csv(out_file, index=None)
 
-        # Print estimated time left
+        # Log estimated time left
         seconds_left = (len(batch_urls)-i)*(t2-t1)
-        # m, s = divmod(seconds_left, 60)
-        # h, m = divmod(m, 60)
         batch_time = str(datetime.timedelta(seconds=round(t2-t1)))
         time_left = str(datetime.timedelta(seconds=round(seconds_left)))
 
         print(
             f"Progress: {(i+1)/len(batch_urls)*100:.0f}% ({i+1}/{len(batch_urls):,d}). " +
-            f"URLs: {i*batch_size}-{(i+1)*batch_size-1}. "                              +
+            f"URLs: {i*batch_size}-{(i+1)*batch_size-1}. " +
             f"Batch time: {batch_time}. Time left: {time_left}.  ", end="\r")
 
-    print("\nDone.")
+    log.info("\nDone.")
 
     return result
+
+
+def main():
+    # parser = argparse.ArgumentParser(description='Scrapes Portal del la Reserca')
+    # parser.add_argument('items', type=str, help='Items to be scraped: author_links, paper_links, group_links, project_links, author, paper, group, project')
+    # parser.add_argument('-b', '--batch-size', default=20, type=int, help='Number of URLs to be scraped in each batch')
+    # parser.add_argument('-o', '--out', type=str, help='Output file')
+    # args = parser.parse_args()
+
+    # if args.out is None:
+    #     date_today = get_date()
+    #     args.out = f'{date_today}_{args.items}.csv'
+
+    # asyncio.run(scrape(items=args.items, batch_size=args.batch_size, out_file=args.out))
+
+    items = snakemake.rule
+    batch_size = snakemake.params.batch_size
+    out_file = snakemake.output[0]
+
+    print(items)
+    print(batch_size)
+    print(out_file)
+
+    asyncio.run(scrape(items=items, batch_size=batch_size, out_file=out_file))
+
+
+if __name__ == "__main__":
+    main()
+

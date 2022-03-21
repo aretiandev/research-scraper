@@ -80,9 +80,15 @@ rule ping_and_run:
 rule author_links:
     output:
         f"data/{date_today}_author_links.csv"
-    run:
-        batch_size = 20
-        asyncio.run(scrape(items='author_links', batch_size=batch_size, out_file=output[0]))
+    params:
+        batch_size=20
+    script:
+        "src/scrape.py"
+
+    # shell:
+        # "python -m src.scrape author_links -b {params.batch_size} -o {output[0]}"
+        # batch_size = 20
+        # asyncio.run(scrape(items='author_links', batch_size={params.batch_size}, out_file=output[0]))
 
 rule paper_links:
     input:
