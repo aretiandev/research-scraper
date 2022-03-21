@@ -7,6 +7,9 @@ Process module: collection of helpers to filter data by institution and add vari
 import numpy as np
 import pandas as pd
 from ast import literal_eval
+from src.logging import create_logger
+
+log = create_logger(__name__, f"{__name__}.log")
 
 
 def convert_to_list(x):
@@ -92,7 +95,7 @@ def clean_authors(input, output):
     
     # Save
     authors_df.to_csv(output, index=None)
-    print(f"Saved '{output}'.")
+    log.info(f"Saved '{output}'.")
 
 
 def clean_papers(input, output):
@@ -112,7 +115,7 @@ def clean_papers(input, output):
 
     # Save
     papers_df.to_csv(output, index=None)
-    print(f"Saved '{output}'.")
+    log.info(f"Saved '{output}'.")
 
 
 def filter_authors(input, output, institution):
@@ -124,7 +127,7 @@ def filter_authors(input, output, institution):
         output (csv): data/{date}_nodes_{institution}.csv
         institution (str): name of institution to filter authors.
     """
-    print(f"Processing institution group: {institution}.")
+    log.info(f"Processing institution group: {institution}.")
 
     # Load authors
     authors_df = pd.read_csv(input)
@@ -142,13 +145,13 @@ def filter_authors(input, output, institution):
     authors_inst_df.loc[mask, 'single_affiliation'] = authors_inst_df.loc[mask, 'institution'].apply(lambda x: x[0])
     
     # Add projects and groups
-    print("Adding projects and groups.")
+    log.info("Adding projects and groups.")
     authors_inst_df['n_projects'] = authors_inst_df['projects'].apply(len)
     authors_inst_df['n_groups']   = authors_inst_df['groups'].apply(len)
 
     # Save
     authors_inst_df.to_csv(output, index=None)
-    print(f"Saved '{output}'.")
+    log.info(f"Saved '{output}'.")
 
 
 def filter_papers(
@@ -171,10 +174,10 @@ def filter_papers(
     papers_df = pd.read_csv(input_papers, converters={'orcids': eval})
 
     # Extract papers with authors from institution
-    print(f"Extracting papers of researchers from {institution}.")
+    log.info(f"Extracting papers of researchers from {institution}.")
     authors_inst = authors_inst_df['id'].unique() # Get list of authors
     mask_1plus = papers_df['orcids'].apply(lambda x: bool(set(x) & set(authors_inst)))
-    print("Extracting papers with more than 2 authors.")
+    log.info("Extracting papers with more than 2 authors.")
     mask_2plus = papers_df.loc[mask_1plus, 'orcids'].apply(lambda x: len(set(x) & set(authors_inst)) > 1)
     papers_inst_1plus_df = papers_df[mask_1plus]
     papers_inst_2plus_df = papers_df[mask_1plus][mask_2plus]
@@ -182,6 +185,5 @@ def filter_papers(
     # Save
     papers_inst_1plus_df.to_csv(output_papers, index=None)
     papers_inst_2plus_df.to_csv(output_papers_2plus, index=None)
-    print(f"Saved '{output_papers}'.")
-    print(f"Saved '{output_papers_2plus}'.")
-    print("")
+    log.info(f"Saved '{output_papers}'.")
+    log.info(f"Saved '{output_papers_2plus}'.")

@@ -16,7 +16,10 @@ import datetime
 import time
 import asyncio
 
-import logging
+from src.logging import create_logger
+
+log = create_logger(__name__, f"log/{__name__}.log")
+
 
 class WebsiteDownException(Exception):
     pass
@@ -24,8 +27,7 @@ class WebsiteDownException(Exception):
 
 def get_max_pages(url):
     """Get max pages from pagination box in footer."""
-    logging.debug("Getting max_pages")
-    print("Retrieving number of URLs to scrape:", end=" ")
+    log.info("Retrieving number of URLs to scrape:")
     session = HTMLSession()
     r = session.get(url)
     if r.url == 'https://portalrecerca.manteniment.csuc.cat':
@@ -33,7 +35,7 @@ def get_max_pages(url):
     pagination_items = r.html.find('div.discovery-result-pagination ul.pagination li')
     max_pages_str = pagination_items[-2].text.split("\n")[0].strip().replace('.', '').replace(',', '')
     max_pages = int(max_pages_str)
-    print(f"{max_pages:,d}.")
+    log.info(f"{max_pages:,d}.")
     return max_pages
 
 
@@ -46,8 +48,7 @@ async def retry_url(s, url, attempts=10, selector=None, debug=False):
             if r.url == 'https://portalrecerca.manteniment.csuc.cat':
                 raise WebsiteDownException("Website is down.")
 
-            if debug:
-                print(f"{r} Attempt: {_}. URL: {url}")
+            log.debug(f"{r} Attempt: {_}. URL: {url}")
 
             # If selector supplied, break only if it is found
             if selector:
@@ -62,7 +63,7 @@ async def retry_url(s, url, attempts=10, selector=None, debug=False):
             time.sleep(1)
             pass
     else:
-        print(f"No attempts left for url: {url}")
+        log.info(f"No attempts left for url: {url}")
         r = None
 
     return r
@@ -483,9 +484,8 @@ async def scrape_url(s, url, items='author', attempts=10):
                 # Append to results_list
                 result.append(scrape_item)
 
-        except Exception as e:
-            print(f"Exception in scrape_url({items}), url: {url}")
-            print(e)
+        except Exception:
+            log.exception(f"Exception in scrape_url({items}), url: {url}")
             result = []
 
         return result
@@ -605,7 +605,7 @@ async def scrape(
 
     batch_urls = [urls[i:i+batch_size] for i in range(start_pos, len(urls), batch_size)]
 
-    print(f"""Scraping items: {items}
+    log.info(f"""Scraping items: {items}
     URL count: {len(urls)-start_pos:,d}
     Batch count: {len(batch_urls):,d}
     Batch length: {batch_size:,d}
@@ -625,10 +625,9 @@ async def scrape(
         tasks = (scrape_url(s, url, items=items) for url in batch)
         try:
             batch_result = await asyncio.gather(*tasks)
-        except Exception as e:
-            print(f"Exception in scrape({items}) for batch number {i}:")
-            print(e)
-            raise e
+        except Exception:
+            log.exception(f"Exception in scrape({items}) for batch number {i}:")
+            raise
         t2 = time.perf_counter()
 
         # Flatten result

@@ -16,6 +16,11 @@ import time
 import os
 import subprocess
 
+from src.logging import create_logger
+
+
+log = create_logger(__name__, f"{__name__}.log")
+
 
 def ping_and_wait(url, status_code=None, wait_time=300, notifications=False):
     """Ping and wait
@@ -26,7 +31,7 @@ def ping_and_wait(url, status_code=None, wait_time=300, notifications=False):
     """
     tz_NY = pytz.timezone('America/New_York')
 
-    print(f"Pinging URL: {url}")
+    log.info(f"Pinging URL: {url}")
     while True:
         try:
             r = requests.get(url)
@@ -38,10 +43,9 @@ def ping_and_wait(url, status_code=None, wait_time=300, notifications=False):
             if r.history:
                 status_history = " ".join(str(s.status_code) for s in r.history) + " ->"
 
-            print(f"{dt_string} - Ping! Response: {status_history} {r.status_code}: {r.url}")
-        except Exception as e:
-            print("There was an exception in the response:")
-            print(e)
+            log.info(f"{dt_string} - Ping! Response: {status_history} {r.status_code}: {r.url}")
+        except Exception:
+            log.exception("There was an exception in the response:")
             pass
 
         # if r.url != 'https://portalrecerca.manteniment.csuc.cat':
@@ -67,11 +71,11 @@ def ping_and_wait(url, status_code=None, wait_time=300, notifications=False):
 
         time.sleep(wait_time - 30 + random.random()*60)
 
-    print("Success conditions satisfied, website seems to be back online. Breaking from loop.")
+    log.info("Success conditions satisfied, website seems to be back online. Breaking from loop.")
 
 
 def send_slack_message(channel, message, slack_token):
-    print(f"Sending Slack message: '{message}' (channel: '{channel}')")
+    log.info(f"Sending Slack message: '{message}' (channel: '{channel}')")
 
     # Add date and time to message
     tz_NY = pytz.timezone('America/New_York') 
@@ -110,5 +114,5 @@ if __name__ == "__main__":
     message = ":snake: Running Snakemake from scratch with 16 cores."
     send_slack_message(channel, message, slack_token)
 
-    smk_command = ["snakemake", "--cores", "16"]
+    smk_command = ["snakemake", "--cores", "all", "--log-handler-script", "src/log_handler_script.py"]
     subprocess.run(smk_command)

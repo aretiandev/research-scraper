@@ -6,6 +6,10 @@ Edges module: collection of helper functions to create edgelists.
 
 import pandas as pd
 from itertools import combinations
+from src.logging import create_logger
+
+
+log = create_logger(__name__, f"{__name__}.log")
 
 
 def get_date():
@@ -29,9 +33,9 @@ def create_edgelist(input_authors, input_papers, output, institution):
         institution (str):   name of institution to filter papers.
     """
     """Create edgelist."""
-    print(f"Institution: {institution}.")
+    log.info(f"Institution: {institution}.")
     # Load papers with coauthors list
-    print(f"{institution} - Loading papers.")
+    log.info(f"{institution} - Loading papers.")
     papers_df = pd.read_csv(input_papers, converters={'orcids': eval})
     papers = papers_df['orcids'].copy()
 
@@ -40,7 +44,7 @@ def create_edgelist(input_authors, input_papers, output, institution):
     authors_papers.sort()
 
     # Get list of authors from institution
-    print(f"{institution} - Loading nodes.")
+    log.info(f"{institution} - Loading nodes.")
     authors_inst_df = pd.read_csv(input_authors)
     authors_inst = authors_inst_df['id']
     authors_inst = authors_inst.unique()
@@ -51,14 +55,14 @@ def create_edgelist(input_authors, input_papers, output, institution):
     authors_index.sort()
 
     # Create df to store collaborations
-    print(f"{institution} - Calculting combinations of authors.")
+    log.info(f"{institution} - Calculting combinations of authors.")
     author_combinations = combinations(authors_index, 2)
     collabs_df = pd.DataFrame(list(author_combinations), columns=['Source', 'Target'])
     collabs_df['Weight'] = 0
     collabs_df = collabs_df.set_index(['Source', 'Target'])
 
     # Calculate collaborations
-    print(f"{institution} - Main loop: counting collaborations.")
+    log.info(f"{institution} - Main loop: counting collaborations.")
     for i, paper in enumerate(papers):
         print(f"{institution} - Progress: {i/len(papers)*100:.0f}%. ({i:,.0f}/{len(papers):,.0f}).", end="\r")
 
@@ -74,7 +78,7 @@ def create_edgelist(input_authors, input_papers, output, institution):
     collabs_df = collabs_df.reset_index()
 
     collabs_df.to_csv(output, index=None)
-    print(f"{institution} - Done. Saved '{output}'.")
+    log.info(f"{institution} - Done. Saved '{output}'.")
 
 
 if __name__ == "__main__":

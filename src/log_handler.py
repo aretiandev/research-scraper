@@ -31,10 +31,8 @@ def log_handler(msg):
         message = f":construction: {msg['done']} of {msg['total']} steps ({msg['done']/msg['total']*100:.0f}%) done"
     elif msg_level == 'job_error':
         message = f"Error in rule '{msg['name']}': jobid {msg['jobid']}"
-        print(msg)
     elif msg_level == 'error':
         message = msg['msg']
-        print(msg)
     else:
         return
 
