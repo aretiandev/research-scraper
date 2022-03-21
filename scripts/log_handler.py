@@ -10,7 +10,7 @@ client = WebClient(token=slack_token)
 
 def log_handler(msg):
     msg_level = msg.get('level')
-    if not msg_level:
+    if msg_level is None:
         return
 
     if msg_level == 'run_info':

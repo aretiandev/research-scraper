@@ -1,9 +1,0 @@
-2022-03-21 10:51:44AM __main__ INFO: Retrieving number of URLs to scrape:
-2022-03-21 10:51:47AM __main__ INFO: 2,240.
-2022-03-21 10:51:47AM __main__ INFO: Scraping items: paper_links
-    URL count: 2,240
-    Batch count: 45
-    Batch length: 50
-    Starting URL: 0
-    Starting batch: 0
-    Output: data/20220321_paper_links.csv

@@ -18,11 +18,11 @@
 #   snakemake dag -c1
 #   snakemake rulegraph -c1
 
-from src.process import get_date
+from scripts.src.process import get_date
 
+# Setup
 date_today = get_date()
 # date_today = '20220314'
-
 institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
 threads_max = 16
 
@@ -34,7 +34,7 @@ rule all:
 
 rule ping_and_run:
     script:
-        "bot/bot.py"
+        "scripts/ping_and_run.py"
 
 rule links:
     output: 
@@ -42,19 +42,18 @@ rule links:
     threads: 
         threads_max
     script: 
-        "src/scrape.py"
+        "scripts/scrape.py"
 
 rule data:
     input:
         f'data/{date_today}_{{item_name}}_links.csv'
-        # f"data/{date_today}_group_links.csv"
     output:
         f'data/{date_today}_{{item_name}}_data.csv'
     threads: threads_max
     params:
         batch_size=200
     script:
-        "src/scrape.py"
+        "scripts/scrape.py"
 
 rule clean:
     input:
