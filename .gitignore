@@ -1,19 +1,32 @@
+# Python Cache and checkpoints
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 __pycache__/
+
+# Data folders and files
 data/
-.venv/
-errors.txt
-url_not_found.txt
-.DS_Store
 selenium/*.csv
 selenium/*.xlsx
 selenium/chromedriver
-nohup.out
+figs/
+*.db
+
+# Environment variables
+.venv/
+.env
+
+# Mac files
+.DS_Store
+
+# Config files
 .snakemake/
 .vscode/
-figs/
-.env
+
+# Log files
 gunicorn.log
 *.log
 log/
+errors.txt
+url_not_found.txt
+nohup.out
+
