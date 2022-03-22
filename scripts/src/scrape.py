@@ -24,7 +24,8 @@ log = create_logger(__name__, f"log/{__name__}.log")
 
 
 class WebsiteDownError(Exception):
-    pass
+    def __init__(self, url):
+        self.url = url
 
 
 def get_max_pages(url):
@@ -33,7 +34,7 @@ def get_max_pages(url):
     session = HTMLSession()
     r = session.get(url)
     if r.url == 'https://portalrecerca.manteniment.csuc.cat':
-        raise WebsiteDownError("Website is down.")
+        raise WebsiteDownError(url)
     pagination_items = r.html.find('div.discovery-result-pagination ul.pagination li')
     max_pages_str = pagination_items[-2].text.split("\n")[0].strip().replace('.', '').replace(',', '')
     max_pages = int(max_pages_str)
@@ -48,7 +49,7 @@ async def retry_url(s, url, attempts=10, selector=None, debug=False):
             r = await s.get(url)
 
             if r.url == 'https://portalrecerca.manteniment.csuc.cat':
-                raise WebsiteDownError("Website is down.")
+                raise WebsiteDownError(url)
 
             log.debug(f"{r} Attempt: {_}. URL: {url}")
 
@@ -59,8 +60,6 @@ async def retry_url(s, url, attempts=10, selector=None, debug=False):
                     break
             else:
                 break
-        except WebsiteDownError:
-            raise
         except Exception:
             time.sleep(1)
             pass
@@ -493,14 +492,102 @@ async def scrape_url(s, url, items='author', attempts=10):
         return result
 
 
+def get_urls(items,n_pages=None):
+    """Get list of URLs to pass to scrape()
+
+    Args:
+        items: author_links, paper_links, project_links, group_links.
+        n_pages: max pages to scrape.
+    Returns:
+        urls (list): list of URLs.
+    """
+    url_template =                                        \
+        'https://portalrecerca.csuc.cat/simple-search?' + \
+        'query='                                        + \
+        '&location={location}'                          + \
+        '&filter_field_1={filter_field_1}'              + \
+            '&filter_type_1={filter_type_1}'            + \
+            '&filter_value_1={filter_value_1}'          + \
+        '&filter_field_2={filter_field_2}'              + \
+            '&filter_type_2={filter_type_2}'            + \
+            '&filter_value_2={filter_value_2}'          + \
+        '&sort_by={sort_by}'                            + \
+            '&order={order}'                            + \
+        '&rpp={rpp}'                                    + \
+        '&etal=0'                                       + \
+        '&start='
+
+    if items == 'author_links':
+        search_fields = {
+            'location'      : 'crisrp',
+            'filter_field_1': 'resourcetype',
+            'filter_type_1' : 'equals',
+            'filter_value_1': 'Researchers',
+            'filter_field_2': '',
+            'filter_type_2' : '',
+            'filter_value_2': '',
+            'sort_by'       : 'crisrp.fullName_sort',
+            'order'         : 'asc',
+            'rpp'           : '300'
+        }
+
+    elif items == 'paper_links':
+        search_fields = {
+            'location'      : 'publications',
+            'filter_field_1': 'resourcetype',
+            'filter_type_1' : 'equals',
+            'filter_value_1': 'Items',
+            'filter_field_2': 'itemtype',
+            'filter_type_2' : 'notequals',
+            'filter_value_2': 'Phd+Thesis',
+            'sort_by'       : 'dc.contributor.authors_sort',
+            'order'         : 'asc',
+            'rpp'           : '300'
+        }
+
+    elif items == 'project_links':
+        search_fields = {
+            'location'      : 'crisproject',
+            'filter_field_1': 'resourcetype',
+            'filter_type_1' : 'equals',
+            'filter_value_1': 'Projects',
+            'filter_field_2': '',
+            'filter_type_2' : '',
+            'filter_value_2': '',
+            'sort_by'       : 'crisrp.title_sort',
+            'order'         : 'asc',
+            'rpp'           : '300'
+        }
+
+    elif items == 'group_links':
+        search_fields = {
+            'location'      : 'crisou',
+            'filter_field_1': 'resourcetype',
+            'filter_type_1' : 'equals',
+            'filter_value_1': 'OrgUnits',
+            'filter_field_2': '',
+            'filter_type_2' : '',
+            'filter_value_2': '',
+            'sort_by'       : 'crisou.name_sort',
+            'order'         : 'asc',
+            'rpp'           : '300'
+        }
+
+    url_root = url_template.format(**search_fields)
+
+    if not n_pages:
+        n_pages = get_max_pages(url_root + '0')
+
+    urls = [url_root + str(page*300) for page in range(n_pages)]
+
+    return urls
+
+
 # Main Entrypoint
 async def scrape(
-        items='author',
-        urls=None,
-        start_pos=0,
-        batch_start_pos=0,
-        n_pages=None,
-        batch_size=None,
+        items,
+        urls,
+        batch_start=0,
         out_file=None):
     """Main entry function to scrape Portal de la Reserca.
 
@@ -519,107 +606,21 @@ async def scrape(
         out_file (csv): writes DataFrame to csv.
     """
 
-    # Get list of URLs to scrape hyperlinks
-    if items in ['author_links', 'paper_links', 'project_links', 'group_links']:
-
-        if not urls:
-            url_template =                                        \
-                'https://portalrecerca.csuc.cat/simple-search?' + \
-                'query='                                        + \
-                '&location={location}'                          + \
-                '&filter_field_1={filter_field_1}'              + \
-                    '&filter_type_1={filter_type_1}'            + \
-                    '&filter_value_1={filter_value_1}'          + \
-                '&filter_field_2={filter_field_2}'              + \
-                    '&filter_type_2={filter_type_2}'            + \
-                    '&filter_value_2={filter_value_2}'          + \
-                '&sort_by={sort_by}'                            + \
-                    '&order={order}'                            + \
-                '&rpp={rpp}'                                    + \
-                '&etal=0'                                       + \
-                '&start='
-
-            if items == 'author_links':
-                search_fields = {
-                    'location'      : 'crisrp',
-                    'filter_field_1': 'resourcetype',
-                    'filter_type_1' : 'equals',
-                    'filter_value_1': 'Researchers',
-                    'filter_field_2': '',
-                    'filter_type_2' : '',
-                    'filter_value_2': '',
-                    'sort_by'       : 'crisrp.fullName_sort',
-                    'order'         : 'asc',
-                    'rpp'           : '300'
-                }
-
-            elif items == 'paper_links':
-                search_fields = {
-                    'location'      : 'publications',
-                    'filter_field_1': 'resourcetype',
-                    'filter_type_1' : 'equals',
-                    'filter_value_1': 'Items',
-                    'filter_field_2': 'itemtype',
-                    'filter_type_2' : 'notequals',
-                    'filter_value_2': 'Phd+Thesis',
-                    'sort_by'       : 'dc.contributor.authors_sort',
-                    'order'         : 'asc',
-                    'rpp'           : '300'
-                }
-
-            elif items == 'project_links':
-                search_fields = {
-                    'location'      : 'crisproject',
-                    'filter_field_1': 'resourcetype',
-                    'filter_type_1' : 'equals',
-                    'filter_value_1': 'Projects',
-                    'filter_field_2': '',
-                    'filter_type_2' : '',
-                    'filter_value_2': '',
-                    'sort_by'       : 'crisrp.title_sort',
-                    'order'         : 'asc',
-                    'rpp'           : '300'
-                }
-
-            elif items == 'group_links':
-                search_fields = {
-                    'location'      : 'crisou',
-                    'filter_field_1': 'resourcetype',
-                    'filter_type_1' : 'equals',
-                    'filter_value_1': 'OrgUnits',
-                    'filter_field_2': '',
-                    'filter_type_2' : '',
-                    'filter_value_2': '',
-                    'sort_by'       : 'crisou.name_sort',
-                    'order'         : 'asc',
-                    'rpp'           : '300'
-                }
-
-            url_root = url_template.format(**search_fields)
-
-            if not n_pages:
-                n_pages = get_max_pages(url_root + '0')
-
-            urls = [url_root + str(page*300) for page in range(n_pages)]
-
-    if not batch_size:
-        batch_size = len(urls)
-
-    batch_urls = [urls[i:i+batch_size] for i in range(start_pos, len(urls), batch_size)]
+    urls_flat = [url for batch in urls for url in batch]
+    batch_size = len(urls[0])
 
     log.info(f"""Scraping items: {items}
-    URL count: {len(urls)-start_pos:,d}
-    Batch count: {len(batch_urls):,d}
+    URL count: {len(urls_flat):,d}
+    Batch count: {len(urls):,d}
     Batch length: {batch_size:,d}
-    Starting URL: {start_pos:,d}
-    Starting batch: {batch_start_pos}
+    Starting batch: {batch_start}
     Output: {out_file}""")
 
     if out_file:
         result_df = pd.DataFrame()
 
     result = []
-    for i, batch in enumerate(batch_urls[batch_start_pos:]):
+    for i, batch in enumerate(urls[batch_start:]):
 
         s = AsyncHTMLSession()
 
@@ -645,44 +646,15 @@ async def scrape(
             result_df.to_csv(out_file, index=None)
 
         # Log estimated time left
-        seconds_left = (len(batch_urls)-i)*(t2-t1)
+        seconds_left = (len(urls)-i)*(t2-t1)
         batch_time = str(datetime.timedelta(seconds=round(t2-t1)))
         time_left = str(datetime.timedelta(seconds=round(seconds_left)))
 
         print(
-            f"Progress: {(i+1)/len(batch_urls)*100:.0f}% ({i+1}/{len(batch_urls):,d}). " +
+            f"Progress: {(i+1)/len(urls)*100:.0f}% ({i+1}/{len(urls):,d}). " +
             f"URLs: {i*batch_size}-{(i+1)*batch_size-1}. " +
             f"Batch time: {batch_time}. Time left: {time_left}.  ", end="\r")
 
     log.info("\nDone.")
 
     return result
-
-
-def main():
-    items = snakemake.wildcards.item_name + '_links'
-    batch_size = snakemake.params.get('batch_size')
-    if batch_size is None:
-        batch_size = 20
-    out_file = snakemake.output[0]
-
-    if items in ['author_data', 'paper_data', 'group_data', 'project_data']:
-        item_urls = pd.read_csv(snakemake.input[0])
-        item_urls = list(item_urls['0'])
-        url_root = 'https://portalrecerca.csuc.cat'
-        if items == 'paper_data':
-            urls = [url_root + url + '?mode=full' for url in item_urls]
-        else:
-            urls = [url_root + url for url in item_urls]
-    else:
-        urls = None
-
-    if items in ['author_links', 'paper_links', 'group_links', 'project_links']:
-        if items == 'paper_links':
-            batch_size = 50
-
-    asyncio.run(scrape(items=items, urls=urls, batch_size=batch_size, out_file=out_file))
-
-
-if __name__ == "__main__":
-    main()

@@ -40,7 +40,7 @@ def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=None)
         channel = slack_member_id
 
     if notifications == 1:
-        message = ":warning: Website is down. Pinging URL: {url}."
+        message = f":warning: Website is down. Pinging URL: {url}."
         send_slack_message(channel, message, slack_token)
 
     while True:
@@ -82,20 +82,21 @@ def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=None)
     log.info("Website is back online. Breaking from loop.")
 
 
-def send_slack_message(channel, message, slack_token):
+def send_slack_message(channel, message, slack_token, time=False):
     log.info(f"Sending Slack message: '{message}' (channel: '{channel}')")
 
     # Add date and time to message
-    tz_NY = pytz.timezone('America/New_York') 
-    now = datetime.now(tz_NY)
-    dt_string = now.strftime("%m-%d %H:%M:%S")
-    date_message = dt_string + ' - ' + message
+    if time:
+        tz_NY = pytz.timezone('America/New_York') 
+        now = datetime.now(tz_NY)
+        dt_string = now.strftime("%m-%d %H:%M:%S")
+        message = dt_string + ' - ' + message
 
     client = WebClient(token=slack_token)
     try:
         client.chat_postMessage(
             channel=channel,
-            text=date_message
+            text=message
         )
     except SlackApiError as e:
         # You will get a SlackApiError if "ok" is False
