@@ -14,7 +14,7 @@ def log_handler(msg):
         return
 
     if msg_level == 'run_info':
-        message = ':snake: ' + msg['msg']
+        message = ':snake: ' + "```" + msg['msg'] + "```"
     elif msg_level == 'job_info':
         message_lst = [
             f":runner: Running rule '{msg['name']}':",
@@ -25,14 +25,16 @@ def log_handler(msg):
             ]
         message_lst = [x for x in message_lst if x]
         message = "\n".join(message_lst)
+        message = "```" + message + "```"
     elif msg_level == 'job_finished':
         message = f":white_check_mark: Finished job {msg['jobid']}."
     elif msg_level == 'progress':
         message = f":construction: {msg['done']} of {msg['total']} steps ({msg['done']/msg['total']*100:.0f}%) done"
     elif msg_level == 'job_error':
-        message = f"Error in rule '{msg['name']}': jobid {msg['jobid']}"
+        message = f"Error in rule `{msg['name']}`: jobid {msg['jobid']}"
     elif msg_level == 'error':
         message = msg['msg']
+        message = "```" + message + "```"
     else:
         return
 
