@@ -14,18 +14,19 @@ def log_handler(msg):
         return
 
     if msg_level == 'run_info':
-        message = ':snake: ' + "```" + msg['msg'] + "```"
+        message = ':snake: Running Snakemake:' + "```" + msg['msg'] + "```"
     elif msg_level == 'job_info':
         message_lst = [
-            f":runner: Running rule '{msg['name']}':",
-            f"    jobid: {msg['jobid']}",
-            f"    input: {msg['input']}" if msg['input'] else "",
-            f"    output: {msg['output']}" if msg['output'] else "",
-            f"    wildcards: {msg['wildcards']}" if msg['wildcards'] else ""
+            f":runner: Running rule `{msg['name']}`:",
+            "```",
+            f"jobid: {msg['jobid']}",
+            f"input: {msg['input']}" if msg['input'] else "",
+            f"output: {msg['output']}" if msg['output'] else "",
+            f"wildcards: {msg['wildcards']}" if msg['wildcards'] else "",
+            "```"
             ]
         message_lst = [x for x in message_lst if x]
         message = "\n".join(message_lst)
-        message = "```" + message + "```"
     elif msg_level == 'job_finished':
         message = f":white_check_mark: Finished job {msg['jobid']}."
     elif msg_level == 'progress':
