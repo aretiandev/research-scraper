@@ -36,7 +36,7 @@ def main():
             break
         except WebsiteDownError:
             log.info(f"Website is down during execution of scrape({items}). Pinging URL...")
-            ping_and_wait(url_root)
+            ping_and_wait(url_root, notifications=1)
 
 
 if __name__ == "__main__":

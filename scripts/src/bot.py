@@ -22,7 +22,7 @@ from src.logging import create_logger
 log = create_logger(__name__, f"log/{__name__}.log")
 
 
-def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=False):
+def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=None):
     """Ping and wait
 
     Args:
@@ -32,6 +32,17 @@ def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=False
     tz_NY = pytz.timezone('America/New_York')
 
     log.info(f"Pinging URL: {url}")
+
+    if notifications is not None:
+        load_dotenv()
+        slack_token = os.environ["SLACK_BOT_TOKEN"]
+        slack_member_id = os.environ["SLACK_MEMBER_ID"]
+        channel = slack_member_id
+
+    if notifications == 1:
+        message = ":warning: Website is down. Pinging URL: {url}."
+        send_slack_message(channel, message, slack_token)
+
     while True:
         try:
             r = requests.get(url)
@@ -41,9 +52,9 @@ def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=False
 
             status_history = ""
             if r.history:
-                status_history = " ".join(str(s.status_code) for s in r.history) + " ->"
+                status_history = " ".join(str(s.status_code) for s in r.history) + " -> "
 
-            log.info(f"{dt_string} - Ping! Response: {status_history} {r.status_code}: {r.url}")
+            log.info(f"{dt_string} - Ping! Response: {status_history}{r.status_code}: {r.url}")
         except Exception:
             log.exception("There was an exception in the response:")
             pass
@@ -62,11 +73,7 @@ def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=False
             if not r.history:  # there were no redirects
                 break
 
-        if notifications:
-            load_dotenv()
-            slack_token = os.environ["SLACK_BOT_TOKEN"]
-            slack_member_id = os.environ["SLACK_MEMBER_ID"]
-            channel = slack_member_id
+        if notifications == 2:
             message = ":hourglass: Portal de la Reserca is still down."
             send_slack_message(channel, message, slack_token)
 
