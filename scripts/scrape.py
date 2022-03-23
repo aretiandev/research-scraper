@@ -28,7 +28,8 @@ def main():
     # Build URls for data
     elif items in ['author_data', 'paper_data', 'group_data', 'project_data']:
         item_urls = pd.read_csv(snakemake.input[0])
-        item_urls = list(item_urls['0'])
+        item_urls = list(set(item_urls['0']))
+        item_urls.sort()
         if items == 'paper_data':
             urls = [url_root + url + '?mode=full' for url in item_urls]
         else:
