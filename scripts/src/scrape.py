@@ -179,7 +179,7 @@ async def scrape_project(s, url, tab='information', attempts=10):
             'end date': 'End date',
             'institution': 'Universities or CERCA centres'}
 
-        project = {attr_name:table.get(table_key) for attr_name,table_key in attr_keys.items()}
+        project = {attr_name: table.get(table_key) for attr_name, table_key in attr_keys.items()}
 
     elif tab == 'researchers':
         url = url + '/researchersprj.html?onlytab=true'
@@ -492,7 +492,7 @@ async def scrape_url(s, url, items='author', attempts=10):
         return result
 
 
-def get_urls(items,n_pages=None):
+def get_urls(items, n_pages=None):
     """Get list of URLs to pass to scrape()
 
     Args:

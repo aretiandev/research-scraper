@@ -66,7 +66,7 @@ def clean_authors(input, output):
     authors_df['projects'] = authors_df['projects'].apply(lambda x: convert_to_list(x))
     authors_df['groups'] = authors_df['groups'].apply(lambda x: convert_to_list(x))
 
-    ## Create groups of institutions
+    # Create groups of institutions
 
     # Drop duplicate institutions
     authors_df['institution'] = authors_df['institution'].apply(lambda x: list(set(x)))
@@ -92,7 +92,7 @@ def clean_authors(input, output):
     # Drop duplicate institution groups
     authors_df['institution_group'] = authors_df['institution_group'].apply(
                             lambda x: list(set(x)))
-    
+
     # Save
     authors_df.to_csv(output, index=None)
     log.info(f"Saved '{output}'.")

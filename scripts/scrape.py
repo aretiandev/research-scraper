@@ -22,7 +22,8 @@ def main():
                 urls = get_urls(items=items)
                 break
             except WebsiteDownError:
-                ping_and_wait(url_root, notifications=1)
+                message = ":warning: Website is down. Pinging URL and resuming when back online."
+                ping_and_wait(url_root, slack_msg=message, notifications=1)
 
     # Build URls for data
     elif items in ['author_data', 'paper_data', 'group_data', 'project_data']:

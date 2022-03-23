@@ -22,7 +22,7 @@ from src.logging import create_logger
 log = create_logger(__name__, f"log/{__name__}.log")
 
 
-def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=None):
+def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=None, slack_msg=None):
     """Ping and wait
 
     Args:
@@ -33,14 +33,18 @@ def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=None)
 
     log.info(f"Pinging URL: {url}")
 
+    if slack_msg is not None:
+        if notifications is None:
+            notifications = 1
+
     if notifications is not None:
         load_dotenv()
         slack_token = os.environ["SLACK_BOT_TOKEN"]
         slack_member_id = os.environ["SLACK_MEMBER_ID"]
         channel = slack_member_id
-
-    if notifications == 1:
         message = f":warning: Website is down. Pinging URL: {url}."
+        if slack_msg is not None:
+            message = slack_msg
         send_slack_message(channel, message, slack_token)
 
     while True:
@@ -78,6 +82,10 @@ def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=None)
             send_slack_message(channel, message, slack_token)
 
         time.sleep(max(wait_time - 30 + random.random()*60, 0))
+
+    if notifications is not None:
+        message = ":zap: Website is back online."
+        send_slack_message(channel, message, slack_token)
 
     log.info("Website is back online. Breaking from loop.")
 
