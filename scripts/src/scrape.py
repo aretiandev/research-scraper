@@ -88,7 +88,7 @@ async def scrape_author(s, url, item='profile', attempts=10):
         title = r.html.find('title', first=True).text
         title_error = 'Portal de la Recerca de Catalunya: Malformed Request'
         if title_error in title:
-            result = {'status description': 'System Error: Malformed Request'}
+            result = {'status_description': 'System Error: Malformed Request'}
             return result
 
         selector = 'div#collapseOneresearcherprofile table.table tr'
@@ -359,7 +359,7 @@ async def scrape_url(s, url, items='author', attempts=10):
             project.update(d)
 
         project['url']    = url
-        project['url_id'] = url[31:].split('?')[0]
+        project['url_stem'] = url[31:].split('?')[0]
 
         return project
 
@@ -374,14 +374,14 @@ async def scrape_url(s, url, items='author', attempts=10):
             group.update(d)
 
         group['url']    = url
-        group['url_id'] = url[31:].split('?')[0]
+        group['url_stem'] = url[31:].split('?')[0]
 
         return group
 
     elif items == 'paper':
         paper = {}
         paper['url']         = url
-        paper['url_id']      = url[31:].split('?')[0]
+        paper['url_stem']      = url[31:].split('?')[0]
 
         not_found_msg = 'No ha estat possible trobar el que esteu buscant'
 
@@ -392,10 +392,10 @@ async def scrape_url(s, url, items='author', attempts=10):
             table = r.html.find('table.table', first=True)
             rows = table.find('tr')
         except Exception:
-            paper['status code'] = r.status_code
+            paper['status_code'] = r.status_code
             try:
                 if not_found_msg in title.text:
-                    paper['status description'] = 'Title: not found'
+                    paper['status_description'] = 'Title: not found'
             except Exception:
                 pass
 
@@ -446,10 +446,10 @@ async def scrape_url(s, url, items='author', attempts=10):
                     href = href[7:]
                 author_hrefs.append(href)
         except Exception:
-            paper['status code'] = r.status_code
+            paper['status_code'] = r.status_code
             try:
                 if not_found_msg in title.text:
-                    paper['status description'] = 'Title: not found'
+                    paper['status_description'] = 'Title: not found'
             except Exception:
                 pass
 
