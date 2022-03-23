@@ -11,9 +11,9 @@ log = create_logger(__name__, f"log/{__name__}.log")
 def main():
     # Parameters
     url_root = 'https://portalrecerca.csuc.cat'
-    items = snakemake.wildcards.item_name + '_links'
     batch_size = snakemake.params.get('batch_size')
     out_file = snakemake.output[0]
+    items = out_file.split("/")[-1].split(".")[0][9:]
 
     # Build URls for links
     if items in ['author_links', 'paper_links', 'group_links', 'project_links']:
