@@ -16,6 +16,22 @@
 - Check if isolated nodes are important. If they are we might need to recalculate edges based not only on joint publications but also affiliation to same department.
 
 
+# FIX Names in downloaded databases
+
+- Remove spaces
+
+Projects:
+ 'official code',
+ 'start date',
+ 'end date',
+ 'principal names',
+ 'principal ids',
+ 'researcher names',
+ 'researcher ids',
+ 
+- Remove all leading "/" in url_stem's
+
+ 
 ## NOTES:
 Problem:
 - Running the scraper from JupyterLab or directly from a script produces different results. 
