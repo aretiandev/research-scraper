@@ -60,6 +60,8 @@ async def retry_url(s, url, attempts=10, selector=None, debug=False):
                     break
             else:
                 break
+        except WebsiteDownError:
+            raise
         except Exception:
             time.sleep(1)
             pass
