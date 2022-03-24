@@ -44,14 +44,19 @@ def get_max_pages(url):
 
 async def retry_url(s, url, attempts=10, selector=None, debug=False):
     """Retry fetching URL a given number of times."""
-    for _ in range(attempts):
+    for attempt in range(attempts):
         try:
+            log.debug(f"""URL: {url}
+Attempt: {attempt}""")
+
             r = await s.get(url)
 
             if r.url == 'https://portalrecerca.manteniment.csuc.cat':
                 raise WebsiteDownError(url)
 
-            log.debug(f"{r} Attempt: {_}. URL: {url}")
+            log.debug(f"""URL: {url}
+Attempt: {attempt}
+Response: {r}""")
 
             # If selector supplied, break only if it is found
             if selector:
