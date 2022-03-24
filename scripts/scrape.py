@@ -54,7 +54,8 @@ def main():
             asyncio.run(scrape(
                 items=items,
                 urls=batch_urls,
-                out_file=out_file))
+                out_file=out_file,
+                out_sql=True))
             break
 
         except WebsiteDownError as e:

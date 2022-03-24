@@ -11,16 +11,70 @@ Main functions:
 """
 
 import pandas as pd
+import requests
 from requests_html import HTMLSession, AsyncHTMLSession
 import datetime
 import time
 import asyncio
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+import sqlite3
 from src.logging import create_logger
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 
 log = create_logger(__name__, f"log/{__name__}.log")
+
+
+def insert_urls(urls, items, date):
+    rows = []
+    for url in urls:
+        row = {}
+        row['items'] = items
+        row['url_stem'] = url
+        row['current'] = 1
+        row['url_scraped'] = 0
+        row['date_created'] = date
+        rows.append(row)
+
+    conn = sqlite3.connect('recerca.db')
+    c = conn.cursor()
+
+    c.executemany("""
+        INSERT INTO urls
+            (items, url_stem, current, url_scraped, date_created)
+        VALUES
+            (:items, :url_stem, :current, :url_scraped, :date_created)
+        ON CONFLICT DO UPDATE SET date_created = :date_created
+        """, rows)
+
+    conn.commit()
+    conn.close()
+
+
+def insert_papers(papers, date):
+    for paper in papers:
+        paper['current'] = 1
+        paper['date_created'] = date
+
+    conn = sqlite3.connect('../recerca.db')
+    with conn:
+        c = conn.cursor()
+
+        # Set current = 0 for existing records
+        c.executemany("""UPDATE papers
+                        SET current = 0
+                        WHERE url_stem = :url_stem""", papers)
+
+        # Insert new record
+        c.executemany("""INSERT INTO papers VALUES (
+                        :id,
+                        :url,:url_stem,:date,:publisher,:title,:type,:author,
+                        :sourceid,:sourceref,:orcids,:citation,:issn,:published_in,
+                        :doi,:isbn,:uri,:status_code,:status_description,
+                        :date_created,:current) 
+                        ON CONFLICT DO UPDATE SET current=1
+                        """, papers)
+    conn.close()
 
 
 class WebsiteDownError(Exception):
@@ -649,6 +703,14 @@ async def scrape(
         if out_file:
             result_df = result_df.append(batch_result, ignore_index=True)
             result_df.to_csv(out_file, index=None)
+
+        if out_sql:
+            log.debug(f"Writing to database. Batch: {i}. # URLS: {len(batch_result)}.")
+            date_today = out_file.split("/")[1][:8] if out_file else None
+            if items in ['paper_urls', 'author_urls', 'project_url', 'group_url']:
+                insert_urls(batch_result, items, date_today)
+            elif items == 'paper_data':
+                insert_papers(batch_result, date_today)
 
         # Log estimated time left
         seconds_left = (len(urls)-i)*(t2-t1)
