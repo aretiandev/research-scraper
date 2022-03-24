@@ -77,6 +77,75 @@ def insert_papers(papers, date):
     conn.close()
 
 
+def insert_authors(authors, date):
+    for author in authors:
+        author['current'] = 1
+        author['date_created'] = date
+
+    conn = sqlite3.connect('recerca.db')
+    with conn:
+        # Set current = 0 for existing records
+        conn.executemany("""UPDATE authors
+                        SET current = 0
+                        WHERE url = :url""", authors)
+
+        # Insert new record
+        conn.executemany("""INSERT INTO authors VALUES (
+                            :id,:url,:label,:department,:institution,:institution_2,:projects,
+                            :groups,:status_description,:institution_group,
+                            :date_created,:current)
+                        ON CONFLICT DO UPDATE SET current=1
+                        """, authors)
+    conn.close()
+
+
+def insert_groups(groups, date):
+    for group in groups:
+        group['current'] = 1
+        group['date_created'] = date
+
+    conn = sqlite3.connect('recerca.db')
+    with conn:
+        # Set current = 0 for existing records
+        conn.executemany("""UPDATE groups
+                        SET current = 0
+                        WHERE url = :url""", groups)
+
+        # Insert new record
+        conn.executemany("""INSERT INTO groups VALUES (
+                            :id,:name,:acronym,:institution,:group_url,:sgr_code,
+                            :principal_names,:principal_ids,:researcher_names,:researcher_ids,
+                            :url,:url_stem,
+                            :date_created,:current)
+                        ON CONFLICT DO UPDATE SET current=1
+                        """, groups)
+
+    conn.close()
+
+
+def insert_projects(projects, date):
+    for project in projects:
+        project['current'] = 1
+        project['date_created'] = date
+
+    conn = sqlite3.connect('recerca.db')
+    with conn:
+        # Set current = 0 for existing records
+        conn.executemany("""UPDATE projects
+                        SET current = 0
+                        WHERE url_stem = :url_stem""", projects)
+
+        conn.executemany("""INSERT INTO projects VALUES (
+                            :id,:title,:official_code,:start_date,:end_date,:institution,
+                            :principal_names,:principal_ids,:researcher_names,:researcher_ids,
+                            :url,:url_stem,
+                            :date_created,:current)
+                        ON CONFLICT DO UPDATE SET current=1
+                        """, projects)
+
+    conn.close()
+
+
 class WebsiteDownError(Exception):
     def __init__(self, url):
         self.url = url
@@ -707,10 +776,16 @@ async def scrape(
         if out_sql:
             log.debug(f"Writing to database. Batch: {i}. # URLS: {len(batch_result)}.")
             date_today = out_file.split("/")[1][:8] if out_file else None
-            if items in ['paper_urls', 'author_urls', 'project_url', 'group_url']:
+            if items in ['paper_urls', 'author_urls', 'project_urls', 'group_urls']:
                 insert_urls(batch_result, items, date_today)
             elif items == 'paper_data':
                 insert_papers(batch_result, date_today)
+            elif items == 'author_data':
+                insert_authors(batch_result, date_today)
+            elif items == 'group_data':
+                insert_groups(batch_result, date_today)
+            elif items == 'project_data':
+                insert_projects(batch_result, date_today)
 
         # Log estimated time left
         seconds_left = (len(urls)-i)*(t2-t1)
