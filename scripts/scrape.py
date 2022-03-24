@@ -15,8 +15,8 @@ def main():
     out_file = snakemake.output[0]
     items = out_file.split("/")[-1].split(".")[0][9:]
 
-    # Build URls for links
-    if items in ['author_links', 'paper_links', 'group_links', 'project_links']:
+    # Build URls for url rules
+    if items in ['author_urls', 'paper_urls', 'group_urls', 'project_urls']:
         while True:
             try:
                 urls = get_urls(items=items)
@@ -25,7 +25,7 @@ def main():
                 message = ":warning: Website is down. Pinging URL and resuming when back online."
                 ping_and_wait(url_root, slack_msg=message, notifications=1)
 
-    # Build URls for data
+    # Build URls for data rules
     elif items in ['author_data', 'paper_data', 'group_data', 'project_data']:
         item_urls = pd.read_csv(snakemake.input[0])
         item_urls = list(set(item_urls['0']))
@@ -38,7 +38,7 @@ def main():
     # Batch size and start_pos
     if batch_size is None:
         batch_size = 20
-        if items == 'paper_links':
+        if items == 'paper_urls':
             batch_size = 50
     start_pos = 0
 

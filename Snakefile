@@ -1,10 +1,10 @@
 # Snakefile
 #
 # There are 8 target items: 
-#   author and author_links
-#   paper and paper_links
-#   project and project_links
-#   group and group_links
+#   author and author_urls
+#   paper and paper_urls
+#   project and project_urls
+#   group and group_urls
 #
 # Run everthing:
 #   snakemake --cores all --log-handler-script scripts/log_handler.py
@@ -36,9 +36,9 @@ rule ping_and_run:
     script:
         "scripts/ping_and_run.py"
 
-rule links:
+rule urls:
     output: 
-        f"data/{date_today}_{{item_name}}_links.csv"
+        f"data/{date_today}_{{item_name}}_urls.csv"
     threads: 
         threads_max
     script: 
@@ -46,7 +46,7 @@ rule links:
 
 rule data:
     input:
-        f'data/{date_today}_{{item_name}}_links.csv'
+        f'data/{date_today}_{{item_name}}_urls.csv'
     output:
         f'data/{date_today}_{{item_name}}_data.csv'
     threads: threads_max

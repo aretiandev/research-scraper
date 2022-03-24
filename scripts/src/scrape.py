@@ -319,8 +319,8 @@ async def scrape_url(s, url, items='author', attempts=10):
     Args:
         s: instance of requests_html.AsyncHTMLSession().
         url: URL to scrape.
-        items: paper_links, paper, author_links, author,
-               project_links, project, group_links, group.
+        items: paper_urls, paper, author_urls, author,
+               project_urls, project, group_urls, group.
     Returns:
         (dict): item information.
     """
@@ -459,7 +459,7 @@ async def scrape_url(s, url, items='author', attempts=10):
 
         return paper
 
-    else:  # paper_links, author_links, project_links or group_links
+    else:  # paper_urls, author_urls, project_urls or group_urls
         selector = 'div.panel.panel-info table.table'
         r = await retry_url(s, url, attempts=20, selector=selector)  # 20 attempts avoid errors
 
@@ -479,10 +479,10 @@ async def scrape_url(s, url, items='author', attempts=10):
                 if len(columns) == 0:
                     continue
 
-                if items in ['paper_links', 'project_links']:
-                    scrape_item = columns[1].find('a')[0].attrs['href']
-                elif items in ['author_links', 'group_links']:
-                    scrape_item = columns[0].find('a')[0].attrs['href']
+                if items in ['paper_urls', 'project_urls']:
+                    scrape_item = columns[1].find('a')[0].attrs['href'][1:]
+                elif items in ['author_urls', 'group_urls']:
+                    scrape_item = columns[0].find('a')[0].attrs['href'][1:]
 
                 # Append to results_list
                 result.append(scrape_item)
@@ -498,7 +498,7 @@ def get_urls(items, n_pages=None):
     """Get list of URLs to pass to scrape()
 
     Args:
-        items: author_links, paper_links, project_links, group_links.
+        items: author_urls, paper_urls, project_urls, group_urls.
         n_pages: max pages to scrape.
     Returns:
         urls (list): list of URLs.
@@ -519,7 +519,7 @@ def get_urls(items, n_pages=None):
         '&etal=0'                                       + \
         '&start='
 
-    if items == 'author_links':
+    if items == 'author_urls':
         search_fields = {
             'location'      : 'crisrp',
             'filter_field_1': 'resourcetype',
@@ -533,7 +533,7 @@ def get_urls(items, n_pages=None):
             'rpp'           : '300'
         }
 
-    elif items == 'paper_links':
+    elif items == 'paper_urls':
         search_fields = {
             'location'      : 'publications',
             'filter_field_1': 'resourcetype',
@@ -547,7 +547,7 @@ def get_urls(items, n_pages=None):
             'rpp'           : '300'
         }
 
-    elif items == 'project_links':
+    elif items == 'project_urls':
         search_fields = {
             'location'      : 'crisproject',
             'filter_field_1': 'resourcetype',
@@ -561,7 +561,7 @@ def get_urls(items, n_pages=None):
             'rpp'           : '300'
         }
 
-    elif items == 'group_links':
+    elif items == 'group_urls':
         search_fields = {
             'location'      : 'crisou',
             'filter_field_1': 'resourcetype',
@@ -590,14 +590,15 @@ async def scrape(
         items,
         urls,
         batch_start=0,
-        out_file=None):
+        out_file=None,
+        out_sql=False):
     """Main entry function to scrape Portal de la Reserca.
 
     Args:
         items:
             author, paper, project, group,
-            author_links, paper_links, project_links, group_links.
-        urls: list of urls. Not needed if items in [author_links, paper_links].
+            author_urls, paper_urls, project_urls, group_urls.
+        urls: list of urls. Not needed if items in [author_urls, paper_urls].
         start_pos: URL starting position.
         batch_start_pos: Batch starting position.
         n_pages: max pages to scrape.
@@ -638,7 +639,7 @@ async def scrape(
         t2 = time.perf_counter()
 
         # Flatten result
-        if items in ['author_links', 'paper_links', 'project_links', 'group_links']:
+        if items in ['author_urls', 'paper_urls', 'project_urls', 'group_urls']:
             batch_result = [i for sublist in batch_result for i in sublist]
 
         result.extend(batch_result)
