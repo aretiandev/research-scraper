@@ -364,7 +364,7 @@ async def scrape_url(s, url, items='author', attempts=10):
             project.update(d)
 
         project['url']    = url
-        project['url_stem'] = url[31:].split('?')[0]
+        project['url_stem'] = url[32:].split('?')[0]
 
         return project
 
@@ -379,14 +379,14 @@ async def scrape_url(s, url, items='author', attempts=10):
             group.update(d)
 
         group['url']    = url
-        group['url_stem'] = url[31:].split('?')[0]
+        group['url_stem'] = url[32:].split('?')[0]
 
         return group
 
     elif items == 'paper':
         paper = {}
         paper['url']         = url
-        paper['url_stem']      = url[31:].split('?')[0]
+        paper['url_stem']      = url[32:].split('?')[0]
 
         not_found_msg = 'No ha estat possible trobar el que esteu buscant'
 
