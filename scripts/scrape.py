@@ -4,6 +4,7 @@ from src.scrape import WebsiteDownError, get_urls, scrape
 from src.logging import create_logger
 from src.bot import ping_and_wait
 import os
+import sqlite3
 
 log = create_logger(__name__, f"log/{__name__}.log")
 
@@ -80,6 +81,14 @@ def main():
             start_pos = last_pos
 
             log.info(f"Restarting scrape({items}) from position {start_pos}.")
+
+    # Clean URLs tables
+    if out_file is not None:
+        date_today = out_file.split("/")[1][:8]
+        conn = sqlite3.connect('recerca.db')
+        with conn:
+            conn.execute("UPDATE urls SET current = 0 WHERE date_created != ?", (date_today,))
+        conn.close()
 
 
 if __name__ == "__main__":
