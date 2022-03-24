@@ -627,7 +627,6 @@ async def scrape(
     if out_file:
         result_df = pd.DataFrame()
 
-    result = []
     for i, batch in enumerate(urls[batch_start:]):
 
         s = AsyncHTMLSession()
@@ -647,8 +646,6 @@ async def scrape(
         if items in ['author_urls', 'paper_urls', 'project_urls', 'group_urls']:
             batch_result = [i for sublist in batch_result for i in sublist]
 
-        result.extend(batch_result)
-
         if out_file:
             result_df = result_df.append(batch_result, ignore_index=True)
             result_df.to_csv(out_file, index=None)
@@ -664,5 +661,3 @@ async def scrape(
             f"Batch time: {batch_time}. Time left: {time_left}.  ", end="\r")
 
     log.info("\nDone.")
-
-    return result
