@@ -190,7 +190,8 @@ Response: {r}""")
                 break
         except WebsiteDownError:
             raise
-        except Exception:
+        except Exception as e:
+            print('Exception: ', e)
             time.sleep(1)
             pass
     else:

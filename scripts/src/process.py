@@ -6,10 +6,34 @@ Process module: collection of helpers to filter data by institution and add vari
 
 import numpy as np
 import pandas as pd
+import sqlite3
 from ast import literal_eval
 from .logging import create_logger
 
 log = create_logger(__name__, f"log/{__name__}.log")
+
+
+def insert_nodes(nodes, date):
+    for node in nodes:
+        node['current'] = 1
+        node['date_created'] = date
+
+    conn = sqlite3.connect('../recerca.db')
+    with conn:
+        # Set current = 0 for existing records
+        conn.executemany("""UPDATE nodes
+                        SET current = 0
+                        WHERE url = :url""", nodes)
+
+        conn.executemany("""INSERT INTO nodes VALUES (
+                            :id,:label,:url,:department,:institution,:institution_2,
+                            :projects,:groups,:status_description,:institution_group,:institution_table,
+                            :n_affiliations,:single_affiliation,:n_projects,:n_groups,
+                            :date_created,:current)
+                        ON CONFLICT DO UPDATE SET current=1
+                        """, nodes)
+
+    conn.close()
 
 
 def convert_to_list(x):
@@ -159,6 +183,9 @@ def filter_authors(input, output, institution):
     # Save
     authors_inst_df.to_csv(output, index=None)
     log.info(f"Saved '{output}'.")
+
+    # Save to SQLite
+    insert_nodes(authors_inst_df.to_dict('records'))
 
 
 def filter_papers(
