@@ -442,19 +442,19 @@ async def scrape_group(s, url, tab='information', attempts=10):
 
 
 # Scrape single URL
-async def scrape_url(s, url, items='author', attempts=10):
+async def scrape_url(s, url, items='author_data', attempts=10):
     """Scrape URL.
 
     Args:
         s: instance of requests_html.AsyncHTMLSession().
         url: URL to scrape.
-        items: paper_urls, paper, author_urls, author,
-               project_urls, project, group_urls, group.
+        items: paper_urls, paper_data, author_urls, author_data,
+               project_urls, project_data, group_urls, group_data.
     Returns:
         (dict): item information.
     """
 
-    if items == 'author':
+    if items == 'author_data':
         result = await asyncio.gather(
                 scrape_author(s, url, 'profile'),
                 scrape_author(s, url, 'affiliation'),
@@ -477,7 +477,7 @@ async def scrape_url(s, url, items='author', attempts=10):
 
         return author
 
-    elif items == 'project':
+    elif items == 'project_data':
         result = await asyncio.gather(
                 scrape_project(s, url, tab='information', attempts=attempts),
                 scrape_project(s, url, tab='researchers', attempts=attempts),
@@ -492,25 +492,30 @@ async def scrape_url(s, url, items='author', attempts=10):
 
         return project
 
-    elif items == 'group':
-        result = await asyncio.gather(
-                scrape_group(s, url, tab='information', attempts=attempts),
-                scrape_group(s, url, tab='researchers', attempts=attempts),
-            )
+    elif items == 'group_data':
+        try:
+            result = await asyncio.gather(
+                    scrape_group(s, url, tab='information', attempts=attempts),
+                    scrape_group(s, url, tab='researchers', attempts=attempts),
+                )
 
-        group = {}
-        for d in result:
-            group.update(d)
+            group = {}
+            for d in result:
+                group.update(d)
 
-        group['url']    = url
-        group['url_stem'] = url[32:].split('?')[0]
+            group['url']    = url
+            group['url_stem'] = url[32:].split('?')[0]
+        except Exception:
+            log.exception(f"Exception in scrape_url({items}), url: {url}")
+            group = []
+            raise
 
         return group
 
-    elif items == 'paper':
+    elif items == 'paper_data':
         paper = {}
-        paper['url']         = url
-        paper['url_stem']      = url[32:].split('?')[0]
+        paper['url']      = url
+        paper['url_stem'] = url[32:].split('?')[0]
 
         not_found_msg = 'No ha estat possible trobar el que esteu buscant'
 
@@ -725,7 +730,7 @@ async def scrape(
 
     Args:
         items:
-            author, paper, project, group,
+            author_data, paper_data, project_data, group_data,
             author_urls, paper_urls, project_urls, group_urls.
         urls: list of urls. Not needed if items in [author_urls, paper_urls].
         start_pos: URL starting position.
