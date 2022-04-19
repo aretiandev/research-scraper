@@ -370,11 +370,26 @@ async def scrape_group(s, url, tab='information', attempts=10):
     Returns:
         group (dict): group information
     """
+    group = {}
+    not_found_msg = "Nothing found"
+
     if tab == 'information':
         url = url + '?onlytab=true&locale=en'
         r = await retry_url(s, url, attempts)
 
-        tables_lst = pd.read_html(r.text)
+        try:
+            title = r.html.find('title', first=True)
+            tables_lst = pd.read_html(r.text)
+        except ValueError:
+            group['status_code'] = r.status_code
+            try:
+                if not_found_msg in title.text:
+                    group['status_description'] = 'Title: not found'
+            except AttributeError:
+                pass
+
+            return group
+
         table = tables_lst[0].set_index(0).to_dict()[1]
 
         attr_keys = {
@@ -389,7 +404,20 @@ async def scrape_group(s, url, tab='information', attempts=10):
 
     elif tab == 'researchers':
         r = await retry_url(s, url, attempts)
-        next_tab_href = r.html.find('#bar-tab-1012900 a', first=True).attrs['href']
+
+        try:
+            title = r.html.find('title', first=True)
+            next_tab_href = r.html.find('#bar-tab-1012900 a', first=True).attrs['href']
+        except AttributeError:
+            group['status_code'] = r.status_code
+            try:
+                if not_found_msg in title.text:
+                    group['status_description'] = 'Title: not found'
+            except Exception:
+                pass
+
+            return group
+
         url_root = 'https://portalrecerca.csuc.cat' 
         url = url_root + next_tab_href
 
@@ -397,8 +425,6 @@ async def scrape_group(s, url, tab='information', attempts=10):
 
         selector = 'table.table'
         tables = r.html.find(selector)
-
-        group = {}
 
         # Principal researchers
         rows = tables[0].find('tr')
