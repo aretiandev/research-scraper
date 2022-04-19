@@ -766,7 +766,7 @@ async def scrape(
         try:
             batch_result = await asyncio.gather(*tasks)
         except Exception:
-            log.debug(f"Exception in scrape({items}) for batch number {i}:")
+            log.exception(f"Exception in scrape({items}) for batch number {i}:")
             raise
 
         t2 = time.perf_counter()
