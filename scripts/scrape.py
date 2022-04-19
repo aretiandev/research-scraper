@@ -14,7 +14,7 @@ def main():
     url_root = 'https://portalrecerca.csuc.cat/'
     batch_size = snakemake.params.get('batch_size')
     out_file = snakemake.output[0]
-    items = out_file.split("/")[-1].split(".")[0][9:]
+    items = out_file.split("/")[-1].split(".")[0][9:]  # data/20220419_group_data.csv -> "group_data"
 
     # Build URls for url rules
     if items in ['author_urls', 'paper_urls', 'group_urls', 'project_urls']:
@@ -56,7 +56,7 @@ def main():
                 items=items,
                 urls=batch_urls,
                 out_file=out_file,
-                out_sql=True))
+                out_sql=False))  # Debug
             break
 
         except WebsiteDownError as e:
