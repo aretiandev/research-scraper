@@ -82,14 +82,14 @@ def main():
 
             log.info(f"Restarting scrape({items}) from position {start_pos}.")
 
-    # Clean URLs tables
-    if items in ['author_urls', 'paper_urls', 'group_urls', 'project_urls']:
-        if out_file is not None:
-            date_today = out_file.split("/")[1][:8]
-            conn = sqlite3.connect('recerca.db')
-            with conn:
-                conn.execute("UPDATE urls SET current = 0 WHERE date_created != ?", (date_today,))
-            conn.close()
+    # # Clean URLs tables
+    # if items in ['author_urls', 'paper_urls', 'group_urls', 'project_urls']:
+    #     if out_file is not None:
+    #         date_today = out_file.split("/")[1][:8]
+    #         conn = sqlite3.connect('recerca.db')
+    #         with conn:
+    #             conn.execute("UPDATE urls SET current = 0 WHERE date_created != ?", (date_today,))
+    #         conn.close()
 
 
 if __name__ == "__main__":

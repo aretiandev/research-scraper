@@ -185,7 +185,7 @@ def filter_authors(input, output, institution):
     log.info(f"Saved '{output}'.")
 
     # Save to SQLite
-    insert_nodes(authors_inst_df.to_dict('records'))
+    # insert_nodes(authors_inst_df.to_dict('records'))
 
 
 def filter_papers(
