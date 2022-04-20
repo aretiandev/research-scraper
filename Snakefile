@@ -29,7 +29,7 @@ from scripts.src.process import get_date
 # Setup
 # date_today = get_date()
 date_today = '20220419'
-institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
+institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC', 'Agrotecnio', 'CRAG', 'UdL', 'URV', 'UdG']
 threads_max = 16
 
 rule all:
