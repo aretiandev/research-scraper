@@ -242,8 +242,13 @@ async def scrape_author(s, url, item='profile', attempts=10):
 
             for label, pattern in scrape_dict.items():
                 result[label] = table[pattern]
+        except KeyError:
+            result = {'error': 'KeyError'}
         except IndexError:
-            result = None
+            result = {'error': 'IndexError'}
+        except Exception:
+            log.exception(f"There was an exception in scrape_author(), url: {url}")
+            raise
 
     elif item == 'affiliation':
         url = url + '/researcherdepartaments.html?onlytab=true'
