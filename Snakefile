@@ -34,9 +34,9 @@ threads_max = 16
 
 rule all:
     input:
-        expand(f'data/{date_today}_edges_{{institution}}.csv', institution=institution_list),
-        f'data/{date_today}_project_data.csv',
-        f'data/{date_today}_group_data.csv'
+        expand(f'data/{date_today}/{date_today}_edges_{{institution}}.csv', institution=institution_list),
+        f'data/{date_today}/{date_today}_project_data.csv',
+        f'data/{date_today}/{date_today}_group_data.csv'
 
 rule ping_and_run:
     script:
@@ -44,7 +44,7 @@ rule ping_and_run:
 
 rule urls:
     output: 
-        f"data/{date_today}_{{item_name}}_urls.csv"
+        f"data/{date_today}/{date_today}_{{item_name}}_urls.csv"
     threads: 
         threads_max
     script: 
@@ -52,9 +52,9 @@ rule urls:
 
 rule data:
     input:
-        f'data/{date_today}_{{item_name}}_urls.csv'
+        f'data/{date_today}/{date_today}_{{item_name}}_urls.csv'
     output:
-        f'data/{date_today}_{{item_name}}_data.csv'
+        f'data/{date_today}/{date_today}_{{item_name}}_data.csv'
     threads: threads_max
     params:
         batch_size=200
@@ -63,47 +63,47 @@ rule data:
 
 rule clean:
     input:
-        f'data/{date_today}_{{item_name}}_data.csv'
+        f'data/{date_today}/{date_today}_{{item_name}}_data.csv'
     output:
-        f'data/{date_today}_{{item_name}}_clean.csv'
+        f'data/{date_today}/{date_today}_{{item_name}}_clean.csv'
     script:
         "scripts/clean.py"
 
 rule filter_authors:
     input:
-        f'data/{date_today}_author_clean.csv'
+        f'data/{date_today}/{date_today}_author_clean.csv'
     output:
-        f'data/{date_today}_nodes_{{institution}}.csv'
+        f'data/{date_today}/{date_today}_nodes_{{institution}}.csv'
     script:
         "scripts/filter_authors.py"
 
 rule filter_papers:
     input:
-        f'data/{date_today}_nodes_{{institution}}.csv',
-        f'data/{date_today}_paper_clean.csv'
+        f'data/{date_today}/{date_today}_nodes_{{institution}}.csv',
+        f'data/{date_today}/{date_today}_paper_clean.csv'
     output:
-        f'data/{date_today}_papers_{{institution}}.csv',
-        f'data/{date_today}_papers_{{institution}}_2plus.csv'
+        f'data/{date_today}/{date_today}_papers_{{institution}}.csv',
+        f'data/{date_today}/{date_today}_papers_{{institution}}_2plus.csv'
     script:
         "scripts/filter_papers.py"
 
 rule create_edges:
     input:
-        f'data/{date_today}_nodes_{{institution}}.csv',
-        f'data/{date_today}_papers_{{institution}}_2plus.csv'
+        f'data/{date_today}/{date_today}_nodes_{{institution}}.csv',
+        f'data/{date_today}/{date_today}_papers_{{institution}}_2plus.csv'
     output:
-        f'data/{date_today}_edges_{{institution}}.csv'
+        f'data/{date_today}/{date_today}_edges_{{institution}}.csv'
     script:
         "scripts/create_edges.py"
 
 rule dag:
     output:
-        f"figs/{date_today}_dag.png"
+        f"figs/{date_today}/{date_today}_dag.png"
     shell:
         "snakemake --dag | dot -Tpng > {output}"
 
 rule rulegraph:
     output:
-        f"figs/{date_today}_rulegraph.png"
+        f"figs/{date_today}/{date_today}_rulegraph.png"
     shell:
         "snakemake --rulegraph | dot -Tpng > {output}"

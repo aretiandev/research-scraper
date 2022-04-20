@@ -812,7 +812,7 @@ async def scrape(
 
         if out_sql:
             log.debug(f"Writing to database. Batch: {i}. # URLS: {len(batch_result)}.")
-            date_today = out_file.split("/")[1][:8] if out_file else None
+            date_today = out_file.split("/")[-1][:8] if out_file else None
             if items in ['paper_urls', 'author_urls', 'project_urls', 'group_urls']:
                 insert_urls(batch_result, items, date_today)
             elif items == 'paper_data':

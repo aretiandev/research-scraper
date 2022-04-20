@@ -14,7 +14,7 @@ def main():
     url_root = 'https://portalrecerca.csuc.cat/'
     batch_size = snakemake.params.get('batch_size')
     out_file = snakemake.output[0]
-    items = out_file.split("/")[-1].split(".")[0][9:]  # data/20220419_group_data.csv -> "group_data"
+    items = out_file.split("/")[-1].split(".")[0][9:]  # data/20220419/20220419_group_data.csv -> "group_data"
 
     # Build URls for url rules
     if items in ['author_urls', 'paper_urls', 'group_urls', 'project_urls']:
@@ -67,12 +67,12 @@ def main():
 
             # Move existing results to backup folder before continuing
             if os.path.isfile(out_file):
-                new_folder = out_file[:13]
+                new_folder = 'data/archive'
                 log.debug(f'Existing file found! Moving to folder: {new_folder}')
                 if not os.path.exists(new_folder):
                     log.debug(f"Creating new folder: {new_folder}")
                     os.makedirs(new_folder)
-                out_file_name = out_file.split('/')[1]
+                out_file_name = out_file.split('/')[-1]
                 new_out_file = new_folder + '/' + out_file_name
                 os.rename(out_file, new_out_file)
                 log.info(f"Moved existing results to: {new_out_file}")
