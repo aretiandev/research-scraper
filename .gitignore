@@ -19,7 +19,7 @@ figs/
 .DS_Store
 
 # Config files
-.snakemake/
+.snakemake*
 .vscode/
 
 # Log files
