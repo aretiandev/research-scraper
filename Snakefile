@@ -41,9 +41,11 @@ timeout = 1
 
 rule all:
     input:
+        expand(f'data/{date_today}/{date_today}_nodes_{{institution}}.csv', institution=institution_list),
         expand(f'data/{date_today}/{date_today}_edges_{{institution}}.csv', institution=institution_list),
-        f'data/{date_today}/{date_today}_project_data.csv',
-        f'data/{date_today}/{date_today}_group_data.csv'
+        expand(f'data/{date_today}/{date_today}_group_nodes_{{institution}}.csv', institution=institution_list),
+        expand(f'data/{date_today}/{date_today}_group_edges_{{institution}}.csv', institution=institution_list),
+        f'data/{date_today}/{date_today}_project_data.csv'
 
 rule ping_and_run:
     script:
