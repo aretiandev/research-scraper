@@ -134,10 +134,10 @@ async def scrape_project(s, url, tab='information', attempts=10):
         
         attributes = {
             '#titleDiv' : 'title', 
-            '#oficialcodeDiv': 'official code',
+            '#oficialcodeDiv': 'official_code',
             '#programDiv': 'program',
-            '#startdateDiv': 'start date',
-            '#expdateDiv': 'end date',
+            '#startdateDiv': 'start_date',
+            '#expdateDiv': 'end_date',
             '#universityDiv': 'institution',
         }
         
@@ -173,8 +173,8 @@ async def scrape_project(s, url, tab='information', attempts=10):
             except:
                 pass
             
-        project['principal names'] = principal_names
-        project['principal ids'] = principal_ids
+        project['principal_names'] = principal_names
+        project['principal_ids'] = principal_ids
         
         # Researchers
         try:
@@ -191,8 +191,8 @@ async def scrape_project(s, url, tab='information', attempts=10):
                 except:
                     pass
                 
-            project['researcher names'] = res_names
-            project['researcher ids'] = res_ids
+            project['researcher_names'] = res_names
+            project['researcher_ids'] = res_ids
         except:
             pass
         
@@ -261,8 +261,8 @@ async def scrape_group(s, url, tab='information', attempts=10):
             except:
                 pass
             
-        group['principal names'] = principal_names
-        group['principal ids'] = principal_ids
+        group['principal_names'] = principal_names
+        group['principal_ids'] = principal_ids
         
         # Researchers
         try:
@@ -279,8 +279,8 @@ async def scrape_group(s, url, tab='information', attempts=10):
                 except:
                     pass
                 
-            group['researcher names'] = res_names
-            group['researcher ids'] = res_ids
+            group['researcher_names'] = res_names
+            group['researcher_ids'] = res_ids
         except:
             pass
         
