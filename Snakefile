@@ -82,15 +82,15 @@ rule clean:
 
 rule filter_authors:
     input:
-        f'data/{date_today}/{date_today}_author_clean.csv'
+        f'data/{date_today}/{date_today}_author_clean.csv',
     output:
-        f'data/{date_today}/{date_today}_nodes_{{institution}}.csv'
+        f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv'
     script:
         "scripts/filter_authors.py"
 
 rule filter_papers:
     input:
-        f'data/{date_today}/{date_today}_nodes_{{institution}}.csv',
+        f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv',
         f'data/{date_today}/{date_today}_paper_clean.csv'
     output:
         f'data/{date_today}/{date_today}_papers_{{institution}}.csv',
@@ -100,12 +100,33 @@ rule filter_papers:
 
 rule create_edges:
     input:
-        f'data/{date_today}/{date_today}_nodes_{{institution}}.csv',
+        f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv',
         f'data/{date_today}/{date_today}_papers_{{institution}}_2plus.csv'
     output:
         f'data/{date_today}/{date_today}_edges_{{institution}}.csv'
     script:
         "scripts/create_edges.py"
+
+rule add_nodes_stats:
+    input:
+        f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv',
+        f'data/{date_today}/{date_today}_papers_{{institution}}.csv',
+        f'data/{date_today}/{date_today}_group_data.csv',
+    output:
+        f'data/{date_today}/{date_today}_nodes_{{institution}}.csv'
+    script:
+        "scripts/add_nodes_stats.py"
+
+rule create_group_networks:
+    input:
+        f'data/{date_today}/{date_today}_nodes_{{institution}}.csv',
+        f'data/{date_today}/{date_today}_group_data.csv',
+        f'data/{date_today}/{date_today}_edges_{{institution}}.csv'
+    output:
+        f'data/{date_today}/{date_today}_group_nodes_{{institution}}.csv',
+        f'data/{date_today}/{date_today}_group_edges_{{institution}}.csv'
+    script:
+        "scripts/create_group_networks.py"
 
 rule dag:
     output:
