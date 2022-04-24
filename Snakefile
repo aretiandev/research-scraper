@@ -130,12 +130,29 @@ rule create_group_networks:
 
 rule dag:
     output:
-        f"figs/{date_today}/{date_today}_dag.png"
+        f"figs/{date_today}_dag.png"
     shell:
         "snakemake --dag | dot -Tpng > {output}"
 
 rule rulegraph:
     output:
-        f"figs/{date_today}/{date_today}_rulegraph.png"
+        f"figs/{date_today}_rulegraph.png"
     shell:
         "snakemake --rulegraph | dot -Tpng > {output}"
+
+rule create_symlinks:
+    params:
+        target="20220419",
+        date_today=date_today
+    shell:
+        """
+        mkdir -p data/{date_today}
+        ln -s ../{params.target}/{params.target}_author_urls.csv data/{date_today}/{date_today}_author_urls.csv
+        ln -s ../{params.target}/{params.target}_author_data.csv data/{date_today}/{date_today}_author_data.csv
+        ln -s ../{params.target}/{params.target}_paper_urls.csv data/{date_today}/{date_today}_paper_urls.csv
+        ln -s ../{params.target}/{params.target}_paper_data.csv data/{date_today}/{date_today}_paper_data.csv
+        ln -s ../{params.target}/{params.target}_group_urls.csv data/{date_today}/{date_today}_group_urls.csv
+        ln -s ../{params.target}/{params.target}_group_data.csv data/{date_today}/{date_today}_group_data.csv
+        ln -s ../{params.target}/{params.target}_project_urls.csv data/{date_today}/{date_today}_project_urls.csv
+        ln -s ../{params.target}/{params.target}_project_data.csv data/{date_today}/{date_today}_project_data.csv
+        """
