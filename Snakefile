@@ -23,14 +23,21 @@
 # View DAG or Rulegraph:
 #   snakemake dag -c1
 #   snakemake rulegraph -c1
+#
+# Tips:
+#   To avoid crashing the server set a low value for params.batch_size
 
 from scripts.src.process import get_date
 
 # Setup
 # date_today = get_date()
-date_today = '20220419'
+# date_today = '20220419'
+# date_today = '20220421'
+# date_today = '20220422'
+date_today = '20220423'
 institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC', 'Agrotecnio', 'CRAG', 'UdL', 'URV', 'UdG']
 threads_max = 16
+timeout = 1
 
 rule all:
     input:
@@ -47,6 +54,9 @@ rule urls:
         f"data/{date_today}/{date_today}_{{item_name}}_urls.csv"
     threads: 
         threads_max
+    params:
+        batch_size = 50,
+        timeout = timeout
     script: 
         "scripts/scrape.py"
 
@@ -57,7 +67,8 @@ rule data:
         f'data/{date_today}/{date_today}_{{item_name}}_data.csv'
     threads: threads_max
     params:
-        batch_size=200
+        batch_size = 50,  # Debug
+        timeout = timeout
     script:
         "scripts/scrape.py"
 

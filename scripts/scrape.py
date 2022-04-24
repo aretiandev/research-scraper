@@ -13,6 +13,7 @@ def main():
     # Parameters
     url_root = 'https://portalrecerca.csuc.cat/'
     batch_size = snakemake.params.get('batch_size')
+    timeout = snakemake.params.get('timeout')
     out_file = snakemake.output[0]
     items = out_file.split("/")[-1].split(".")[0][9:]  # data/20220419/20220419_group_data.csv -> "group_data"
 
@@ -56,7 +57,8 @@ def main():
                 items=items,
                 urls=batch_urls,
                 out_file=out_file,
-                out_sql=False))  # Debug
+                out_sql=True,
+                timeout=timeout))
             break
 
         except WebsiteDownError as e:

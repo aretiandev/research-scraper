@@ -756,14 +756,15 @@ async def scrape(
         urls,
         batch_start=0,
         out_file=None,
-        out_sql=False):
+        out_sql=False,
+        timeout=None):
     """Main entry function to scrape Portal de la Reserca.
 
     Args:
         items:
             author_data, paper_data, project_data, group_data,
             author_urls, paper_urls, project_urls, group_urls.
-        urls: list of urls. Not needed if items in [author_urls, paper_urls].
+        urls: list of urls.
         start_pos: URL starting position.
         batch_start_pos: Batch starting position.
         n_pages: max pages to scrape.
@@ -792,8 +793,8 @@ async def scrape(
         s = AsyncHTMLSession()
 
         t1 = time.perf_counter()
-        tasks = (scrape_url(s, url, items=items) for url in batch)
 
+        tasks = (scrape_url(s, url, items=items) for url in batch)
         try:
             batch_result = await asyncio.gather(*tasks)
         except Exception:
@@ -833,5 +834,8 @@ async def scrape(
             f"Progress: {(i+1)/len(urls)*100:.0f}% ({i+1}/{len(urls):,d}). " +
             f"URLs: {i*batch_size}-{(i+1)*batch_size-1}. " +
             f"Batch time: {batch_time}. Time left: {time_left}.  ", end="\r")
+
+        if timeout:
+            time.sleep(timeout)
 
     log.info("\nDone.")
