@@ -47,6 +47,7 @@ def create_edges(input_authors, input_papers, output, institution):
     authors_inst_df = pd.read_csv(input_authors)
     authors_inst = authors_inst_df['id']
     authors_inst = authors_inst.unique()
+    authors_inst = authors_inst[pd.notnull(authors_inst)]
     authors_inst.sort()
 
     # Combine both
