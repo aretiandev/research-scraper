@@ -77,6 +77,8 @@ def create_edges(input_authors, input_papers, output, institution):
                 pass
     collabs_df = collabs_df.reset_index()
 
+    collabs_df = collabs_df.loc[collabs_df['Weight'] > 0]  # Drop zero weights
+
     collabs_df.to_csv(output, index=None)
     log.info(f"{institution} - Done. Saved '{output}'.")
 
