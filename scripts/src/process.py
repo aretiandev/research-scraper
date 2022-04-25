@@ -186,7 +186,89 @@ def filter_authors(input, output, institution, out_sql=False):
     log.info(f"Saved '{output}'.")
 
     # Save to SQLite
-    # insert_nodes(authors_inst_df.to_dict('records'))
+    if out_sql:
+        insert_nodes(authors_inst_df.to_dict('records'))
+
+
+def add_nodes_stats(input_authors, input_papers, input_groups, output, institution, out_sql=False):
+    """
+    Filter authors by institution.
+
+    Args:
+        input (csv):  data/{date}/{date}_author_clean.csv
+                      data/{date}/{date}_papers_{inst}.csv
+                      data/{date}/{date}_group_data.csv
+        output (csv): data/{date}_nodes_{institution}.csv
+        institution (str): name of institution to filter authors.
+    """
+    log.info(f"Processing institution group: {institution}.")
+
+    # Load authors
+    authors_inst_df = pd.read_csv(input_authors, converters={'groups': eval})
+
+    # Add publication stats
+    authors_inst_df = authors_inst_df.set_index('id')  # This mutes pandas warning
+
+    # Load papers
+    papers_inst_df = pd.read_csv(input_papers, converters={'orcids': eval})
+    # Get papers column
+    papers = papers_inst_df[['orcids', 'type']].copy()
+    papers = papers.reset_index(drop=True)
+
+    authors_inst_df['n_publications'] = 0
+    authors_inst_df['n_articles'] = 0
+    authors_inst_df['n_chapters'] = 0
+    authors_inst_df['n_books'] = 0
+    authors_inst_df['n_other'] = 0
+
+    paper_types = {'Journal Article': 'n_articles',
+                   'Chapter in Book': 'n_chapters',
+                   'Book': 'n_books'}
+
+    def add_publication_stats(paper):
+        for orcid in paper['orcids']:
+            # Add publication
+            try:
+                authors_inst_df.loc[orcid, 'n_publications'] += 1
+            except KeyError:  # author is not in the institution
+                continue
+
+            # Assign type
+            assigned_type = False
+            for paper_type, column in paper_types.items():
+                if paper['type'] == paper_type:
+                    authors_inst_df.loc[orcid, column] += 1
+                    assigned_type = True
+                    break
+            if not assigned_type:
+                authors_inst_df.loc[orcid, 'n_other'] += 1
+
+    log.info("Adding publications number and types to nodelist. This might take a while...")
+    papers.apply(lambda x: add_publication_stats(x), axis=1)
+
+    # Add groups names
+    df_groups = pd.read_csv(input_groups)
+    df_groups['url_id'] = df_groups['url'].str[30:]
+
+    def get_group_names(lst, df_groups):
+        groups_names = []
+        for group_id in lst:
+            group_name = df_groups.loc[df_groups['url_id']==group_id, 'name'].values[0]
+            groups_names.append(group_name)
+        return groups_names
+    # Merge
+    authors_inst_df['groups_names'] = authors_inst_df['groups'].apply(lambda x: get_group_names(x, df_groups))
+
+    # Retrieve index
+    authors_inst_df = authors_inst_df.reset_index('id')
+
+    # Save
+    log.info(f"Saved: {output}")
+    authors_inst_df.to_csv(output, index=None)
+
+    # Save to SQLite
+    if out_sql:
+        insert_nodes(authors_inst_df.to_dict('records'))
 
 
 def filter_papers(
