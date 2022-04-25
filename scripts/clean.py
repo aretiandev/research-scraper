@@ -6,13 +6,6 @@ def main():
     input = snakemake.input[0]
     output = snakemake.output[0]
 
-    print()
-    print("Snakemake parameters:")
-    print(items)
-    print(input)
-    print(output)
-    print()
-
     clean(items, input, output)
 
 

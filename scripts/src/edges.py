@@ -21,8 +21,8 @@ def get_date():
     date_today = date.today().strftime("%Y%m%d")
     return date_today
 
-    
-def create_edgelist(input_authors, input_papers, output, institution):
+
+def create_edges(input_authors, input_papers, output, institution):
     """
     Create edgelist.
 

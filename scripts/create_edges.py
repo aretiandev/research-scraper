@@ -1,4 +1,4 @@
-from src.edges import create_edgelist
+from src.edges import create_edges
 
 
 def main():
@@ -7,7 +7,7 @@ def main():
     output = snakemake.output[0]
     institution = snakemake.wildcards.institution
 
-    create_edgelist(input_authors, input_papers, output, institution)
+    create_edges(input_authors, input_papers, output, institution)
 
 
 if __name__ == "__main__":
