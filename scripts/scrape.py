@@ -16,9 +16,9 @@ def main():
 
     # Parameters
     url_root = "https://portalrecerca.csuc.cat/"
-    batch_size = snakemake.params.get("batch_size")
-    timeout = snakemake.params.get("timeout")
-    out_file = snakemake.output[0]
+    batch_size = snakemake.params.get("batch_size")  # type: ignore # noqa
+    timeout = snakemake.params.get("timeout")  # type: ignore # noqa
+    out_file = snakemake.output[0]  # type: ignore # noqa
     items = out_file.split("/")[-1].split(".")[0][
         9:
     ]  # data/20220419/20220419_group_data.csv -> "group_data"
@@ -30,12 +30,15 @@ def main():
                 urls = get_urls(items=items)
                 break
             except WebsiteDownError:
-                message = ":warning: Website is down. Pinging URL and resuming when back online."
+                message = (
+                    ":warning: Website is down."
+                    + "Pinging URL and resuming when back online."
+                )
                 ping_and_wait(url_root, slack_msg=message, notifications=1)
 
     # Build URls for data rules
     elif items in ["author_data", "paper_data", "group_data", "project_data"]:
-        item_urls = pd.read_csv(snakemake.input[0])
+        item_urls = pd.read_csv(snakemake.input[0])  # type: ignore # noqa
         item_urls = list(set(item_urls["0"]))
         item_urls.sort()
         if items == "paper_data":
