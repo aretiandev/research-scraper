@@ -1,45 +1,35 @@
 import logging
 
 
-def create_logger(
-        name,
-        logfile='log/snakemake.log',
-        level=None,
-        file_level=None,
-        stream_level=None,
+def configLogger(
+        name=None,
+        filename=None,
+        level='debug',
+        file_level='debug',
+        console_level='info',
         fmt='%(asctime)s %(name)s %(levelname)s: %(message)s',
-        datefmt='%Y-%m-%d %I:%M:%S%p'):
+        datefmt='%Y-%m-%d %H:%M:%S'):
+    """Configure Logger
 
-    logger = logging.getLogger(name)
+    If name=None, configures the root logger."""
 
-    level_dict = {
-        'debug': logging.DEBUG,
-        'info': logging.INFO,
-        'warning': logging.WARNING,
-        'error': logging.ERROR,
-        'critical': logging.CRITICAL,
-    }
+    # Get root logger
+    logger = logging.getLogger(name=name)
+    logger.setLevel(level.upper())
 
-    logging_level = logging.INFO
-    if level:
-        logging_level = level_dict[level]
-    logger.setLevel(logging_level)
-
-    fh = logging.FileHandler(logfile, mode="w")
-    fh_formatter = logging.Formatter(fmt=fmt, datefmt=datefmt)
-    fh.setFormatter(fh_formatter)
-    if file_level:
-        file_logging_level = level_dict[file_level]
-        fh.setLevel(file_logging_level)
-
+    # Configure console output
     sh = logging.StreamHandler()
     sh_formatter = logging.Formatter('%(message)s')
     sh.setFormatter(sh_formatter)
-    if stream_level:
-        stream_logging_level = level_dict[stream_level]
-        sh.setLevel(stream_logging_level)
-
-    logger.addHandler(fh)
+    sh.setLevel(console_level.upper())
     logger.addHandler(sh)
+
+    # Configure file output
+    if filename is not None:
+        fh = logging.FileHandler(filename=filename, mode="w")
+        fh_formatter = logging.Formatter(fmt=fmt, datefmt=datefmt)
+        fh.setFormatter(fh_formatter)
+        fh.setLevel(file_level.upper())
+        logger.addHandler(fh)
 
     return logger

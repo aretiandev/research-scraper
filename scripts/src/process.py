@@ -8,9 +8,9 @@ import numpy as np
 import pandas as pd
 import sqlite3
 from ast import literal_eval
-from .logging import create_logger
+import logging
 
-log = create_logger(__name__, f"log/{__name__}.log")
+log = logging.getLogger(__name__)
 
 
 def insert_nodes(nodes, date):

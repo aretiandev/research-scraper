@@ -1,15 +1,22 @@
 import asyncio
 import pandas as pd
-from src.scrape import WebsiteDownError, get_urls, scrape
-from src.logging import create_logger
-from src.bot import ping_and_wait
+import logging
 import os
 import sqlite3
+from src.scrape import WebsiteDownError, get_urls, scrape
+from src.bot import ping_and_wait
+from src.logging import configLogger
 
-log = create_logger(__name__, f"log/{__name__}.log")
+log = logging.getLogger(__name__)
 
 
 def main():
+    # Configure root logger. All logger inherit this configuration.
+    configLogger(
+        filename="log/snakemake.log",
+        file_level='debug',
+        console_level='info')
+
     # Parameters
     url_root = 'https://portalrecerca.csuc.cat/'
     batch_size = snakemake.params.get('batch_size')

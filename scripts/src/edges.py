@@ -6,10 +6,9 @@ Edges module: collection of helper functions to create edgelists.
 
 import pandas as pd
 from itertools import combinations
-from src.logging import create_logger
+import logging
 
-
-log = create_logger(__name__, f"log/{__name__}.log")
+log = logging.getLogger(__name__)
 
 
 def get_date():

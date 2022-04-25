@@ -16,10 +16,9 @@ import time
 import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
-from src.logging import create_logger
+import logging
 
-
-log = create_logger(__name__, f"log/{__name__}.log")
+log = logging.getLogger(__name__)
 
 
 def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=None, slack_msg=None):

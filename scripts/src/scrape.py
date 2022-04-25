@@ -11,139 +11,19 @@ Main functions:
 """
 
 import pandas as pd
-import requests
 from requests_html import HTMLSession, AsyncHTMLSession
 import datetime
 import time
 import asyncio
 import os
 import sys
-import sqlite3
-from src.logging import create_logger
+import logging
+from src.sqlite import (insert_urls, insert_papers, insert_authors, 
+                        insert_groups, insert_projects)
+
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 
-log = create_logger(__name__, f"log/{__name__}.log")
-
-
-def insert_urls(urls, items, date):
-    rows = []
-    for url in urls:
-        row = {}
-        row['items'] = items
-        row['url_stem'] = url
-        row['current'] = 1
-        row['url_scraped'] = 0
-        row['date_created'] = date
-        rows.append(row)
-
-    conn = sqlite3.connect('recerca.db')
-    c = conn.cursor()
-
-    c.executemany("""
-        INSERT INTO urls
-            (items, url_stem, current, url_scraped, date_created)
-        VALUES
-            (:items, :url_stem, :current, :url_scraped, :date_created)
-        ON CONFLICT DO UPDATE SET date_created = :date_created
-        """, rows)
-
-    conn.commit()
-    conn.close()
-
-
-def insert_papers(papers, date):
-    for paper in papers:
-        paper['current'] = 1
-        paper['date_created'] = date
-
-    conn = sqlite3.connect('../recerca.db')
-    with conn:
-        c = conn.cursor()
-
-        # Set current = 0 for existing records
-        c.executemany("""UPDATE papers
-                        SET current = 0
-                        WHERE url_stem = :url_stem""", papers)
-
-        # Insert new record
-        c.executemany("""INSERT INTO papers VALUES (
-                        :id,
-                        :url,:url_stem,:date,:publisher,:title,:type,:author,
-                        :sourceid,:sourceref,:orcids,:citation,:issn,:published_in,
-                        :doi,:isbn,:uri,:status_code,:status_description,
-                        :date_created,:current) 
-                        ON CONFLICT DO UPDATE SET current=1
-                        """, papers)
-    conn.close()
-
-
-def insert_authors(authors, date):
-    for author in authors:
-        author['current'] = 1
-        author['date_created'] = date
-
-    conn = sqlite3.connect('recerca.db')
-    with conn:
-        # Set current = 0 for existing records
-        conn.executemany("""UPDATE authors
-                        SET current = 0
-                        WHERE url = :url""", authors)
-
-        # Insert new record
-        conn.executemany("""INSERT INTO authors VALUES (
-                            :id,:url,:label,:department,:institution,:institution_2,:projects,
-                            :groups,:status_description,:institution_group,
-                            :date_created,:current)
-                        ON CONFLICT DO UPDATE SET current=1
-                        """, authors)
-    conn.close()
-
-
-def insert_groups(groups, date):
-    for group in groups:
-        group['current'] = 1
-        group['date_created'] = date
-
-    conn = sqlite3.connect('recerca.db')
-    with conn:
-        # Set current = 0 for existing records
-        conn.executemany("""UPDATE groups
-                        SET current = 0
-                        WHERE url = :url""", groups)
-
-        # Insert new record
-        conn.executemany("""INSERT INTO groups VALUES (
-                            :id,:name,:acronym,:institution,:group_url,:sgr_code,
-                            :principal_names,:principal_ids,:researcher_names,:researcher_ids,
-                            :url,:url_stem,
-                            :date_created,:current)
-                        ON CONFLICT DO UPDATE SET current=1
-                        """, groups)
-
-    conn.close()
-
-
-def insert_projects(projects, date):
-    for project in projects:
-        project['current'] = 1
-        project['date_created'] = date
-
-    conn = sqlite3.connect('recerca.db')
-    with conn:
-        # Set current = 0 for existing records
-        conn.executemany("""UPDATE projects
-                        SET current = 0
-                        WHERE url_stem = :url_stem""", projects)
-
-        conn.executemany("""INSERT INTO projects VALUES (
-                            :id,:title,:official_code,:start_date,:end_date,:institution,
-                            :principal_names,:principal_ids,:researcher_names,:researcher_ids,
-                            :url,:url_stem,
-                            :date_created,:current)
-                        ON CONFLICT DO UPDATE SET current=1
-                        """, projects)
-
-    conn.close()
+log = logging.getLogger(__name__)
 
 
 class WebsiteDownError(Exception):
