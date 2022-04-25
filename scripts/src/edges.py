@@ -81,13 +81,3 @@ def create_edges(input_authors, input_papers, output, institution):
 
     collabs_df.to_csv(output, index=None)
     log.info(f"{institution} - Done. Saved '{output}'.")
-
-
-if __name__ == "__main__":
-    institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC']
-    date_today = get_date()
-    for institution in institution_list:
-        input_authors = f'data/{date_today}_nodes_{institution}.csv',
-        input_papers = f'data/{date_today}_papers_{institution}_2plus.csv'
-        output = f'data/{date_today}_edges_{institution}.csv'
-        create_edgelist(input_authors, input_papers, output, institution)

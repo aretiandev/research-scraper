@@ -70,7 +70,8 @@ def add_acronym(row):
     """Helper function for completing acronyms in institution names."""
     acronym_dict = {
         'IJC': 'Institut de Recerca contra la Leucèmia Josep Carreras',
-        'IrsiCaixa': 'IrsiCaixa AIDS Research Institute' }
+        'IrsiCaixa': 'IrsiCaixa AIDS Research Institute',
+        'CRAG': 'Centre de Recerca en Agrigenòmica'}
     for acronym, name in acronym_dict.items():
         if row['institution_2'] == name:
             row['institution'].append(acronym)
@@ -203,8 +204,10 @@ def filter_papers(
         institution (str): name of institution to filter papers.
     """
     # Load authors
+    log.info(f"Loading '{input_authors}'.")
     authors_inst_df = pd.read_csv(input_authors)
     # Load papers
+    log.info(f"Loading '{input_papers}'.")
     papers_df = pd.read_csv(input_papers, converters={'orcids': eval})
 
     # Extract papers with authors from institution
