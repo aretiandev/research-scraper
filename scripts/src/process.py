@@ -149,12 +149,12 @@ def clean(items, input, output):
         clean_papers(input, output)
 
 
-def filter_authors(input, output, institution):
+def filter_authors(input, output, institution, out_sql=False):
     """
     Filter authors by institution.
 
     Args:
-        input (csv):  data/{date}_author_clean.csv
+        input (csv):  data/{date}/{date}_author_clean.csv
         output (csv): data/{date}_nodes_{institution}.csv
         institution (str): name of institution to filter authors.
     """
@@ -166,7 +166,7 @@ def filter_authors(input, output, institution):
     # Extract authors from institution
     mask = authors_df['institution_group'].apply(lambda x: institution in x)
     authors_inst_df = authors_df.copy()[mask]
-    
+
     # Calculate number of affiliations
     authors_inst_df['n_affiliations'] = authors_inst_df.copy()['institution'].apply(len)
 
@@ -174,7 +174,7 @@ def filter_authors(input, output, institution):
     authors_inst_df['single_affiliation'] = 'Multiple affiliations'
     mask = authors_inst_df['n_affiliations'] == 1
     authors_inst_df.loc[mask, 'single_affiliation'] = authors_inst_df.loc[mask, 'institution'].apply(lambda x: x[0])
-    
+
     # Add projects and groups
     log.info("Adding projects and groups.")
     authors_inst_df['n_projects'] = authors_inst_df['projects'].apply(len)
