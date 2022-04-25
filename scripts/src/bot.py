@@ -15,20 +15,23 @@ import requests
 import time
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 import logging
+
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 
 log = logging.getLogger(__name__)
 
 
-def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=None, slack_msg=None):
+def ping_and_wait(
+    url=None, status_code=None, wait_time=300, notifications=None, slack_msg=None
+):
     """Ping and wait
 
     Args:
         url: url to ping.
         wait_time: number of seconds to wait. Default: 5 mins.
     """
-    tz_NY = pytz.timezone('America/New_York')
+    tz_NY = pytz.timezone("America/New_York")
 
     log.info(f"Pinging URL: {url}")
 
@@ -55,17 +58,22 @@ def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=None,
 
             status_history = ""
             if r.history:
-                status_history = " ".join(str(s.status_code) for s in r.history) + " -> "
+                status_history = (
+                    " ".join(str(s.status_code) for s in r.history) + " -> "
+                )
 
-            log.info(f"{dt_string} - Ping! Response: {status_history}{r.status_code}: {r.url}")
+            log.info(
+                f"{dt_string} - Ping! Response: "
+                f"{status_history}{r.status_code}: {r.url}"
+            )
         except Exception:
             log.exception("There was an exception in the response:")
             pass
 
         if url is None:
-            if r.url != 'https://portalrecerca.manteniment.csuc.cat':
+            if r.url != "https://portalrecerca.manteniment.csuc.cat":
                 break
-        
+
         # Break when response differs from status_code provided by user
         if status_code is not None:
             if r.status_code != status_code:
@@ -80,7 +88,7 @@ def ping_and_wait(url=None, status_code=None, wait_time=300, notifications=None,
             message = ":hourglass: Portal de la Reserca is still down."
             send_slack_message(channel, message, slack_token)
 
-        time.sleep(max(wait_time - 30 + random.random()*60, 0))
+        time.sleep(max(wait_time - 30 + random.random() * 60, 0))
 
     if notifications is not None:
         message = ":zap: Website is back online."
@@ -94,17 +102,14 @@ def send_slack_message(channel, message, slack_token, time=False):
 
     # Add date and time to message
     if time:
-        tz_NY = pytz.timezone('America/New_York') 
+        tz_NY = pytz.timezone("America/New_York")
         now = datetime.now(tz_NY)
         dt_string = now.strftime("%m-%d %H:%M:%S")
-        message = dt_string + ' - ' + message
+        message = dt_string + " - " + message
 
     client = WebClient(token=slack_token)
     try:
-        client.chat_postMessage(
-            channel=channel,
-            text=message
-        )
+        client.chat_postMessage(channel=channel, text=message)
     except SlackApiError as e:
         # You will get a SlackApiError if "ok" is False
-        assert e.response["error"]    # str like 'invalid_auth', 'channel_not_found'
+        assert e.response["error"]  # str like 'invalid_auth', 'channel_not_found'

@@ -81,38 +81,32 @@ def insert_papers(papers, date):
         paper["date_created"] = date
 
     conn = sqlite3.connect("recerca.db")
-    try:
-        with conn:
-            # If url exists set current=0. If data has changed, current=0 will remain.
-            conn.executemany(
-                """UPDATE papers
-                            SET current = 0
-                            WHERE url_stem = :url_stem""",
-                papers,
-            )
+    with conn:
+        # If url exists set current=0. If data has changed, current=0 will remain.
+        conn.executemany(
+            """UPDATE papers
+                        SET current = 0
+                        WHERE url_stem = :url_stem""",
+            papers,
+        )
 
-            # If new url: Insert. If url exists but data has changed (collides with unique constraint)
-            #   update date_created and set current=1
-            conn.executemany(
-                """INSERT INTO papers (
-                                url, url_stem, date, publisher, title, type, author,
-                                sourceid, sourceref, orcids, citation, issn, published_in,
-                                doi, isbn, uri, status_code, status_description,
-                                date_created, current )
-                            VALUES (
-                                :url,:url_stem,:date,:publisher,:title,:type,:author,
-                                :sourceid,:sourceref,:orcids,:citation,:issn,:published_in,
-                                :doi,:isbn,:uri,:status_code,:status_description,
-                                :date_created,:current )
-                            ON CONFLICT DO UPDATE SET current=1,date_created=:date_created
-                            """,
-                papers,
-            )
-    except Exception as e:
-        print(e)
-        import pdb
-
-        pdb.set_trace()
+        # If new url: Insert. If url exists but data has changed
+        # (collides with unique constraint) update date_created and set current=1
+        conn.executemany(
+            """INSERT INTO papers (
+                            url, url_stem, date, publisher, title, type, author,
+                            sourceid, sourceref, orcids, citation, issn, published_in,
+                            doi, isbn, uri, status_code, status_description,
+                            date_created, current )
+                        VALUES (
+                            :url,:url_stem,:date,:publisher,:title,:type,:author,
+                            :sourceid,:sourceref,:orcids,:citation,:issn,:published_in,
+                            :doi,:isbn,:uri,:status_code,:status_description,
+                            :date_created,:current )
+                        ON CONFLICT DO UPDATE SET current=1,date_created=:date_created
+                        """,
+            papers,
+        )
     conn.close()
 
 
@@ -148,19 +142,19 @@ def insert_authors(authors, date):
                         WHERE url = :url""",
             authors,
         )
-        # If new url: Insert. If url exists but data has changed (collides with unique constraint)
-        #   update date_created and set current=1
+        # If new url: Insert. If url exists but data has changed
+        # (collides with unique constraint) update date_created and set current=1
         conn.executemany(
             """INSERT INTO authors (
-                                id, url, label, department, institution, institution_2, projects,
-                                groups, status_description, institution_group,
-                                date_created, current )
-                            VALUES (
-                                :id,:url,:label,:department,:institution,:institution_2,:projects,
-                                :groups,:status_description,:institution_group,
-                                :date_created,:current )
-                        ON CONFLICT DO UPDATE SET current=1,date_created=:date_created
-                        """,
+                    id, url, label, department, institution, institution_2, projects,
+                    groups, status_description, institution_group,
+                    date_created, current )
+                VALUES (
+                    :id,:url,:label,:department,:institution,:institution_2,:projects,
+                    :groups,:status_description,:institution_group,
+                    :date_created,:current )
+                ON CONFLICT DO UPDATE SET current=1,date_created=:date_created
+            """,
             authors,
         )
     conn.close()
@@ -196,19 +190,19 @@ def insert_groups(groups, date):
             groups,
         )
 
-        # If new url: Insert. If url exists but data has changed (collides with unique constraint)
-        #   update date_created and set current=1
+        # If new url: Insert. If url exists but data has changed
+        # (collides with unique constraint) update date_created and set current=1
         conn.executemany(
             """INSERT INTO groups (
-                                name, acronym, institution, group_url, sgr_code,
-                                principal_names, principal_ids, researcher_names, researcher_ids,
-                                url, url_stem, date_created, current )
-                            VALUES (
-                                :name,:acronym,:institution,:group_url,:sgr_code,
-                                :principal_names,:principal_ids,:researcher_names,:researcher_ids,
-                                :url,:url_stem,:date_created,:current )
-                        ON CONFLICT DO UPDATE SET current=1,date_created=:date_created
-                        """,
+                    name, acronym, institution, group_url, sgr_code,
+                    principal_names, principal_ids, researcher_names, researcher_ids,
+                    url, url_stem, date_created, current )
+                VALUES (
+                    :name,:acronym,:institution,:group_url,:sgr_code,
+                    :principal_names,:principal_ids,:researcher_names,:researcher_ids,
+                    :url,:url_stem,:date_created,:current )
+                ON CONFLICT DO UPDATE SET current=1,date_created=:date_created
+            """,
             groups,
         )
 
@@ -238,19 +232,19 @@ def insert_projects(projects, date):
             projects,
         )
 
-        # If new url: Insert. If url exists but data has changed (collides with unique constraint)
-        #   update date_created and set current=1
+        # If new url: Insert. If url exists but data has changed
+        # (collides with unique constraint) update date_created and set current=1
         conn.executemany(
             """INSERT INTO projects (
-                                title, official_code, start_date, end_date, institution,
-                                principal_names, principal_ids, researcher_names, researcher_ids,
-                                url, url_stem, date_created, current )
-                            VALUES (
-                                :title,:official_code,:start_date,:end_date,:institution,
-                                :principal_names,:principal_ids,:researcher_names,:researcher_ids,
-                                :url,:url_stem,:date_created,:current )
-                        ON CONFLICT DO UPDATE SET current=1,date_created=:date_created
-                        """,
+                    title, official_code, start_date, end_date, institution,
+                    principal_names, principal_ids, researcher_names, researcher_ids,
+                    url, url_stem, date_created, current )
+                VALUES (
+                    :title,:official_code,:start_date,:end_date,:institution,
+                    :principal_names,:principal_ids,:researcher_names,:researcher_ids,
+                    :url,:url_stem,:date_created,:current )
+                ON CONFLICT DO UPDATE SET current=1,date_created=:date_created
+                """,
             projects,
         )
 

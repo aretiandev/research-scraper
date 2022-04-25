@@ -66,7 +66,8 @@ def create_edges(input_authors, input_papers, output, institution):
     log.info(f"{institution} - Main loop: counting collaborations.")
     for i, paper in enumerate(papers):
         print(
-            f"{institution} - Progress: {i/len(papers)*100:.0f}%. ({i:,.0f}/{len(papers):,.0f}).",
+            f"{institution} - Progress: "
+            f"{i/len(papers)*100:.0f}%. ({i:,.0f}/{len(papers):,.0f}).",
             end="\r",
         )
 
