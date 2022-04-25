@@ -16,7 +16,7 @@ class TestScraper(unittest.TestCase):
     def test_author_urls_format(self):
         """Check all author URLs have URL format."""
         regex = re.compile(
-            "^https://portalrecerca.csuc.cat/simple-search\?query=.*&start=[0-9]*"
+            r"^https://portalrecerca.csuc.cat/simple-search\?query=.*&start=[0-9]*"
         )
         result = all([regex.match(url) for url in self.urls])
         self.assertTrue(result)
