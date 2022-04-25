@@ -189,10 +189,10 @@ async def scrape_project(s, url, tab='information', attempts=10):
 
         attr_keys = {
             'title': 'Title',
-            'official code': 'Official code',
+            'official_code': 'Official code',
             'url': 'URL',
-            'start date': 'Start date',
-            'end date': 'End date',
+            'start_date': 'Start date',
+            'end_date': 'End date',
             'institution': 'Universities or CERCA centres'}
 
         project = {attr_name: table.get(table_key) for attr_name, table_key in attr_keys.items()}
@@ -220,8 +220,8 @@ async def scrape_project(s, url, tab='information', attempts=10):
             except Exception:
                 pass
 
-        project['principal names'] = principal_names
-        project['principal ids'] = principal_ids
+        project['principal_names'] = principal_names
+        project['principal_ids'] = principal_ids
 
         # Researchers
         try:
@@ -238,8 +238,8 @@ async def scrape_project(s, url, tab='information', attempts=10):
                 except Exception:
                     pass
 
-            project['researcher names'] = res_names
-            project['researcher ids'] = res_ids
+            project['researcher_names'] = res_names
+            project['researcher_ids'] = res_ids
         except Exception:
             pass
 
@@ -326,8 +326,8 @@ async def scrape_group(s, url, tab='information', attempts=10):
                 orcid = ""
             principal_ids.append(orcid)
 
-        group['principal names'] = principal_names
-        group['principal ids'] = principal_ids
+        group['principal_names'] = principal_names
+        group['principal_ids'] = principal_ids
 
         # Researchers
         try:
@@ -344,8 +344,8 @@ async def scrape_group(s, url, tab='information', attempts=10):
                     orcid = ""
                 res_ids.append(orcid)
 
-            group['researcher names'] = res_names
-            group['researcher ids'] = res_ids
+            group['researcher_names'] = res_names
+            group['researcher_ids'] = res_ids
         except IndexError:
             pass
 
@@ -683,13 +683,13 @@ async def scrape(
 
         t2 = time.perf_counter()
 
-        # Flatten result
         if items in ['author_urls', 'paper_urls', 'project_urls', 'group_urls']:
-            batch_result = [i for sublist in batch_result for i in sublist]
+            batch_result = [i for sublist in batch_result for i in sublist]  # Flatten result
 
         if out_file:
             result_df = result_df.append(batch_result, ignore_index=True)
             result_df.to_csv(out_file, index=None)
+            log.debug(f"Saved all data up to batch {i}: {out_file}")
 
         if out_sql:
             log.debug(f"Writing to database. Batch: {i}. # URLS: {len(batch_result)}.")
