@@ -2,13 +2,14 @@ import logging
 
 
 def configLogger(
-        name=None,
-        filename=None,
-        level='debug',
-        file_level='debug',
-        console_level='info',
-        fmt='%(asctime)s %(name)s %(levelname)s: %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'):
+    name=None,
+    filename=None,
+    level="debug",
+    file_level="debug",
+    console_level="info",
+    fmt="%(asctime)s %(name)s %(levelname)s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+):
     """Configure Logger
 
     If name=None, configures the root logger."""
@@ -19,7 +20,7 @@ def configLogger(
 
     # Configure console output
     sh = logging.StreamHandler()
-    sh_formatter = logging.Formatter('%(message)s')
+    sh_formatter = logging.Formatter("%(message)s")
     sh.setFormatter(sh_formatter)
     sh.setLevel(console_level.upper())
     logger.addHandler(sh)

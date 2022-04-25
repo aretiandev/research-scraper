@@ -15,7 +15,8 @@ def get_date():
     import os
     import time
     from datetime import date
-    os.environ['TZ'] = 'America/New_York'
+
+    os.environ["TZ"] = "America/New_York"
     time.tzset()
     date_today = date.today().strftime("%Y%m%d")
     return date_today
@@ -35,8 +36,8 @@ def create_edges(input_authors, input_papers, output, institution):
     log.info(f"Institution: {institution}.")
     # Load papers with coauthors list
     log.info(f"{institution} - Loading papers.")
-    papers_df = pd.read_csv(input_papers, converters={'orcids': eval})
-    papers = papers_df['orcids'].copy()
+    papers_df = pd.read_csv(input_papers, converters={"orcids": eval})
+    papers = papers_df["orcids"].copy()
 
     # Get unique list of authors from papers
     authors_papers = list(set(papers.sum()))
@@ -45,7 +46,7 @@ def create_edges(input_authors, input_papers, output, institution):
     # Get list of authors from institution
     log.info(f"{institution} - Loading nodes.")
     authors_inst_df = pd.read_csv(input_authors)
-    authors_inst = authors_inst_df['id']
+    authors_inst = authors_inst_df["id"]
     authors_inst = authors_inst.unique()
     authors_inst = authors_inst[pd.notnull(authors_inst)]
     authors_inst.sort()
@@ -57,14 +58,17 @@ def create_edges(input_authors, input_papers, output, institution):
     # Create df to store collaborations
     log.info(f"{institution} - Calculting combinations of authors.")
     author_combinations = combinations(authors_index, 2)
-    collabs_df = pd.DataFrame(list(author_combinations), columns=['Source', 'Target'])
-    collabs_df['Weight'] = 0
-    collabs_df = collabs_df.set_index(['Source', 'Target'])
+    collabs_df = pd.DataFrame(list(author_combinations), columns=["Source", "Target"])
+    collabs_df["Weight"] = 0
+    collabs_df = collabs_df.set_index(["Source", "Target"])
 
     # Calculate collaborations
     log.info(f"{institution} - Main loop: counting collaborations.")
     for i, paper in enumerate(papers):
-        print(f"{institution} - Progress: {i/len(papers)*100:.0f}%. ({i:,.0f}/{len(papers):,.0f}).", end="\r")
+        print(
+            f"{institution} - Progress: {i/len(papers)*100:.0f}%. ({i:,.0f}/{len(papers):,.0f}).",
+            end="\r",
+        )
 
         # Store collaboration
         paper = list(set(paper))
@@ -77,7 +81,7 @@ def create_edges(input_authors, input_papers, output, institution):
                 pass
     collabs_df = collabs_df.reset_index()
 
-    collabs_df = collabs_df.loc[collabs_df['Weight'] > 0]  # Drop zero weights
+    collabs_df = collabs_df.loc[collabs_df["Weight"] > 0]  # Drop zero weights
 
     collabs_df.to_csv(output, index=None)
     log.info(f"{institution} - Done. Saved '{output}'.")
