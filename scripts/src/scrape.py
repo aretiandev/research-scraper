@@ -18,8 +18,13 @@ import asyncio
 import os
 import sys
 import logging
-from src.sqlite import (insert_urls, insert_papers, insert_authors, 
-                        insert_groups, insert_projects)
+from .sqlite import (
+    insert_urls,
+    insert_papers,
+    insert_authors,
+    insert_groups,
+    insert_projects,
+)
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 
@@ -36,10 +41,16 @@ def get_max_pages(url):
     log.info("Retrieving number of URLs to scrape:")
     session = HTMLSession()
     r = session.get(url)
-    if r.url == 'https://portalrecerca.manteniment.csuc.cat':
+    if r.url == "https://portalrecerca.manteniment.csuc.cat":
         raise WebsiteDownError(url)
-    pagination_items = r.html.find('div.discovery-result-pagination ul.pagination li')
-    max_pages_str = pagination_items[-2].text.split("\n")[0].strip().replace('.', '').replace(',', '')
+    pagination_items = r.html.find("div.discovery-result-pagination ul.pagination li")
+    max_pages_str = (
+        pagination_items[-2]
+        .text.split("\n")[0]
+        .strip()
+        .replace(".", "")
+        .replace(",", "")
+    )
     max_pages = int(max_pages_str)
     log.info(f"{max_pages:,d}.")
     return max_pages
@@ -49,17 +60,21 @@ async def retry_url(s, url, attempts=10, selector=None, debug=False):
     """Retry fetching URL a given number of times."""
     for attempt in range(attempts):
         try:
-            log.debug(f"""URL: {url}
-Attempt: {attempt}""")
+            log.debug(
+                f"""URL: {url}
+Attempt: {attempt}"""
+            )
 
             r = await s.get(url)
 
-            if r.url == 'https://portalrecerca.manteniment.csuc.cat':
+            if r.url == "https://portalrecerca.manteniment.csuc.cat":
                 raise WebsiteDownError(url)
 
-            log.debug(f"""URL: {url}
+            log.debug(
+                f"""URL: {url}
 Attempt: {attempt}
-Response: {r}""")
+Response: {r}"""
+            )
 
             # If selector supplied, break only if it is found
             if selector:
@@ -71,7 +86,7 @@ Response: {r}""")
         except WebsiteDownError:
             raise
         except Exception as e:
-            print('Exception: ', e)
+            print("Exception: ", e)
             time.sleep(1)
             pass
     else:
@@ -81,7 +96,7 @@ Response: {r}""")
     return r
 
 
-async def scrape_author(s, url, item='profile', attempts=10):
+async def scrape_author(s, url, item="profile", attempts=10):
     """Scrape author page.
 
     Args:
@@ -89,30 +104,30 @@ async def scrape_author(s, url, item='profile', attempts=10):
     Returns:
         result (dict): author information.
     """
-    if item == 'profile':
+    if item == "profile":
         # TODO: automate locale as a url_template to be added to all URLs
         url = url + "?locale=en"
         r = await retry_url(s, url, attempts)
 
-        title = r.html.find('title', first=True).text
-        title_error = 'Portal de la Recerca de Catalunya: Malformed Request'
+        title = r.html.find("title", first=True).text
+        title_error = "Portal de la Recerca de Catalunya: Malformed Request"
         if title_error in title:
-            result = {'status_description': 'System Error: Malformed Request'}
+            result = {"status_description": "System Error: Malformed Request"}
             return result
 
-        selector = 'div#collapseOneresearcherprofile table.table tr'
+        selector = "div#collapseOneresearcherprofile table.table tr"
         rows = r.html.find(selector)
         scrape_dict = {
-            'label': 'Surnames, Name',
-            'id': 'ORCID',
-            'institution_2': 'Universities or CERCA centres'
+            "label": "Surnames, Name",
+            "id": "ORCID",
+            "institution_2": "Universities or CERCA centres",
         }
 
         try:
             # TODO: modularize the following code to a separate get_table function
             table = {}
             for row in rows:
-                columns = row.find('td')
+                columns = row.find("td")
                 columns1_text = columns[1].text.split("\n")
                 if len(columns1_text) == 1:
                     table[columns[0].text] = columns1_text[0]
@@ -123,55 +138,55 @@ async def scrape_author(s, url, item='profile', attempts=10):
             for label, pattern in scrape_dict.items():
                 result[label] = table[pattern]
         except KeyError:
-            result = {'error': 'KeyError'}
+            result = {"error": "KeyError"}
         except IndexError:
-            result = {'error': 'IndexError'}
+            result = {"error": "IndexError"}
         except Exception:
             log.exception(f"There was an exception in scrape_author(), url: {url}")
             raise
 
-    elif item == 'affiliation':
-        url = url + '/researcherdepartaments.html?onlytab=true'
+    elif item == "affiliation":
+        url = url + "/researcherdepartaments.html?onlytab=true"
         r = await retry_url(s, url, attempts)
-        selector = 'table.table tr'
+        selector = "table.table tr"
         rows = r.html.find(selector)
         result = {}
         try:
             departments = []
             institutions = []
             for row in rows:
-                columns = row.find('td')
+                columns = row.find("td")
                 departments.append(columns[0].text)
                 institutions.append(columns[1].text)
-            result['department'] = departments
-            result['institution'] = institutions
+            result["department"] = departments
+            result["institution"] = institutions
         except Exception:  # rows object is empty
             pass
 
-    elif item == 'project':
-        url = url + '/publicresearcherprojects.html?onlytab=true'
+    elif item == "project":
+        url = url + "/publicresearcherprojects.html?onlytab=true"
         r = await retry_url(s, url, attempts)
-        selector = 'table.table tr'
+        selector = "table.table tr"
         rows = r.html.find(selector)
         result = []
         for row in rows:
-            project = row.find('td a')[0].attrs['href']
+            project = row.find("td a")[0].attrs["href"]
             result.append(project)
 
-    elif item == 'group':
-        url = url + '/orgs.html?onlytab=true'
+    elif item == "group":
+        url = url + "/orgs.html?onlytab=true"
         r = await retry_url(s, url, attempts)
-        selector = 'table.table tr'
+        selector = "table.table tr"
         rows = r.html.find(selector)
         result = []
         for row in rows:
-            group = row.find('td a')[0].attrs['href']
+            group = row.find("td a")[0].attrs["href"]
             result.append(group)
 
     return result
 
 
-async def scrape_project(s, url, tab='information', attempts=10):
+async def scrape_project(s, url, tab="information", attempts=10):
     """Scrape project page.
 
     Args:
@@ -179,8 +194,8 @@ async def scrape_project(s, url, tab='information', attempts=10):
     Returns:
         project (dict): project information.
     """
-    if tab == 'information':
-        url = url + '?onlytab=true&locale=en'
+    if tab == "information":
+        url = url + "?onlytab=true&locale=en"
 
         r = await retry_url(s, url, attempts)
 
@@ -188,58 +203,62 @@ async def scrape_project(s, url, tab='information', attempts=10):
         table = tables_lst[0].set_index(0).to_dict()[1]
 
         attr_keys = {
-            'title': 'Title',
-            'official_code': 'Official code',
-            'url': 'URL',
-            'start_date': 'Start date',
-            'end_date': 'End date',
-            'institution': 'Universities or CERCA centres'}
+            "title": "Title",
+            "official_code": "Official code",
+            "url": "URL",
+            "start_date": "Start date",
+            "end_date": "End date",
+            "institution": "Universities or CERCA centres",
+        }
 
-        project = {attr_name: table.get(table_key) for attr_name, table_key in attr_keys.items()}
+        project = {
+            attr_name: table.get(table_key)
+            for attr_name, table_key in attr_keys.items()
+        }
 
-    elif tab == 'researchers':
-        url = url + '/researchersprj.html?onlytab=true'
+    elif tab == "researchers":
+        url = url + "/researchersprj.html?onlytab=true"
         r = await retry_url(s, url, attempts)
 
-        selector = 'table.table'
+        selector = "table.table"
         tables = r.html.find(selector)
 
         project = {}
 
         # Principal researchers
-        rows = tables[0].find('tr')
+        rows = tables[0].find("tr")
         principal_names = []
         principal_ids = []
 
         for row in rows[1:]:
-            name_object = row.find('td', first=True)
+            name_object = row.find("td", first=True)
             principal_names.append(name_object.text)
             try:
-                orcid = name_object.find('a', first=True).attrs['href'][7:]
+                orcid = name_object.find("a", first=True).attrs["href"][7:]
                 principal_ids.append(orcid)
             except Exception:
                 pass
 
-        project['principal_names'] = principal_names
-        project['principal_ids'] = principal_ids
+        project["principal_names"] = principal_names
+        project["principal_ids"] = principal_ids
 
         # Researchers
         try:
-            rows = tables[1].find('tr')
+            rows = tables[1].find("tr")
             res_names = []
             res_ids = []
 
             for row in rows[1:]:
-                name_object = row.find('td', first=True)
+                name_object = row.find("td", first=True)
                 res_names.append(name_object.text)
                 try:
-                    orcid = name_object.find('a', first=True).attrs['href'][7:]
+                    orcid = name_object.find("a", first=True).attrs["href"][7:]
                     res_ids.append(orcid)
                 except Exception:
                     pass
 
-            project['researcher_names'] = res_names
-            project['researcher_ids'] = res_ids
+            project["researcher_names"] = res_names
+            project["researcher_ids"] = res_ids
         except Exception:
             pass
 
@@ -247,7 +266,7 @@ async def scrape_project(s, url, tab='information', attempts=10):
 
 
 # Helper for group page
-async def scrape_group(s, url, tab='information', attempts=10):
+async def scrape_group(s, url, tab="information", attempts=10):
     """Scrape group page.
 
     Args:
@@ -258,18 +277,18 @@ async def scrape_group(s, url, tab='information', attempts=10):
     group = {}
     not_found_msg = "Nothing found"
 
-    if tab == 'information':
-        url = url + '?onlytab=true&locale=en'
+    if tab == "information":
+        url = url + "?onlytab=true&locale=en"
         r = await retry_url(s, url, attempts)
 
         try:
-            title = r.html.find('title', first=True)
+            title = r.html.find("title", first=True)
             tables_lst = pd.read_html(r.text)
         except ValueError:
-            group['status_code'] = r.status_code
+            group["status_code"] = r.status_code
             try:
                 if not_found_msg in title.text:
-                    group['status_description'] = 'Title: not found'
+                    group["status_description"] = "Title: not found"
             except AttributeError:
                 pass
 
@@ -278,74 +297,77 @@ async def scrape_group(s, url, tab='information', attempts=10):
         table = tables_lst[0].set_index(0).to_dict()[1]
 
         attr_keys = {
-            'name': 'Name',
-            'acronym': 'Acronym',
-            'institution': 'Universities or CERCA centres',
-            'group_url': 'URL',
-            'sgr_code': 'SGR code'}
+            "name": "Name",
+            "acronym": "Acronym",
+            "institution": "Universities or CERCA centres",
+            "group_url": "URL",
+            "sgr_code": "SGR code",
+        }
 
-        group = {attr_name: table.get(table_key)
-                 for attr_name, table_key in attr_keys.items()}
+        group = {
+            attr_name: table.get(table_key)
+            for attr_name, table_key in attr_keys.items()
+        }
 
-    elif tab == 'researchers':
+    elif tab == "researchers":
         r = await retry_url(s, url, attempts)
 
         try:
-            title = r.html.find('title', first=True)
-            next_tab_href = r.html.find('#bar-tab-1012900 a', first=True).attrs['href']
+            title = r.html.find("title", first=True)
+            next_tab_href = r.html.find("#bar-tab-1012900 a", first=True).attrs["href"]
         except AttributeError:
-            group['status_code'] = r.status_code
+            group["status_code"] = r.status_code
             try:
                 if not_found_msg in title.text:
-                    group['status_description'] = 'Title: not found'
+                    group["status_description"] = "Title: not found"
             except Exception:
                 pass
 
             return group
 
-        url_root = 'https://portalrecerca.csuc.cat' 
+        url_root = "https://portalrecerca.csuc.cat"
         url = url_root + next_tab_href
 
         r = await retry_url(s, url, attempts)
 
-        selector = 'table.table'
+        selector = "table.table"
         tables = r.html.find(selector)
 
         # Principal researchers
-        rows = tables[0].find('tr')
+        rows = tables[0].find("tr")
 
         principal_names = []
         principal_ids = []
 
         for row in rows:
-            name_object = row.find('td', first=True)
+            name_object = row.find("td", first=True)
             principal_names.append(name_object.text)
             try:
-                orcid = name_object.find('a', first=True).attrs['href'][7:]
+                orcid = name_object.find("a", first=True).attrs["href"][7:]
             except KeyError:
                 orcid = ""
             principal_ids.append(orcid)
 
-        group['principal_names'] = principal_names
-        group['principal_ids'] = principal_ids
+        group["principal_names"] = principal_names
+        group["principal_ids"] = principal_ids
 
         # Researchers
         try:
-            rows = tables[1].find('tr')
+            rows = tables[1].find("tr")
             res_names = []
             res_ids = []
 
             for row in rows:
-                name_object = row.find('td', first=True)
+                name_object = row.find("td", first=True)
                 res_names.append(name_object.text)
                 try:
-                    orcid = name_object.find('a', first=True).attrs['href'][7:]
+                    orcid = name_object.find("a", first=True).attrs["href"][7:]
                 except KeyError:
                     orcid = ""
                 res_ids.append(orcid)
 
-            group['researcher_names'] = res_names
-            group['researcher_ids'] = res_ids
+            group["researcher_names"] = res_names
+            group["researcher_ids"] = res_ids
         except IndexError:
             pass
 
@@ -353,7 +375,7 @@ async def scrape_group(s, url, tab='information', attempts=10):
 
 
 # Scrape single URL
-async def scrape_url(s, url, items='author_data', attempts=10):
+async def scrape_url(s, url, items="author_data", attempts=10):
     """Scrape URL.
 
     Args:
@@ -365,57 +387,57 @@ async def scrape_url(s, url, items='author_data', attempts=10):
         (dict): item information.
     """
 
-    if items == 'author_data':
+    if items == "author_data":
         result = await asyncio.gather(
-                scrape_author(s, url, 'profile'),
-                scrape_author(s, url, 'affiliation'),
-                scrape_author(s, url, 'project'),
-                scrape_author(s, url, 'group')
-            )
+            scrape_author(s, url, "profile"),
+            scrape_author(s, url, "affiliation"),
+            scrape_author(s, url, "project"),
+            scrape_author(s, url, "group"),
+        )
 
         author = result[0]  # name and id
         try:
-            author['department'] = result[1]['department']
+            author["department"] = result[1]["department"]
         except KeyError:
             pass
         try:
-            author['institution'] = result[1]['institution']
+            author["institution"] = result[1]["institution"]
         except KeyError:
             pass
-        author['projects'] = result[2]
-        author['groups'] = result[3]
-        author['url'] = url
+        author["projects"] = result[2]
+        author["groups"] = result[3]
+        author["url"] = url
 
         return author
 
-    elif items == 'project_data':
+    elif items == "project_data":
         result = await asyncio.gather(
-                scrape_project(s, url, tab='information', attempts=attempts),
-                scrape_project(s, url, tab='researchers', attempts=attempts),
-            )
+            scrape_project(s, url, tab="information", attempts=attempts),
+            scrape_project(s, url, tab="researchers", attempts=attempts),
+        )
 
         project = {}
         for d in result:
             project.update(d)
 
-        project['url']    = url
-        project['url_stem'] = url[32:].split('?')[0]
+        project["url"] = url
+        project["url_stem"] = url[32:].split("?")[0]
 
         return project
 
-    elif items == 'group_data':
+    elif items == "group_data":
         try:
             result = await asyncio.gather(
-                    scrape_group(s, url, tab='information', attempts=attempts),
-                    scrape_group(s, url, tab='researchers', attempts=attempts),
-                )
+                scrape_group(s, url, tab="information", attempts=attempts),
+                scrape_group(s, url, tab="researchers", attempts=attempts),
+            )
 
             group = {}
             for d in result:
                 group.update(d)
 
-            group['url']    = url
-            group['url_stem'] = url[32:].split('?')[0]
+            group["url"] = url
+            group["url_stem"] = url[32:].split("?")[0]
         except Exception:
             log.exception(f"Exception in scrape_url({items}), url: {url}")
             group = []
@@ -423,24 +445,24 @@ async def scrape_url(s, url, items='author_data', attempts=10):
 
         return group
 
-    elif items == 'paper_data':
+    elif items == "paper_data":
         paper = {}
-        paper['url']      = url
-        paper['url_stem'] = url[32:].split('?')[0]
+        paper["url"] = url
+        paper["url_stem"] = url[32:].split("?")[0]
 
-        not_found_msg = 'No ha estat possible trobar el que esteu buscant'
+        not_found_msg = "No ha estat possible trobar el que esteu buscant"
 
         r = await retry_url(s, url, attempts)
 
         try:
-            title = r.html.find('title', first=True)
-            table = r.html.find('table.table', first=True)
-            rows = table.find('tr')
+            title = r.html.find("title", first=True)
+            table = r.html.find("table.table", first=True)
+            rows = table.find("tr")
         except Exception:
-            paper['status_code'] = r.status_code
+            paper["status_code"] = r.status_code
             try:
                 if not_found_msg in title.text:
-                    paper['status_description'] = 'Title: not found'
+                    paper["status_description"] = "Title: not found"
             except Exception:
                 pass
 
@@ -448,69 +470,72 @@ async def scrape_url(s, url, items='author_data', attempts=10):
 
         for row in rows:
             # Get columns in row
-            columns = row.find('td')
+            columns = row.find("td")
 
             # Skip if empty row
             if len(columns) == 0:
                 continue
 
             attributes = {
-                'dc.contributor.authors' : 'author',
-                'dc.date.issued'         : 'date',
-                'dc.publisher'           : 'publisher',
-                'dc.identifier.citation' : 'citation',
-                'dc.identifier.issn'     : 'issn',
-                'dc.identifier.uri'      : 'uri',
-                'dc.identifier.isbn'     : 'isbn',
-                'dc.relation.ispartof'   : 'published_in',
-                'dc.title'               : 'title',
-                'dc.type'                : 'type',
-                'dc.identifier.doi'      : 'doi',
-                'dc.identifier.sourceid' : 'sourceid',
-                'dc.identifier.sourceref': 'sourceref',
-                'Appears in Collections:': 'appears_in_collections'}
+                "dc.contributor.authors": "author",
+                "dc.date.issued": "date",
+                "dc.publisher": "publisher",
+                "dc.identifier.citation": "citation",
+                "dc.identifier.issn": "issn",
+                "dc.identifier.uri": "uri",
+                "dc.identifier.isbn": "isbn",
+                "dc.relation.ispartof": "published_in",
+                "dc.title": "title",
+                "dc.type": "type",
+                "dc.identifier.doi": "doi",
+                "dc.identifier.sourceid": "sourceid",
+                "dc.identifier.sourceref": "sourceref",
+                "Appears in Collections:": "appears_in_collections",
+            }
 
             for row_index in attributes.keys():
                 if columns[0].text == row_index:
                     paper[attributes[row_index]] = columns[1].text
 
         # Get authors ORCid'ss
-        simple_url = url.split('?')[0] + '?mode=simple'
+        simple_url = url.split("?")[0] + "?mode=simple"
 
         r = await retry_url(s, simple_url, attempts)
 
         try:
-            title = r.html.find('title', first=True)
-            table = r.html.find('table.table', first=True)
-            rows = table.find('tr')
-            authors = r.html.find('table.table a.authority.author')
+            title = r.html.find("title", first=True)
+            table = r.html.find("table.table", first=True)
+            rows = table.find("tr")
+            authors = r.html.find("table.table a.authority.author")
             author_hrefs = []
             for author in authors:
-                href = author.attrs['href']
-                if href[:7] == '/orcid/':
+                href = author.attrs["href"]
+                if href[:7] == "/orcid/":
                     href = href[7:]
                 author_hrefs.append(href)
         except Exception:
-            paper['status_code'] = r.status_code
+            paper["status_code"] = r.status_code
             try:
                 if not_found_msg in title.text:
-                    paper['status_description'] = 'Title: not found'
+                    paper["status_description"] = "Title: not found"
             except Exception:
                 pass
 
             return paper
 
-        paper['orcids'] = author_hrefs
+        paper["orcids"] = author_hrefs
 
         return paper
 
     else:  # paper_urls, author_urls, project_urls or group_urls
-        selector = 'div.panel.panel-info table.table'
-        r = await retry_url(s, url, attempts=20, selector=selector)  # 20 attempts avoid errors
+        selector = "div.panel.panel-info table.table"
+        r = await retry_url(
+            s, url, attempts=20, selector=selector
+        )  # 20 attempts avoid errors
 
         try:
-            table = r.html.find('div.panel.panel-info table.table', first=True)
-            rows = table.find('tr')
+            table = r.html.find("div.panel.panel-info table.table", first=True)
+            rows = table.find("tr")
 
             result = []
 
@@ -518,16 +543,16 @@ async def scrape_url(s, url, items='author_data', attempts=10):
                 if i >= 300:  # Hardcoded: ignore results after row 300
                     continue
                 # Get columns in row
-                columns = row.find('td')
+                columns = row.find("td")
 
                 # Skip if empty row
                 if len(columns) == 0:
                     continue
 
-                if items in ['paper_urls', 'project_urls']:
-                    scrape_item = columns[1].find('a')[0].attrs['href'][1:]
-                elif items in ['author_urls', 'group_urls']:
-                    scrape_item = columns[0].find('a')[0].attrs['href'][1:]
+                if items in ["paper_urls", "project_urls"]:
+                    scrape_item = columns[1].find("a")[0].attrs["href"][1:]
+                elif items in ["author_urls", "group_urls"]:
+                    scrape_item = columns[0].find("a")[0].attrs["href"][1:]
 
                 # Append to results_list
                 result.append(scrape_item)
@@ -548,96 +573,93 @@ def get_urls(items, n_pages=None):
     Returns:
         urls (list): list of URLs.
     """
-    url_template =                                        \
-        'https://portalrecerca.csuc.cat/simple-search?' + \
-        'query='                                        + \
-        '&location={location}'                          + \
-        '&filter_field_1={filter_field_1}'              + \
-            '&filter_type_1={filter_type_1}'            + \
-            '&filter_value_1={filter_value_1}'          + \
-        '&filter_field_2={filter_field_2}'              + \
-            '&filter_type_2={filter_type_2}'            + \
-            '&filter_value_2={filter_value_2}'          + \
-        '&sort_by={sort_by}'                            + \
-            '&order={order}'                            + \
-        '&rpp={rpp}'                                    + \
-        '&etal=0'                                       + \
-        '&start='
+    url_template = (
+        "https://portalrecerca.csuc.cat/simple-search?"
+        + "query="
+        + "&location={location}"
+        + "&filter_field_1={filter_field_1}"
+        + "&filter_type_1={filter_type_1}"
+        + "&filter_value_1={filter_value_1}"
+        + "&filter_field_2={filter_field_2}"
+        + "&filter_type_2={filter_type_2}"
+        + "&filter_value_2={filter_value_2}"
+        + "&sort_by={sort_by}"
+        + "&order={order}"
+        + "&rpp={rpp}"
+        + "&etal=0"
+        + "&start="
+    )
 
-    if items == 'author_urls':
+    if items == "author_urls":
         search_fields = {
-            'location'      : 'crisrp',
-            'filter_field_1': 'resourcetype',
-            'filter_type_1' : 'equals',
-            'filter_value_1': 'Researchers',
-            'filter_field_2': '',
-            'filter_type_2' : '',
-            'filter_value_2': '',
-            'sort_by'       : 'crisrp.fullName_sort',
-            'order'         : 'asc',
-            'rpp'           : '300'
+            "location": "crisrp",
+            "filter_field_1": "resourcetype",
+            "filter_type_1": "equals",
+            "filter_value_1": "Researchers",
+            "filter_field_2": "",
+            "filter_type_2": "",
+            "filter_value_2": "",
+            "sort_by": "crisrp.fullName_sort",
+            "order": "asc",
+            "rpp": "300",
         }
 
-    elif items == 'paper_urls':
+    elif items == "paper_urls":
         search_fields = {
-            'location'      : 'publications',
-            'filter_field_1': 'resourcetype',
-            'filter_type_1' : 'equals',
-            'filter_value_1': 'Items',
-            'filter_field_2': 'itemtype',
-            'filter_type_2' : 'notequals',
-            'filter_value_2': 'Phd+Thesis',
-            'sort_by'       : 'dc.contributor.authors_sort',
-            'order'         : 'asc',
-            'rpp'           : '300'
+            "location": "publications",
+            "filter_field_1": "resourcetype",
+            "filter_type_1": "equals",
+            "filter_value_1": "Items",
+            "filter_field_2": "itemtype",
+            "filter_type_2": "notequals",
+            "filter_value_2": "Phd+Thesis",
+            "sort_by": "dc.contributor.authors_sort",
+            "order": "asc",
+            "rpp": "300",
         }
 
-    elif items == 'project_urls':
+    elif items == "project_urls":
         search_fields = {
-            'location'      : 'crisproject',
-            'filter_field_1': 'resourcetype',
-            'filter_type_1' : 'equals',
-            'filter_value_1': 'Projects',
-            'filter_field_2': '',
-            'filter_type_2' : '',
-            'filter_value_2': '',
-            'sort_by'       : 'crisrp.title_sort',
-            'order'         : 'asc',
-            'rpp'           : '300'
+            "location": "crisproject",
+            "filter_field_1": "resourcetype",
+            "filter_type_1": "equals",
+            "filter_value_1": "Projects",
+            "filter_field_2": "",
+            "filter_type_2": "",
+            "filter_value_2": "",
+            "sort_by": "crisrp.title_sort",
+            "order": "asc",
+            "rpp": "300",
         }
 
-    elif items == 'group_urls':
+    elif items == "group_urls":
         search_fields = {
-            'location'      : 'crisou',
-            'filter_field_1': 'resourcetype',
-            'filter_type_1' : 'equals',
-            'filter_value_1': 'OrgUnits',
-            'filter_field_2': '',
-            'filter_type_2' : '',
-            'filter_value_2': '',
-            'sort_by'       : 'crisou.name_sort',
-            'order'         : 'asc',
-            'rpp'           : '300'
+            "location": "crisou",
+            "filter_field_1": "resourcetype",
+            "filter_type_1": "equals",
+            "filter_value_1": "OrgUnits",
+            "filter_field_2": "",
+            "filter_type_2": "",
+            "filter_value_2": "",
+            "sort_by": "crisou.name_sort",
+            "order": "asc",
+            "rpp": "300",
         }
 
     url_root = url_template.format(**search_fields)
 
     if not n_pages:
-        n_pages = get_max_pages(url_root + '0')
+        n_pages = get_max_pages(url_root + "0")
 
-    urls = [url_root + str(page*300) for page in range(n_pages)]
+    urls = [url_root + str(page * 300) for page in range(n_pages)]
 
     return urls
 
 
 # Main Entrypoint
 async def scrape(
-        items,
-        urls,
-        batch_start=0,
-        out_file=None,
-        out_sql=False,
-        timeout=None):
+    items, urls, batch_start=0, out_file=None, out_sql=False, timeout=None
+):
     """Main entry function to scrape Portal de la Reserca.
 
     Args:
@@ -658,12 +680,14 @@ async def scrape(
     urls_flat = [url for batch in urls for url in batch]
     batch_size = len(urls[0])
 
-    log.info(f"""Scraping items: {items}
+    log.info(
+        f"""Scraping items: {items}
     URL count: {len(urls_flat):,d}
     Batch count: {len(urls):,d}
     Batch length: {batch_size:,d}
     Starting batch: {batch_start}
-    Output: {out_file}""")
+    Output: {out_file}"""
+    )
 
     if out_file:
         result_df = pd.DataFrame()
@@ -683,8 +707,10 @@ async def scrape(
 
         t2 = time.perf_counter()
 
-        if items in ['author_urls', 'paper_urls', 'project_urls', 'group_urls']:
-            batch_result = [i for sublist in batch_result for i in sublist]  # Flatten result
+        if items in ["author_urls", "paper_urls", "project_urls", "group_urls"]:
+            batch_result = [
+                i for sublist in batch_result for i in sublist
+            ]  # Flatten result
 
         if out_file:
             result_df = result_df.append(batch_result, ignore_index=True)
@@ -694,26 +720,28 @@ async def scrape(
         if out_sql:
             log.debug(f"Writing to database. Batch: {i}. # URLS: {len(batch_result)}.")
             date_today = out_file.split("/")[-1][:8] if out_file else None
-            if items in ['paper_urls', 'author_urls', 'project_urls', 'group_urls']:
+            if items in ["paper_urls", "author_urls", "project_urls", "group_urls"]:
                 insert_urls(batch_result, items, date_today)
-            elif items == 'paper_data':
+            elif items == "paper_data":
                 insert_papers(batch_result, date_today)
-            elif items == 'author_data':
+            elif items == "author_data":
                 insert_authors(batch_result, date_today)
-            elif items == 'group_data':
+            elif items == "group_data":
                 insert_groups(batch_result, date_today)
-            elif items == 'project_data':
+            elif items == "project_data":
                 insert_projects(batch_result, date_today)
 
         # Log estimated time left
-        seconds_left = (len(urls)-i)*(t2-t1)
-        batch_time = str(datetime.timedelta(seconds=round(t2-t1)))
+        seconds_left = (len(urls) - i) * (t2 - t1)
+        batch_time = str(datetime.timedelta(seconds=round(t2 - t1)))
         time_left = str(datetime.timedelta(seconds=round(seconds_left)))
 
         print(
-            f"Progress: {(i+1)/len(urls)*100:.0f}% ({i+1}/{len(urls):,d}). " +
-            f"URLs: {i*batch_size}-{(i+1)*batch_size-1}. " +
-            f"Batch time: {batch_time}. Time left: {time_left}.  ", end="\r")
+            f"Progress: {(i+1)/len(urls)*100:.0f}% ({i+1}/{len(urls):,d}). "
+            + f"URLs: {i*batch_size}-{(i+1)*batch_size-1}. "
+            + f"Batch time: {batch_time}. Time left: {time_left}.  ",
+            end="\r",
+        )
 
         if timeout:
             time.sleep(timeout)

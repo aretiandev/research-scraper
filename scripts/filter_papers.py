@@ -8,7 +8,9 @@ def main():
     output_papers_2plus = snakemake.output[1]
     institution = snakemake.wildcards.institution
 
-    filter_papers(input_authors, input_papers, output_papers, output_papers_2plus, institution)
+    filter_papers(
+        input_authors, input_papers, output_papers, output_papers_2plus, institution
+    )
 
 
 if __name__ == "__main__":

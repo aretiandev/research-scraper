@@ -18,7 +18,9 @@ n_lines = 1
 n_batch = 0
 
 while n_batch < 492:
-    result = subprocess.run(["/usr/bin/tmux", "capture-pane", "-pt", "SNAKEMAKE"], capture_output=True)
+    result = subprocess.run(
+        ["/usr/bin/tmux", "capture-pane", "-pt", "SNAKEMAKE"], capture_output=True
+    )
     result_text = result.stdout.decode("utf-8")
     result_chunk = "\n".join(result_text.splitlines()[-n_lines:])
     n_batch = result_chunk.split(")")[0].split("(")[1].split("/")[0]
@@ -26,4 +28,6 @@ while n_batch < 492:
     print(f"Batch number: {n_batch}.")
     time.sleep(300)
 
-client.chat_postMessage(channel=channel_id, text="DONE! Scraping paper_data has reached batch #492.")
+client.chat_postMessage(
+    channel=channel_id, text="DONE! Scraping paper_data has reached batch #492."
+)

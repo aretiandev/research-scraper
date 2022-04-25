@@ -11,7 +11,7 @@ def main():
 
     # channel = "#proj-city_barcelona"
     channel = slack_member_id
-    url = 'https://portalrecerca.csuc.cat/'
+    url = "https://portalrecerca.csuc.cat/"
 
     message = ":bell: Pinging Portal de la Reserca. Will notify when the website is back online: https://portalrecerca.csuc.cat"
     send_slack_message(channel, message, slack_token)
@@ -24,7 +24,13 @@ def main():
     message = ":snake: Running Snakemake from scratch with 16 cores."
     send_slack_message(channel, message, slack_token)
 
-    smk_command = ["snakemake", "--cores", "all", "--log-handler-script", "scripts/log_handler.py"]
+    smk_command = [
+        "snakemake",
+        "--cores",
+        "all",
+        "--log-handler-script",
+        "scripts/log_handler.py",
+    ]
     subprocess.run(smk_command)
 
 
