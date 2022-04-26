@@ -3,25 +3,17 @@ import pandas as pd
 import logging
 import os
 import sqlite3
-from src.scrape import WebsiteDownError, get_urls, scrape
-from src.bot import ping_and_wait
-from src.logging import configLogger
+from .src.scrape import WebsiteDownError, get_urls, scrape
+from .src.bot import ping_and_wait
+from .src.logging import configLogger
 
 log = logging.getLogger(__name__)
 
+url_root = "https://portalrecerca.csuc.cat/"
 
-def main():
-    # Configure root logger. All logger inherit this configuration.
-    configLogger(filename="log/snakemake.log", file_level="debug", console_level="info")
 
-    # Parameters
-    url_root = "https://portalrecerca.csuc.cat/"
-    batch_size = snakemake.params.get("batch_size")  # type: ignore # noqa
-    timeout = snakemake.params.get("timeout")  # type: ignore # noqa
-    out_file = snakemake.output[0]  # type: ignore # noqa
-    items = out_file.split("/")[-1].split(".")[0][
-        9:
-    ]  # data/20220419/20220419_group_data.csv -> "group_data"
+def build_urls(items):
+    """Build URLs for urls and data rules"""
 
     # Build URls for url rules
     if items in ["author_urls", "paper_urls", "group_urls", "project_urls"]:
@@ -45,6 +37,21 @@ def main():
             urls = [url_root + url + "?mode=full" for url in item_urls]
         else:
             urls = [url_root + url for url in item_urls]
+
+    return urls
+
+
+def main():
+    # Configure root logger. All logger inherit this configuration.
+    configLogger(filename="log/snakemake.log", file_level="debug", console_level="info")
+
+    # Parameters
+    batch_size = snakemake.params.get("batch_size")  # type: ignore # noqa
+    timeout = snakemake.params.get("timeout")  # type: ignore # noqa
+    out_file = snakemake.output[0]  # type: ignore # noqa
+    items = out_file.split("/")[-1].split(".")[0][9:]
+
+    urls = build_urls(items=items)
 
     # Batch size and start_pos
     if batch_size is None:
