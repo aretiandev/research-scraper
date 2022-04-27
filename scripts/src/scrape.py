@@ -18,6 +18,7 @@ import asyncio
 import os
 import sys
 import logging
+import pickle
 from .sqlite import (
     insert_urls,
     insert_papers,
@@ -56,7 +57,7 @@ def get_max_pages(url):
     return max_pages
 
 
-async def retry_url(s, url, attempts=10, selector=None, debug=False):
+async def retry_url(s, url, attempts=10, selector=None):
     """Retry fetching URL a given number of times."""
     for attempt in range(attempts):
         try:
@@ -375,7 +376,7 @@ async def scrape_group(s, url, tab="information", attempts=10):
 
 
 # Scrape single URL
-async def scrape_url(s, url, items="author_data", attempts=10):
+async def scrape_url(s, url, items="author_data", attempts=10, save_pickle_file=False):
     """Scrape URL.
 
     Args:
@@ -532,6 +533,11 @@ async def scrape_url(s, url, items="author_data", attempts=10):
         r = await retry_url(
             s, url, attempts=20, selector=selector
         )  # 20 attempts avoid errors
+
+        if save_pickle_file:
+            log.debug("Saving pickle file...")
+            with open(f"{items}.pickle", "wb") as f:
+                pickle.dump(r, f)
 
         try:
             table = r.html.find("div.panel.panel-info table.table", first=True)
