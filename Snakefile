@@ -1,10 +1,7 @@
 # Snakefile
 #
-# There are 8 target items: 
-#   author and author_urls
-#   paper and paper_urls
-#   project and project_urls
-#   group and group_urls
+# Scrapes information from Portal de la Recerca for authors, papers, projects and groups
+# and creates nodes and edges for network visualization.
 #
 # Run everthing:
 #   snakemake --cores all --log-handler-script scripts/log_handler.py
@@ -31,7 +28,7 @@ from scripts.src.process import get_date
 
 # Setup
 # date_today = get_date()
-date_today = '20220425'
+date_today = '20220427'
 institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC', 'Agrotecnio', 'CRAG', 'UdL', 'URV', 'UdG']
 threads_max = 16
 timeout = 1
