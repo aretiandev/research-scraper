@@ -3,9 +3,9 @@ import pandas as pd
 import logging
 import os
 import sqlite3
-from .src.scrape import WebsiteDownError, get_urls, scrape
-from .src.bot import ping_and_wait
-from .src.logging import configLogger
+from src.scrape import WebsiteDownError, get_urls, scrape
+from src.bot import ping_and_wait
+from src.logging import configLogger
 
 log = logging.getLogger(__name__)
 
