@@ -11,27 +11,7 @@ For coverage report run:
 import unittest
 from unittest.mock import patch
 import re
-import sys
-import os
-
-# testdir = os.path.dirname(__file__)
-# srcdir = "../scripts"
-# sys.path.insert(0, os.path.abspath(os.path.join(testdir, srcdir)))
-# print(sys.path)
-# print(os.path.abspath(os.path.join(testdir, srcdir)))
-
-
-# sys.path.insert(0, os.path.abspath("scripts/"))
-# sys.path.insert(0, os.path.dirname(__file__))
-# print(sys.path)
-# print(os.getcwd())
-# print(os.environ.get("PYTHONPATH"))
-
-
-# from scripts.src.scrape import scrape
-
-
-from scripts.scrape import build_urls, get_urls, WebsiteDownError
+from scrape import build_urls, get_urls, WebsiteDownError
 
 
 class TestURLs(unittest.TestCase):
