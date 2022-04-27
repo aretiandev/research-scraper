@@ -1,30 +1,54 @@
 import unittest
+from unittest.mock import patch
 import re
 
-# from unittest.mock import patch
-from scripts.src.scrape import get_urls
+from scripts.scrape import build_urls, get_urls, WebsiteDownError
 
 
-class TestScraper(unittest.TestCase):
-    """Test Scraper methods"""
+class TestAuthor(unittest.TestCase):
+    """Test Author data, objects and methods"""
+
+    url_regex = re.compile(
+        r"^https://portalrecerca.csuc.cat/simple-search\?query=.*&start=[0-9]*"
+    )
+    n_urls = 30
 
     def setUp(self):
-        """Setup URLs"""
-        self.urls = get_urls(items="author_urls")
-        pass
+        """Setup mocks for functions that trigger HTTP requests"""
+        patcher = patch("scripts.src.scrape.get_max_pages")
+        self.addCleanup(patcher.stop)
+        self.mock_get_max_pages = patcher.start()
+        self.mock_get_max_pages.return_value = self.n_urls
 
-    def test_author_urls_format(self):
-        """Check all author URLs have URL format."""
-        regex = re.compile(
-            r"^https://portalrecerca.csuc.cat/simple-search\?query=.*&start=[0-9]*"
-        )
-        result = all([regex.match(url) for url in self.urls])
-        self.assertTrue(result)
+    def test_get_urls(self):
+        """URLs have URL format"""
+        urls = get_urls(items="author_urls")
+        urls_match_regex = all([self.url_regex.match(url) for url in urls])
+        self.assertTrue(urls_match_regex)
 
-    def test_author_urls_length(self):
-        """Check author URLs is a list with more than 100 items"""
-        self.assertIsInstance(self.urls, list)
-        self.assertGreater(len(self.urls), 30)
+    def test_get_urls_length(self):
+        """URLs is a list with correct length"""
+        urls = get_urls(items="author_urls")
+        self.assertIsInstance(urls, list)
+        self.assertEqual(len(urls), self.n_urls)
+
+    def test_get_urls_websitedown(self):
+        """If website is down, raise WebsiteDownError"""
+        self.mock_get_max_pages.side_effect = WebsiteDownError("url")
+        with self.assertRaises(WebsiteDownError):
+            get_urls(items="author_urls")
+
+    def test_build_urls(self):
+        """URLs have URL format"""
+        urls = build_urls(items="author_urls")
+        urls_match_regex = all([self.url_regex.match(url) for url in urls])
+        self.assertTrue(urls_match_regex)
+
+    def test_build_urls_length(self):
+        """URLs is a list with correct length"""
+        urls = build_urls(items="author_urls")
+        self.assertIsInstance(urls, list)
+        self.assertEqual(len(urls), self.n_urls)
 
 
 if __name__ == "__main__":
