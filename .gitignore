@@ -10,6 +10,7 @@ selenium/*.xlsx
 selenium/chromedriver
 figs/
 *.db
+*.pickle
 
 # Environment variables
 .venv/
