@@ -1,0 +1,1 @@
+https://portalrecerca.csuc.cat/simple-search?query=&location=crisou&filter_field_1=resourcetype&filter_type_1=equals&filter_value_1=OrgUnits&filter_field_2=&filter_type_2=&filter_value_2=&sort_by=crisou.name_sort&order=asc&rpp=300&etal=0&start=0

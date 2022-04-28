@@ -1,0 +1,2289 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="ca">
+
+<!-- Begin Cookie Consent plugin by Silktide - http://silktide.com/cookieconsent -->
+<script type="text/javascript">
+    
+    window.cookieconsent_options = {
+        "message": "Aquest lloc web fa servir cookies. Si hi segueix navegant considerarem que n'està acceptant el seu ús. ",
+        "dismiss": "Entesos!",
+        "learnMore": "Més informació sobre les cookies",
+        "link": "/legal",
+        "theme": "static/css/cookie_law.css"
+    };
+</script>
+<script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.9/cookieconsent.min.js"></script>
+<!-- End Cookie Consent plugin -->
+
+<head>
+
+    <title>Portal de la Recerca de Catalunya: Resultats de cerca
+    </title>
+    <meta name="Generator" content="DSpace CRIS-4.1.2"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+
+    <link href='https://fonts.googleapis.com/css?family=Titillium+Web:400' rel='stylesheet' type='text/css'>
+
+
+
+
+    <link href="/css/researcher.css" type="text/css" rel="stylesheet"/>
+    <link href="/css/jdyna.css" type="text/css" rel="stylesheet"/>
+    
+    
+    <!--link href="/static/css/font-awesome/css/font-awesome.min.css" rel="stylesheet" / -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="/static/css/jstree/themes/default/style.min.css" rel="stylesheet"/>
+    
+    
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+    <style>
+        .fs-1,.fs-2,.fs-3,.fs-4,.fs-5,.fs-6{
+            color: #2A7886
+        }
+
+        th.oddRow,th.oddRowEvenCol,th.oddRowOddCol, th {
+            color: #2A7886 !important;
+        }
+
+        .rounded {
+            border-color: #2A7886;
+        }
+
+        .facet tbody tr:hover td {
+            background-color: #9FC2C8;
+        }
+
+        table th:hover  {
+            background-color: transparent !important;
+        }
+
+        th.facet {
+            background-color: #2A7886;
+        }
+
+        td.facet {
+            background-color: #E9F1F3;
+        }
+
+        .ui-autocomplete-loading {
+            background: url('../image/jdyna/indicator.gif') no-repeat right center
+        }
+
+        body {
+            font-family: 'Titillium Web', sans-serif !important;
+        }
+
+        footer {
+            background-color: #004357;
+        }
+
+        footer a:hover{
+            color: white !important;
+        }
+
+        .update {
+            background-color: #9FC2C8;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #E9F1F3;
+        }
+
+        a {
+            color: #2A7886
+        }
+
+        a:hover {
+            color: #004357 !important;
+        }
+
+        a.nav-link {
+            text-decoration: underline;
+        }
+
+        [data-href] {
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .nav-pills > li > button {
+            color: #2A7886 !important;
+            height: 100%;
+        }
+
+        .nav-pills > li > button.active {
+            background-color: #2A7886 !important;
+            color: white !important;
+        }
+
+        .nav-pills > li.active {
+            background-color: #2A7886 !important;
+        }
+
+        .nav-pills > li.active > a.ui-tabs-anchor {
+            color: white !important;
+        }
+
+        div.card.text-center:hover {
+            background-color: #E9F1F3
+        }
+
+        .pagination > .active {
+            color: white;
+            background-color: #2A7886;
+            border: solid 1px #2A7886;
+        }
+
+        ul.pagination a {
+            color: #2A7886
+        }
+
+        div.card-list:hover {
+            background-color: white;
+        }
+
+        div.card-list.active {
+            background-color: white;
+        }
+
+        .card-body {
+            color: white;
+        }
+
+        .card-list:hover div.card-body{
+            color: #004357 !important;
+        }
+
+        .card-list.active div.card-body{
+            color: #004357 !important;
+        }
+
+        div#icon-universities {
+            background-image: url('/image/assets/icon-universities-white.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+
+        div.card-list:hover div#icon-universities,div.card-list.active div#icon-universities {
+            background-image: url('/image/assets/icon-universities-color.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+
+        div#icon-projects {
+            background-image: url('/image/assets/icon-projects-white.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+
+        div.card-list:hover div#icon-projects,div.card-list.active div#icon-projects {
+            background-image: url('/image/assets/icon-projects-color.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+
+        div#icon-groups {
+            background-image: url('/image/assets/icon-groups-white.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+
+        div.card-list:hover div#icon-groups,div.card-list.active div#icon-groups {
+            background-image: url('/image/assets/icon-groups-color.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+
+        div#icon-researchers {
+            background-image: url('/image/assets/icon-researchers-white.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+
+        div.card-list:hover div#icon-researchers,div.card-list.active div#icon-researchers {
+            background-image: url('/image/assets/icon-researchers-color.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+
+        div#icon-publications {
+            background-image: url('/image/assets/icon-publications-white.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+
+        div.card-list:hover div#icon-publications,div.card-list.active div#icon-publications {
+            background-image: url('/image/assets/icon-publications-color.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+
+
+        div#icon-theses {
+            background-image: url('/image/assets/icon-theses-white.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+
+        div.card-list:hover div#icon-theses,div.card-list.active div#icon-theses {
+            background-image: url('/image/assets/icon-theses-color.svg');
+            background-repeat: no-repeat;
+            height:60px;
+            width:58px;
+        }
+    </style>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          href="/open-search/description.xml" title="DSpace"/>
+    
+
+
+
+
+
+    <script type="text/javascript" src="/static/js/html5shiv.js"></script>
+    <script type="text/javascript" src="/static/js/holder.js"></script>
+    <script type="text/javascript" src="/utils.js"></script>
+    <script type="text/javascript" src="/static/js/choice-support.js"></script>
+    <script type="text/javascript" src="/js/jdyna/jdyna.js"></script>
+    <script src="https://kit.fontawesome.com/cdc8c04b42.js" crossorigin="anonymous"></script>
+    <script type='text/javascript'>
+        var j = jQuery.noConflict();
+        var $ = jQuery.noConflict();
+        var JQ = j;
+        dspaceContextURL = "/simple-search";
+        dspaceContextPath = "";
+
+        //Navigate function
+        function goToBrowse() {
+            console.log("go to");
+            var URL = "http://";
+            var select1 = document.getElementById("select_explore");
+            var web = select1.options[select1.selectedIndex].value;
+            //var web = document.explore.options[document.explore.selectedIndex].value;
+            console.log(web);
+            window.location.href = web;
+            //window.open(web, '_blank', '');
+        }
+
+        // resize all charts
+        JQ(window).on('resize', function(){
+            JQ("[_echarts_instance_]").each(function(){
+                window.echarts.getInstanceById($(this).attr('_echarts_instance_')).resize()
+            });
+        });
+
+        function active(){
+            let current = window.location.href;
+
+            //console.log(current)
+
+            if (JQ('meta[name="type"]').length
+                && (JQ('meta[name="type"]').attr("content") == 'community-list' || JQ('meta[name="type"]').attr("content") == 'collection-home')) {
+                JQ(".card-list.icon-universities").addClass("active");
+            }
+            if (JQ('meta[name="type"]').length &&
+                (JQ('meta[name="type"]').attr("content") == 'discovery-project' || JQ('meta[name="type"]').attr("content") == 'project-page')) {
+                JQ(".card-list.icon-projects").addClass("active");
+            }
+            if (JQ('meta[name="type"]').length &&
+                (JQ('meta[name="type"]').attr("content") == 'discovery-ou' || JQ('meta[name="type"]').attr("content") == 'ou-page')) {
+                JQ(".card-list.icon-groups").addClass("active");
+            }
+            if (JQ('meta[name="type"]').length &&
+                (JQ('meta[name="type"]').attr("content") == 'discovery-rp' || JQ('meta[name="type"]').attr("content") == 'researcher-page')) {
+                JQ(".card-list.icon-researchers").addClass("active");
+            }
+            if ((JQ('meta[name="type"]').length && JQ('meta[name="type"]').attr("content") == 'discovery-publications')
+                || ( JQ('meta[name="DC.type"]').length && JQ('meta[name="DC.type"]').attr("content") != 'Phd Thesis')) {
+                JQ(".card-list.icon-publications").addClass("active");
+            }
+            if ((JQ('meta[name="type"]').length && JQ('meta[name="type"]').attr("content") == 'discovery-phd-thesis')
+                || ( JQ('meta[name="DC.type"]').length && JQ('meta[name="DC.type"]').attr("content") == 'Phd Thesis')) {
+                JQ(".card-list.icon-theses").addClass("active");
+            }
+        }
+
+        JQ( document ).ready(function() {
+           active();
+           JQ( ".card-list" )
+               .mouseenter( function () {
+                   JQ(".card-list.active").removeClass("active")
+                })
+                .mouseleave( function () {
+                    active();
+           });
+
+            function autocomplete(metadata, metadata_sort) {
+                JQ("#tequery").autocomplete({
+                    source: function (request, response) {
+                        JQ.ajax({
+                            url: '/autocomplete',
+                            data: {
+                                "q": metadata + ":" + request.term,
+                                "rows": "0",
+                                "facet": "true",
+                                "facet.pivot": metadata_sort,
+                                "facet.limit": "5"
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                response(JQ.map(data._facetPivot.nvPairs[1], function (item) {
+                                    return {
+                                        value: item._value
+                                    }
+                                }));
+                            }
+                        });
+                    },
+                    minLength: 3
+                })
+            }
+
+            selected(JQ(this).find(":selected").index());
+
+            JQ("select").change(function () {
+                var value = JQ(this).find(":selected").index();
+                selected(value);
+            })
+
+            function selected(value) {
+                if (value == 1) autocomplete("crisrp.this", "objectname_keyword");
+                else if (value == 2) autocomplete("crisproject.this", "objectname_keyword");
+                else if (value == 3) autocomplete("crisou.this", "objectname_keyword");
+                else if (value == 4) autocomplete("crisdepartament.this", "objectname_keyword");
+                else if (value == 5) autocomplete("dc.title", "objectname_keyword");
+                else if (value == 6) autocomplete("dc.title", "objectname_keyword");
+            }
+        });
+
+    </script>
+    
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-64604709-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+    
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119020300-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-119020300-1');
+    </script>
+    
+    <script type="text/javascript">
+        var j = jQuery.noConflict();
+        var $ = jQuery.noConflict();
+        var JQ = j;
+        $(document).ready(function() {
+            $( "#spellCheckQuery").click(function(){
+                $("#query").val(jQ(this).attr('data-spell'));
+                $("#main-query-submit").click();
+            });
+
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+            /**
+             jQ( "#filterquery" )
+             .autocomplete({
+				source: function( request, response ) {
+					jQ.ajax({
+						url: "/json/discovery/autocomplete?query=&filter_field_1=resourcetype&filter_type_1=equals&filter_value_1=OrgUnits",
+						dataType: "json",
+						cache: false,
+						data: {
+							auto_idx: jQ("#filtername").val(),
+							auto_query: request.term,
+							auto_sort: 'count',
+							auto_type: jQ("#filtertype").val(),
+							location: 'crisou'
+						},
+						success: function( data ) {
+							response( jQ.map( data.autocomplete, function( item ) {
+								var tmp_val = item.authorityKey;
+								if (tmp_val == null || tmp_val == '')
+								{
+									tmp_val = item.displayedValue;
+								}
+								return {
+									label: item.displayedValue + " (" + item.count + ")",
+									value: tmp_val
+								};
+							}))
+						}
+					})
+				}
+			});
+             **/
+            $('th.sortable').click(function(){
+                var cls = $(this).attr('class');
+                var pos = cls.indexOf('sort_',0);
+                var endPos = cls.indexOf(' ',pos);
+                if (endPos == -1) endPos = cls.length;
+                var sortby = cls.substr(pos+5,endPos-pos-5);
+                $('#update-form').find('input[name="order"]').val($(this).hasClass("sorted_asc")?"DESC":"ASC");
+                $('#update-form').find('input[name="sort_by"]').val('bi_sort_'+sortby+'_sort');
+                $('#update-form').submit();
+            });
+        });
+    </script>
+    
+
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+  <script src="/static/js/html5shiv.js"></script>
+  <script src="/static/js/respond.min.js"></script>
+<![endif]-->
+
+    <script>
+        MathJax = {
+            asciimath: {delimiters: [['$','$'], ['`','`']]},
+            tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+</head>
+
+
+
+<body class="undernavigation">
+<a class="sr-only" href="#content">Skip navigation</a>
+<header class="navbar navbar-light navbar-expand-lg bg-light" style="border-top:8px solid #2A7886;">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="/image/assets/logo-cora-prc.png" title="Catalan Open Research Area. Portal de la Recerca de Catalunya" class="d-inline-block align-text-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active text-decoration-none" aria-current="page" href="/" style="color: #2A7886">Inici</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-decoration-none" href="/prc" style="color: #2A7886">Sobre el  PRC</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-decoration-none" href="/faq" style="color: #2A7886" >Preguntes més freqüents</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-decoration-none" href="/estadistiques" style="color: #2A7886">Estadístiques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-decoration-none" href="/feedback" style="color: #2A7886">Contacte</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-decoration-none" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #2A7886">
+                            Idioma
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            
+
+                            <li><a class="dropdown-item" href="/simple-search?query=&location=crisou&filter_field_1=resourcetype&filter_type_1=equals&filter_value_1=OrgUnits&filter_field_2=&filter_type_2=&filter_value_2=&sort_by=crisou.name_sort&order=asc&rpp=300&etal=0&start=0&locale=es">Castellano</a></li>
+                            <li><a class="dropdown-item" href="/simple-search?query=&location=crisou&filter_field_1=resourcetype&filter_type_1=equals&filter_value_1=OrgUnits&filter_field_2=&filter_type_2=&filter_value_2=&sort_by=crisou.name_sort&order=asc&rpp=300&etal=0&start=0&locale=ca">Català</a></li>
+                            <li><a class="dropdown-item" href="/simple-search?query=&location=crisou&filter_field_1=resourcetype&filter_type_1=equals&filter_value_1=OrgUnits&filter_field_2=&filter_type_2=&filter_value_2=&sort_by=crisou.name_sort&order=asc&rpp=300&etal=0&start=0&locale=en">English</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="nav navbar-nav navbar-right">
+    <ul class="nav navbar-nav navbar-right">
+
+    <li class="dropdown">
+         
+             <!-- <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon"></span> Serveis <b class="caret"></b></a> -->
+  
+             <ul class="dropdown-menu">
+               <li><a href="/mydspace">El meu PRC</a></li>
+               <li><a href="/subscribe">Alertes</a></li>
+               <li><a href="/profile">Editar perfil</a></li>
+    
+             </ul>
+           </li>
+          </ul>
+  </div>
+
+
+  	   <!-- Ho treiem del flux normal i ho pugem -->
+       <!--<div class="nav navbar-nav navbar-right">
+		<ul class="nav navbar-nav navbar-right">
+        <li class=""><a href="/">Inici</a></li>
+
+        <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Explora <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+        <li><a href="/community-list">Comunitats</a></li>
+        <li class="divider"></li>
+        <li class="dropdown-header">Browse Items by:</li>
+        
+
+        
+                    <li><a href="/browse?type=dateissued">Data de publicació</a></li>
+          
+                    <li><a href="/browse?type=author">Autor</a></li>
+          
+                    <li><a href="/browse?type=title">Publicacions</a></li>
+          
+                    <li><a href="/browse?type=subject">Matèria</a></li>
+          
+                    <li><a href="/browse?type=rpname">Investigadors/es</a></li>
+          
+                    <li><a href="/browse?type=rpdept">Investigadors/es per departament</a></li>
+          
+                    <li><a href="/browse?type=pjtitle">Projectes de recerca</a></li>
+          
+                    <li><a href="/browse?type=ouname">Grups de recerca</a></li>
+          
+                    <li><a href="/browse?type=crisdepartament">Departaments, Instituts i Àrees</a></li>
+          
+                    <li><a href="/browse?type=rpnameub">???browse.menu.rpnameub???</a></li>
+          
+                    <li><a href="/browse?type=rpnameudg">???browse.menu.rpnameudg???</a></li>
+          
+                    <li><a href="/browse?type=rpnameupc">???browse.menu.rpnameupc???</a></li>
+          
+                    <li><a href="/browse?type=rpnameuic">???browse.menu.rpnameuic???</a></li>
+          
+                    <li><a href="/browse?type=rpnameuoc">???browse.menu.rpnameuoc???</a></li>
+          
+                    <li><a href="/browse?type=rpnameupf">???browse.menu.rpnameupf???</a></li>
+          
+                    <li><a href="/browse?type=rpnameuab">???browse.menu.rpnameuab???</a></li>
+          
+                    <li><a href="/browse?type=rpnameuvicucc">???browse.menu.rpnameuvicucc???</a></li>
+          
+                    <li><a href="/browse?type=rpnameudl">???browse.menu.rpnameudl???</a></li>
+          
+                    <li><a href="/browse?type=rpnameurv">???browse.menu.rpnameurv???</a></li>
+          
+                    <li><a href="/browse?type=rpnameurl">???browse.menu.rpnameurl???</a></li>
+          
+                    <li><a href="/browse?type=ounameub">???browse.menu.ounameub???</a></li>
+          
+                    <li><a href="/browse?type=ounameudg">???browse.menu.ounameudg???</a></li>
+          
+                    <li><a href="/browse?type=ounameupc">???browse.menu.ounameupc???</a></li>
+          
+                    <li><a href="/browse?type=ounameuic">???browse.menu.ounameuic???</a></li>
+          
+                    <li><a href="/browse?type=ounameuoc">???browse.menu.ounameuoc???</a></li>
+          
+                    <li><a href="/browse?type=ounameupf">???browse.menu.ounameupf???</a></li>
+          
+                    <li><a href="/browse?type=ounameuab">???browse.menu.ounameuab???</a></li>
+          
+                    <li><a href="/browse?type=ounameuvicucc">???browse.menu.ounameuvicucc???</a></li>
+          
+                    <li><a href="/browse?type=ounameudl">???browse.menu.ounameudl???</a></li>
+          
+                    <li><a href="/browse?type=ounameurv">???browse.menu.ounameurv???</a></li>
+          
+                    <li><a href="/browse?type=ounameurl">???browse.menu.ounameurl???</a></li>
+          
+                    <li><a href="/browse?type=pjtitleub">???browse.menu.pjtitleub???</a></li>
+          
+                    <li><a href="/browse?type=pjtitleudg">???browse.menu.pjtitleudg???</a></li>
+          
+                    <li><a href="/browse?type=pjtitleupc">???browse.menu.pjtitleupc???</a></li>
+          
+                    <li><a href="/browse?type=pjtitleuic">???browse.menu.pjtitleuic???</a></li>
+          
+                    <li><a href="/browse?type=pjtitleuoc">???browse.menu.pjtitleuoc???</a></li>
+          
+                    <li><a href="/browse?type=pjtitleupf">???browse.menu.pjtitleupf???</a></li>
+          
+                    <li><a href="/browse?type=pjtitleuab">???browse.menu.pjtitleuab???</a></li>
+          
+                    <li><a href="/browse?type=pjtitleuvicucc">???browse.menu.pjtitleuvicucc???</a></li>
+          
+                    <li><a href="/browse?type=pjtitleudl">???browse.menu.pjtitleudl???</a></li>
+          
+                    <li><a href="/browse?type=pjtitleurv">???browse.menu.pjtitleurv???</a></li>
+          
+                    <li><a href="/browse?type=pjtitleurl">???browse.menu.pjtitleurl???</a></li>
+          
+                    <li><a href="/browse?type=crisdepartamentub">???browse.menu.crisdepartamentub???</a></li>
+          
+                    <li><a href="/browse?type=crisdepartamentudg">???browse.menu.crisdepartamentudg???</a></li>
+          
+                    <li><a href="/browse?type=crisdepartamentupc">???browse.menu.crisdepartamentupc???</a></li>
+          
+                    <li><a href="/browse?type=crisdepartamentuic">???browse.menu.crisdepartamentuic???</a></li>
+          
+                    <li><a href="/browse?type=crisdepartamentuoc">???browse.menu.crisdepartamentuoc???</a></li>
+          
+                    <li><a href="/browse?type=crisdepartamentupf">???browse.menu.crisdepartamentupf???</a></li>
+          
+                    <li><a href="/browse?type=crisdepartamentuab">???browse.menu.crisdepartamentuab???</a></li>
+          
+                    <li><a href="/browse?type=crisdepartamentuvicucc">???browse.menu.crisdepartamentuvicucc???</a></li>
+          
+                    <li><a href="/browse?type=crisdepartamentudl">???browse.menu.crisdepartamentudl???</a></li>
+          
+                    <li><a href="/browse?type=crisdepartamenturv">???browse.menu.crisdepartamenturv???</a></li>
+          
+                    <li><a href="/browse?type=crisdepartamenturl">???browse.menu.crisdepartamenturl???</a></li>
+          
+                    <li><a href="/browse?type=theses">Tesis</a></li>
+          
+                    <li><a href="/browse?type=pub">Publicacions</a></li>
+          
+
+        
+
+            </ul>
+          </li>
+
+
+          
+
+	  </ul>
+	  </div>-->
+
+
+    </nav>
+
+
+
+</header>
+
+    
+
+
+
+
+
+<main id="content" role="main">
+    <div class="container-wrapper header">
+        <div style="background-color:#004357">
+            <div class="search-bar">
+                
+                <form method="get" action="/simple-search" class="navbar-form search-custom mt-auto py-2">
+                    <div class="container">
+                        <div class="row">
+                            <div class="input-group input-group py-3">
+                                <input class="form-control" type="search"
+                                       placeholder="Cerca per..."
+                                       aria-label="Search" name="query" id="tequery" oninput='noShadow()'
+                                       value=""/>
+
+                                <input type="hidden" name="filtername" value="resourcetype"/>
+                                <input type="hidden" name="filtertype" value="equals"/>
+                                <input type="hidden" name="sort_by" value="score"/>
+                                <input type="hidden" name="order" value="DESC"/>
+                                <input type="hidden" name="filter_field_1"/>
+                                <input type="hidden" name="filter_type_1"/>
+                                <input type="hidden" name="filter_value_1"/>
+                                <input type="hidden" name="location"/>
+
+                                <select class="input-group-text form-select-sm" name="filterquery"
+                                        style="background-color: #9FC2C8">
+                                    <option value="">A tot el portal
+                                    <option value="Researchers" >Investigadors/es
+                                    <option value="Projects" >Projectes de recerca
+                                    <option value="OrgUnits" selected>Grups de recerca
+                                    <option value="Departament" >Departaments, Instituts i Àrees
+                                    <option value="Publications" >Publicacions
+                                    <option value="Theses" >Tesis
+                                    <option value="Phd Thesis" style="display:none"></option>
+                                </select>
+
+                                <button onclick="checkSearch()" id="header-search" type="submit"
+                                        class="btn btn-outline-secondary" style="background-color: #2A7886"><img
+                                        src="/image/assets/icon-search-white.svg"></button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <script>
+                        //author: Pablo Buenaposada Sanchez, CSUC
+                        //this function clears entity fitlers when no entity is selected
+                        function checkSearch() {
+                            if (document.getElementsByName("filterquery")[0].value == "") {
+                                document.getElementsByName("filtername")[0].disabled = true;
+                                document.getElementsByName("filtertype")[0].disabled = true;
+                                document.getElementsByName("filterquery")[0].disabled = true;
+                                document.getElementsByName("filter_field_1")[0].disabled = true;
+                                document.getElementsByName("filter_type_1")[0].disabled = true;
+                                document.getElementsByName("filter_value_1")[0].disabled = true;
+                            } else if (document.getElementsByName("filterquery")[0].value == "Publications") {
+                                document.getElementsByName("filtername")[0].value = "itemtype";
+                                document.getElementsByName("filtertype")[0].value = "notequals";
+                                document.getElementsByName("filterquery")[0].value = "Phd Thesis";
+
+                                document.getElementsByName("filter_field_1")[0].value = "resourcetype";
+                                document.getElementsByName("filter_type_1")[0].value = "equals";
+                                document.getElementsByName("filter_value_1")[0].value = "Items";
+
+                                document.getElementsByName("sort_by")[0].value = "dc.date.issued_dt";
+                                document.getElementsByName("order")[0].value = "DESC";
+                                document.getElementsByName("location")[0].value = "publications";
+
+                            } else if (document.getElementsByName("filterquery")[0].value == "Theses") {
+                                document.getElementsByName("filtername")[0].value = "itemtype";
+                                document.getElementsByName("filtertype")[0].value = "equals";
+                                document.getElementsByName("filterquery")[0].value = "Phd Thesis";
+                                document.getElementsByName("sort_by")[0].value = "dc.date.issued_dt";
+                                document.getElementsByName("order")[0].value = "DESC";
+                                document.getElementsByName("location")[0].value = "phdthesis";
+
+                                document.getElementsByName("filter_field_1")[0].value = "resourcetype";
+                                document.getElementsByName("filter_type_1")[0].value = "equals";
+                                document.getElementsByName("filter_value_1")[0].value = "Items";
+
+                            }
+                            var input = document.getElementsByName("query")[0].value;
+
+
+                            if (document.getElementsByName("filterquery")[0].value == "Researchers") {
+                                var input2 = document.getElementsByName("sort_by")[0].value = "crisrp.fullName_sort";
+                                document.getElementsByName("location")[0].value = "crisrp";
+                                var input3 = document.getElementsByName("order")[0].value = "ASC";
+                            } else if (document.getElementsByName("filterquery")[0].value == "Projects") {
+                                var input2 = document.getElementsByName("sort_by")[0].value = "crisproject.startdate_dt";
+                                document.getElementsByName("location")[0].value = "crisproject";
+                                var input3 = document.getElementsByName("order")[0].value = "DESC";
+                            } else if (document.getElementsByName("filterquery")[0].value == "OrgUnits") {
+                                var input2 = document.getElementsByName("sort_by")[0].value = "crisou.name_sort";
+                                var input3 = document.getElementsByName("order")[0].value = "ASC";
+                                document.getElementsByName("location")[0].value = "crisou";
+                            } else if (document.getElementsByName("filterquery")[0].value == "Departament") {
+                                var input2 = document.getElementsByName("sort_by")[0].value = "bi_sort_8_sort";
+                                var input3 = document.getElementsByName("order")[0].value = "ASC";
+
+                                document.getElementsByName("location")[0].value = "crisdepartament";
+                            } else if (document.getElementsByName("filterquery")[0].value == "Phd Thesis") {
+                                document.getElementsByName("sort_by")[0].value = "dc.date.issued_dt";
+                                document.getElementsByName("order")[0].value = "DESC";
+                                document.getElementsByName("location")[0].value = "phdthesis";
+
+                                document.getElementsByName("filter_field_1")[0].value = "resourcetype";
+                                document.getElementsByName("filter_type_1")[0].value = "equals";
+                                document.getElementsByName("filter_value_1")[0].value = "Items";
+                            }
+
+
+                        }
+                    </script>
+
+                   
+                    
+
+                </form>
+
+                <!-- <div class="styled-select navbar-form" style="float:right;width:200px;margin-right:20px;">
+    <select id="select_explore" onChange="javascript:goToBrowse()">
+      <option value="/">Explora</option>
+	   
+
+        
+					<option value="/browse?type=dateissued">Data de publicació</option>
+          
+					<option value="/browse?type=author">Autor</option>
+          
+					<option value="/browse?type=title">Publicacions</option>
+          
+					<option value="/browse?type=subject">Matèria</option>
+          
+					<option value="/browse?type=rpname">Investigadors/es</option>
+          
+					<option value="/browse?type=rpdept">Investigadors/es per departament</option>
+          
+					<option value="/browse?type=pjtitle">Projectes de recerca</option>
+          
+					<option value="/browse?type=ouname">Grups de recerca</option>
+          
+					<option value="/browse?type=crisdepartament">Departaments, Instituts i Àrees</option>
+          
+					<option value="/browse?type=rpnameub">???browse.menu.rpnameub???</option>
+          
+					<option value="/browse?type=rpnameudg">???browse.menu.rpnameudg???</option>
+          
+					<option value="/browse?type=rpnameupc">???browse.menu.rpnameupc???</option>
+          
+					<option value="/browse?type=rpnameuic">???browse.menu.rpnameuic???</option>
+          
+					<option value="/browse?type=rpnameuoc">???browse.menu.rpnameuoc???</option>
+          
+					<option value="/browse?type=rpnameupf">???browse.menu.rpnameupf???</option>
+          
+					<option value="/browse?type=rpnameuab">???browse.menu.rpnameuab???</option>
+          
+					<option value="/browse?type=rpnameuvicucc">???browse.menu.rpnameuvicucc???</option>
+          
+					<option value="/browse?type=rpnameudl">???browse.menu.rpnameudl???</option>
+          
+					<option value="/browse?type=rpnameurv">???browse.menu.rpnameurv???</option>
+          
+					<option value="/browse?type=rpnameurl">???browse.menu.rpnameurl???</option>
+          
+					<option value="/browse?type=ounameub">???browse.menu.ounameub???</option>
+          
+					<option value="/browse?type=ounameudg">???browse.menu.ounameudg???</option>
+          
+					<option value="/browse?type=ounameupc">???browse.menu.ounameupc???</option>
+          
+					<option value="/browse?type=ounameuic">???browse.menu.ounameuic???</option>
+          
+					<option value="/browse?type=ounameuoc">???browse.menu.ounameuoc???</option>
+          
+					<option value="/browse?type=ounameupf">???browse.menu.ounameupf???</option>
+          
+					<option value="/browse?type=ounameuab">???browse.menu.ounameuab???</option>
+          
+					<option value="/browse?type=ounameuvicucc">???browse.menu.ounameuvicucc???</option>
+          
+					<option value="/browse?type=ounameudl">???browse.menu.ounameudl???</option>
+          
+					<option value="/browse?type=ounameurv">???browse.menu.ounameurv???</option>
+          
+					<option value="/browse?type=ounameurl">???browse.menu.ounameurl???</option>
+          
+					<option value="/browse?type=pjtitleub">???browse.menu.pjtitleub???</option>
+          
+					<option value="/browse?type=pjtitleudg">???browse.menu.pjtitleudg???</option>
+          
+					<option value="/browse?type=pjtitleupc">???browse.menu.pjtitleupc???</option>
+          
+					<option value="/browse?type=pjtitleuic">???browse.menu.pjtitleuic???</option>
+          
+					<option value="/browse?type=pjtitleuoc">???browse.menu.pjtitleuoc???</option>
+          
+					<option value="/browse?type=pjtitleupf">???browse.menu.pjtitleupf???</option>
+          
+					<option value="/browse?type=pjtitleuab">???browse.menu.pjtitleuab???</option>
+          
+					<option value="/browse?type=pjtitleuvicucc">???browse.menu.pjtitleuvicucc???</option>
+          
+					<option value="/browse?type=pjtitleudl">???browse.menu.pjtitleudl???</option>
+          
+					<option value="/browse?type=pjtitleurv">???browse.menu.pjtitleurv???</option>
+          
+					<option value="/browse?type=pjtitleurl">???browse.menu.pjtitleurl???</option>
+          
+					<option value="/browse?type=crisdepartamentub">???browse.menu.crisdepartamentub???</option>
+          
+					<option value="/browse?type=crisdepartamentudg">???browse.menu.crisdepartamentudg???</option>
+          
+					<option value="/browse?type=crisdepartamentupc">???browse.menu.crisdepartamentupc???</option>
+          
+					<option value="/browse?type=crisdepartamentuic">???browse.menu.crisdepartamentuic???</option>
+          
+					<option value="/browse?type=crisdepartamentuoc">???browse.menu.crisdepartamentuoc???</option>
+          
+					<option value="/browse?type=crisdepartamentupf">???browse.menu.crisdepartamentupf???</option>
+          
+					<option value="/browse?type=crisdepartamentuab">???browse.menu.crisdepartamentuab???</option>
+          
+					<option value="/browse?type=crisdepartamentuvicucc">???browse.menu.crisdepartamentuvicucc???</option>
+          
+					<option value="/browse?type=crisdepartamentudl">???browse.menu.crisdepartamentudl???</option>
+          
+					<option value="/browse?type=crisdepartamenturv">???browse.menu.crisdepartamenturv???</option>
+          
+					<option value="/browse?type=crisdepartamenturl">???browse.menu.crisdepartamenturl???</option>
+          
+					<option value="/browse?type=theses">Tesis</option>
+          
+					<option value="/browse?type=pub">Publicacions</option>
+          
+
+        
+    </select>
+    </div> -->
+
+
+                
+
+                
+
+                
+
+                <div class="container">
+                    <div class="row py-2">
+                        <div class="col-lg-2 col-md-6 col-6 card-list icon-universities rounded pt-2">
+                            <a href="/community-list">
+                                <div class="text-center border-0">
+                                    <div id="icon-universities" class="img-responsive center-block d-block mx-auto"
+                                         alt="Universitats i Centres CERCA"></div>
+                                    <div class="card-body">
+                                        <div class="card-title d-none"><h3>51</h3></div>
+                                        <div class="text-uppercase card-text">Universitats i Centres CERCA</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-6 card-list icon-projects rounded pt-2">
+                            <a href="/simple-search?filtername=resourcetype&filterquery=Projects&filtertype=equals&sort_by=crisproject.startdate_dt&order=DESC&location=crisproject"
+                              >
+                                <div class="text-center border-0">
+                                    <div id="icon-projects" class="img-responsive center-block d-block mx-auto"
+                                         alt="Projectes de recerca"></div>
+                                    <div class="card-body">
+                                        <div class="card-title d-none"><h3>41.754</h3></div>
+                                        <div class="text-uppercase card-text">Projectes de recerca</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-6 card-list icon-groups rounded pt-2">
+                            <a href="/simple-search?filtername=resourcetype&filterquery=OrgUnits&filtertype=equals&sort_by=crisou.name_sort&order=ASC&location=crisou"
+                              >
+                                <div class="text-center border-0">
+                                    <div id="icon-groups" class="img-responsive center-block d-block mx-auto"
+                                         alt="Grups de recerca"
+                                    ></div>
+                                    <div class="card-body">
+                                        <div class="card-title d-none"><h3>2.036</h3></div>
+                                        <div class="text-uppercase card-text">Grups de recerca</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-6 card-list icon-researchers rounded pt-2">
+                            <a href="/simple-search?filtername=resourcetype&filterquery=Researchers&filtertype=equals&sort_by=crisrp.fullName_sort&order=ASC&location=crisrp"
+                              >
+                                <div class="text-center border-0">
+                                    <div id="icon-researchers" class="img-responsive center-block d-block mx-auto"
+                                         alt="Investigadors/es"
+                                    ></div>
+                                    <div class="card-body">
+                                        <div class="card-title d-none"><h3>20.256</h3></div>
+                                        <p class="text-uppercase card-text">Investigadors/es</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-6 card-list icon-publications rounded pt-2">
+                            <a href="/simple-search?filtername=itemtype&filtertype=notequals&filterquery=Phd+Thesis&filter_field_1=resourcetype&filter_type_1=equals&filter_value_1=Items&sort_by=dc.date.issued_dt&order=DESC&location=publications"
+                              >
+                                <div class="text-center border-0">
+                                    <div id="icon-publications" class="img-responsive center-block d-block mx-auto"
+                                         alt="Publicacions"
+                                    ></div>
+                                    <div class="card-body">
+                                        <div class="card-title d-none"><h3>675.912</h3></div>
+                                        <div class="text-uppercase card-text">Publicacions</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-6 card-list icon-theses rounded pt-2">
+                            <a href="/simple-search?filtername=itemtype&filtertype=equals&filterquery=Phd+Thesis&filter_field_1=resourcetype&filter_type_1=equals&filter_value_1=Items&sort_by=dc.date.issued_dt&order=DESC&location=phdthesis"
+                              >
+                                <div class="text-center border-0">
+                                    <div id="icon-theses" class="img-responsive center-block d-block mx-auto"
+                                         alt="Tesis"></div>
+                                    <div class="card-body">
+                                        <div class="card-title d-none"><h3>38.382</h3></div>
+                                        <div class="text-uppercase card-text">Tesis</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+
+                    </div>
+                </div>
+            </div>
+
+            
+            
+        </div>
+        <div class="container-wrapper slide">
+            <div class="container">
+                
+
+
+
+  
+
+
+
+            </div>
+        </div>
+        
+
+
+        
+        <div class="container">
+                
+            <div class="row">
+                <div id=""
+                     class="col-lg-9">
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="col-lg-12 col-md-12 col-12 py-5">
+            
+
+        <div class="d-flex justify-content-between">
+            <div>
+                <span class="fs-bold fs-6 text-secondary">
+                    Mostrant 1 a 300 de <strong>2.036</strong> resultats 
+                </span>
+            </div>
+
+            
+        </div>
+    </div>
+
+    
+
+
+    <div class="discovery-search-form panel panel-default">
+            
+        
+
+        <div class="discovery-search-filters panel-body">
+            <form id="update-form" action="simple-search" method="get">
+
+                <div class="discovery-search-appliedFilters border-bottom border-top py-2">
+                    <div class="py-2 fs-5">Filtres actuals:</div>
+
+                    
+                    <select id="filter_field_1" name="filter_field_1" hidden>
+                        <option value="resourcetype" selected="selected">Apareix a </option>
+                    </select>
+                    <select id="filter_type_1" name="filter_type_1" hidden>
+                        <option value="equals" selected="selected">Igual a</option>
+                        <input id="filter_type_1" name="filter_type_1" type="text" value="Igual a" hidden/>
+                        
+                    </select>
+                    <input readonly type="hidden" id="filter_value_1" name="filter_value_1" value="OrgUnits" size="45"/>
+                    
+                    <a id="false_filter_value_1" class="fw-bold pe-2" name="filter_value_1">Grups de recerca
+                        <button class="btn btn-default px-0" type="submit" id="submit_filter_remove_1" name="submit_filter_remove_1">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </a>
+                    
+                </div>
+            </form>
+        </div>
+        
+            
+
+
+        <!-- Filtres per refinar cerca -->
+
+        
+
+        <div id="advancedSearchDiv" class="discovery-search-filters panel-body" style="display: none;">
+            <!--h5>Afegir filtres:</h5-->
+            <!--p class="discovery-search-filters-hint">Si vols refinar els resultats de la cerca, fes servir els següents filtres:</p-->
+            <h5>Si vols refinar els resultats de la cerca, fes servir els següents filtres:</h5>
+            <form action="simple-search" method="get">
+                <input type="hidden" value="crisou" name="location" />
+                <input type="hidden" value="" name="query" />
+                
+                <input type="hidden" id="filter_field_1" name="filter_field_1" value="resourcetype" />
+                <input type="hidden" id="filter_type_1" name="filter_type_1" value="equals" />
+                <input type="hidden" id="filter_value_1" name="filter_value_1" value="OrgUnits" />
+                
+
+                <script>
+                    var notcontainslanguage = "";
+                    var containslanguage = "";
+                    function statusFilterType(){
+
+                        options = document.getElementById("filtertype").getElementsByTagName('option');
+                        var filter = document.getElementById("filtername");
+                        var filtername = filter.options[filter.selectedIndex].value;
+                        if (filtername == "resourcetype" || filtername == "itemtype" || filtername == "university"){
+                            var len = options.length;
+                            var i = 0;
+                            while (i < len){
+                                if (options[i].value == "contains"){
+                                    containslanguage = options[i].text;
+                                    options[i].parentNode.removeChild(options[i]);
+                                    i=i-1;
+                                    len=len-1;
+                                }
+                                else if (options[i].value == "notcontains"){
+                                    notcontainslanguage = options[i].text;
+                                    options[i].parentNode.removeChild(options[i]);
+                                    i=i-1;
+                                    len=len-1;
+                                }
+                                i=i+1;
+                            }
+
+                        }
+                        else{
+                            var len = options.length;
+                            var i = 0;
+                            while (i < len){
+                                if (options[i].value == "contains"){
+                                    containslanguage = options[i].text;
+                                    options[i].parentNode.removeChild(options[i]);
+                                    i=i-1;
+                                    len=len-1;
+                                }
+                                else if (options[i].value == "notcontains"){
+                                    notcontainslanguage = options[i].text;
+                                    options[i].parentNode.removeChild(options[i]);
+                                    i=i-1;
+                                    len=len-1;
+                                }
+                                i=i+1;
+                            }
+                            var option = document.createElement("option");
+                            option.text=containslanguage;
+                            option.value="contains";
+                            //document.getElementById("filtertype").add(option);
+                            document.getElementById("filtertype").insertBefore(option,options[0]);
+                            option = document.createElement("option");
+                            option.value="notcontains";
+                            option.text=notcontainslanguage;
+                            document.getElementById("filtertype").add(option);
+                            options[0].selected = true;
+                        }
+
+                    }
+                </script>
+
+                <select onchange="statusFilterType()" id="filtername" name="filtername">
+                    <option value="objectname">Nom/Títol</option><option value="location.coll">Per Universitat o Centre de recerca</option><option value="sgr">???jsp.search.filter.sgr???</option>
+                </select>
+                <select id="filtertype" name="filtertype">
+                    <option value="contains">Conté</option><option value="equals">Igual a</option><option value="notequals">Diferent a</option><option value="notcontains">No conté</option>
+                </select>
+                <input type="text" id="filterquery" name="filterquery" />
+                <input type="hidden" value="300" name="rpp" />
+                <input type="hidden" value="crisou.name_sort" name="sort_by" />
+                <input type="hidden" value="asc" name="order" />
+                <button class="btn btn-default" type="submit"><i class="fa fa-filter"></i>&nbsp; Filtrar</button>
+            </form>
+        </div>
+        
+
+    </div>
+
+    
+
+    <div class="discovery-result-results">
+        
+        
+
+        <script>
+            $('head').append(' <meta name="type" content="discovery-ou">');
+        </script>
+
+        <div class="panel panel-info">
+            <div class="panel-heading py-3 fs-2 fw-bold">Grups de recerca</div>
+            <div class="table-responsive"><table align="center" class="table table-hover table-striped facet align-middle" summary="This table browses all dspace content">
+<thead>
+<th id="t1" class="fs-5 oddRowEvenCol sortable sort_30 sortable"><a class=""  onclick="sortBy(30, 'ASC')" href="#">Grup de recerca</a></th><th id="t2" class="fs-5 oddRowOddCol">Universitats o Centres CERCA</th><th id="t3" class="fs-5 oddRowEvenCol">Investigadors/es principals</th></thead><tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173874">(MC)2&#x20;-&#x20;UPC&#x20;&#x20;Mecanica&#x20;de&#x20;Medios&#x20;Continuos&#x20;y&#x20;Computacional</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Agelet de Saracibar Bosch, Carlos</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0353">(TIEG)&#x20;-&#x20;Terrassa&#x20;Industrial&#x20;Electronics&#x20;Group</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Zaragoza Bertomeu, Jordi</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173495">3D&#x20;Chromatin&#x20;Organization</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Javierre Martinez, Biola M.</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1714">3DPATRIMONI.&#x20;Estudi,&#x20;digitalització,&#x20;documentació&#x20;i&#x20;divulgació&#x20;del&#x20;patrimoni&#x20;artístic&#x20;i&#x20;arqueològic:&#x20;recerca&#x20;i&#x20;transferència.</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Guardia Pons, Milagros</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0462">ACAF&#x2F;ART-GEAM&#x20;Grup&#x20;d&#39;Estudis&#x20;d&#39;Art&#x20;Modern&#x20;a&#x20;l&#39;Àrea&#x20;Mediterrània</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Narváez Cases, Carme</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0209">ACC&#x20;-&#x20;Arquitectura,&#x20;Ciutat&#x20;i&#x20;Cultura</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Llorente Diaz, Marta</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174056">Accounting,&#x20;Control,&#x20;Management&#x20;and&#x20;Education&#x20;Research&#x20;Group&#x20;(ACME)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/039">UPF</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0872">ACES&#x20;-&#x20;Control&#x20;Avancat&#x20;de&#x20;Sistemes&#x20;d&#39;Energia</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Olm Miras, Josep Maria</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0239">ACM&#x20;-&#x20;Analisis&#x20;Critiques&#x20;de&#x20;la&#x20;Modernitat:&#x20;Arquitectura&#x20;i&#x20;Ciutat</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Ramon Graells, Antoni</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1399">Activitat&#x20;Científica&#x20;Escolar:&#x20;Llenguatges,&#x20;Eines&#x20;i&#x20;Contextos&#x20;ACELEC</a></td><td headers="t2" class="oddRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Espinet Blanch, Maria</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173563">Acute&#x20;Lymphoblastic&#x20;Leukaemia</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Ribera Santasusana, Josep Maria</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1395">Acute&#x20;Myeloid&#x20;Leukaemia</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Sierra Gil, Jorge</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0921">ADBD&#x20;-&#x20;Analisi&#x20;de&#x20;Dades&#x20;Complexes&#x20;per&#x20;a&#x20;les&#x20;Decisions&#x20;Empresarials</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Delicado Useros, Pedro Francisco</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174725">Addiccions</a></td><td headers="t2" class="oddRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="oddRowEvenCol" ><em>López Pelayo, Hugo</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174948">Administration</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08071147">ICFO</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174037">Admisnitration&#x20;&amp;&#x20;Managing</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08071147">ICFO</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0931">ADR&amp;M&#x20;-&#x20;Arquitectura,&#x20;Disseny:&#x20;Representacio&#x20;i&#x20;Modelatge</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Redondo Dominguez, Ernest</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175314">Advanced&#x20;Digital&#x20;Microscopy&#x20;(Adm)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G63971451">IRBBarcelona</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173752">Advanced&#x20;Electron&#x20;Nanoscopy</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G63277776">ICN2</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174255">Advanced&#x20;Electronic&#x20;Materials&#x20;and&#x20;Devices</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G63277776">ICN2</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1585">Advanced&#x20;Stochastic&#x20;Modelling</a></td><td headers="t2" class="evenRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Puig Casado, Pedro</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174507">AFIN</a></td><td headers="t2" class="oddRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Marre Cifola, Diana</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1264">AGAPP-Anàlisi,&#x20;gestió&#x20;i&#x20;avaluació&#x20;de&#x20;polítiques&#x20;públiques</a></td><td headers="t2" class="evenRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Leon Ramon Borja, Margarita Maria de</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174845">Ageing&#x20;and&#x20;Cancer</a></td><td headers="t2" class="oddRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Muñoz Moruno, Purificacion</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1648">Agentry</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Del Acebo Peña, Esteban Fermin</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173894">Agents&#x20;Research&#x20;Lab.</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>De la Rosa Esteva, Jose Luis</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0145">Agronomia&#x20;i&#x20;Medi&#x20;Ambient&#x20;en&#x20;Sistemes&#x20;Agrícoles&#x20;Mediterranis</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G25628926">Agrotecnio</a>, <a href="/044">UdL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Cantero Martínez, Carlos</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0890">Agronomia&#x20;i&#x20;Millora&#x20;del&#x20;Rendiment&#x20;i&#x20;Qualitat&#x20;de&#x20;Cultius&#x20;Extensius</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G25628926">Agrotecnio</a>, <a href="/044">UdL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Slafer Lago, Gustavo Ariel</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0321">AIEM&#x20;-&#x20;Arquitectura,&#x20;energia&#x20;i&#x20;medi&#x20;ambient</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Coch Roura, Helena</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173762">Aigües&#x20;Marines&#x20;i&#x20;Continentals</a></td><td headers="t2" class="oddRowOddCol" ><a href="/25016737">IRTA</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174078">Air&#x20;Pollution&#x20;And&#x20;Urban&#x20;Environment</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08072841">ISGlobal</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0786">ALBCOM&#x20;-&#x20;Algorismia,&#x20;Bioinformatica,&#x20;Complexitat&#x20;i&#x20;Metodes&#x20;Formals</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Diaz Cort, Jose Maria</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0585">Algebra&#x20;i&#x20;Geometria&#x20;Algebraica&#x20;(AGA)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Miro Roig, Rosa Maria</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1321">ALGOS.&#x20;Recerca&#x20;en&#x20;dolor</a></td><td headers="t2" class="oddRowOddCol" ><a href="/042">URV</a></td><td headers="t3" class="oddRowEvenCol" ><em>Miró Martínez, Jordi</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou175326">Alimentació,&#x20;economia&#x20;i&#x20;comerç&#x20;al&#x20;món&#x20;antic&#x20;(Aecma)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/43018103">ICAC</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174757">Alto&#x20;Riesgo&#x20;y&#x20;Prevención&#x20;del&#x20;Cáncer</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G64384969">VHIO</a></td><td headers="t3" class="oddRowEvenCol" ><em>Balmaña Gelpi, Judith</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou175103">Altres&#x20;Activitats</a></td><td headers="t2" class="evenRowOddCol" ><a href="/25016737">IRTA</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174728">Altres&#x20;línies&#x20;de&#x20;recerca</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G25314394">IRBLleida</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174704">Amino&#x20;Acid&#x20;Transporters&#x20;And&#x20;Disease</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G63971451">IRBBarcelona</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175163">AMPC&#x20;-&#x20;Analisi&#x20;de&#x20;materials&#x20;de&#x20;Patrimoni&#x20;Cultural</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Buti Papiol, Salvador</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1613">Anàlisi&#x20;de&#x20;la&#x20;Recepció&#x20;de&#x20;les&#x20;Pantalles&#x20;Audiovisuals&#x20;(ARPA)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Echazarreta Soler, Maria del Carmen</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174963">Anàlisi&#x20;del&#x20;dret&#x20;públic:&#x20;especial&#x20;referència&#x20;al&#x20;dret&#x20;financer&#x20;i&#x20;tributari</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>Esteve Pardo, Maria Luisa</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1378">ANÀLISI&#x20;I&#x20;MATERIALS&#x20;AVANÇATS&#x20;PER&#x20;AL&#x20;DISSENY&#x20;ESTRUCTURAL&#x20;-&#x20;AMADE</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Costa Balanzat, Josep</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173840">Anàlisi&#x20;i&#x20;Materials&#x20;Avançats&#x20;per&#x20;al&#x20;Disseny&#x20;Estructural.&#x20;AMADE</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>Maimi Vert, Pere</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174855">Anàlisi&#x20;i&#x20;Planificació&#x20;Territorial&#x20;i&#x20;Ambiental</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Castañer Vivas, Margarida</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0193">Anàlisi&#x20;i&#x20;Planificació&#x20;Territorial&#x20;i&#x20;Ambiental&#x20;(APTA)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>Castañer Vivas, Margarida</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1081">Anàlisi&#x20;Quantitativa&#x20;Regional&#x20;(AQR)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Carrion Silvestre, Josep Lluis</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0395">Anàlisi&#x20;real&#x20;i&#x20;complexa,&#x20;i&#x20;equacions&#x20;en&#x20;derivades&#x20;parcials</a></td><td headers="t2" class="oddRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Tolsa Domenech, Xavier</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0911">Anàlisi&#x20;Social&#x20;i&#x20;Organitzativa</a></td><td headers="t2" class="evenRowOddCol" ><a href="/042">URV</a></td><td headers="t3" class="evenRowEvenCol" ><em>Brunet Icart, Ignacio</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1100">Analysis&#x20;of&#x20;Inequalities&#x20;and&#x20;New&#x20;Social&#x20;Risks&#x20;(AINSR)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Gallo de Puelles, Pedro</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou175000">Analytics,&#x20;Simulations&#x20;and&#x20;Inquiry&#x20;in&#x20;STEM&#x20;and&#x20;Business&#x20;Education&#x20;(ASISTEMBE)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/041">URL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Cuadros Margarit, Jorge</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1769">ANCORA&#x20;-&#x20;Analisi&#x20;i&#x20;control&#x20;del&#x20;ritme&#x20;cardiac</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Benitez Iglesias, Raul</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173748">ANDROLOGIA</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="evenRowEvenCol" ><em>Ruiz Castañe, Eduard</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174327">ANESTESIOLOGIA</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="oddRowEvenCol" ><em>Gil de Bernabe Sala, Maria Angels</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0156">ANiComp&#x20;-&#x20;Analisi&#x20;numerica&#x20;i&#x20;computacio&#x20;cientifica</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Principe Rubio, Ricardo Javier</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1179">ANT&#x20;-&#x20;Grup&#x20;de&#x20;Recerca&#x20;en&#x20;Tecnologies&#x20;Nuclears&#x20;Avancades</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Cortes Rossell, Guillem Pere</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1102">Antarctic,&#x20;Arctic&#x20;and&#x20;Alpine&#x20;environments&#x20;(ANTALP)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Oliva Franganillo, Marc</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175344">ANTENNALAB&#x20;-&#x20;Grup&#x20;d&#39;Antenes&#x20;i&#x20;Sistemes&#x20;Radio</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Jofre Roca, Luis</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0313">Aplicacions&#x20;de&#x20;la&#x20;Computació&#x20;d`Altes&#x20;Prestacions&#x20;a&#x20;la&#x20;Ciència&#x20;i&#x20;l`Enginyeria</a></td><td headers="t2" class="evenRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Margalef Burrull, Tomas Manuel</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1014">Apoptosi&#x20;i&#x20;càncer</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Gil Santano, Juan</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174775">Apoptosis&#x20;and&#x20;Cancer</a></td><td headers="t2" class="evenRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Gil Santano, Juan</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0146">Aporia-&#x20;Grup&#x20;de&#x20;Recerca&#x20;en&#x20;Filosofia&#x20;Contemporània,&#x20;Etica&#x20;i&#x20;Política</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Esquirol Calaf, Josep Maria</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173898">Applied&#x20;Data&#x20;Science&#x20;Lab</a></td><td headers="t2" class="evenRowOddCol" ><a href="/054">UOC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Casas-Roma, Jordi</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174089">Applied&#x20;Photobiological&#x20;Chemistry&#x20;(APPLightChem)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/041">URL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Nonell Marrugat, Santiago</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174837">Aprenentatge&#x20;i&#x20;comunicació&#x20;(GRAC)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/060">UVic-UCC</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174543">Aqüicultura</a></td><td headers="t2" class="oddRowOddCol" ><a href="/25016737">IRTA</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1245">AR.I.EN&#x20;-&#x20;Arquitectura,&#x20;Industria&#x20;i&#x20;Enginyeria</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Peñin Llobell, Alberto</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0091">ARCO&#x20;-&#x20;Microarquitectura&#x20;i&#x20;Compiladors</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Gonzalez Colas, Antonio Maria</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1682">ARGET:&#x20;Applied&#x20;Research&#x20;Group&#x20;in&#x20;Education&#x20;and&#x20;Technology</a></td><td headers="t2" class="evenRowOddCol" ><a href="/042">URV</a></td><td headers="t3" class="evenRowEvenCol" ><em>Gisbert Cervera, Maria Mercedes</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1073">Arqueologia&#x20;Agrària&#x20;de&#x20;l`Edat&#x20;Mitjana</a></td><td headers="t2" class="oddRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Kirchner Granell, Helena</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174967">Arqueologia&#x20;Cristiana&#x20;i&#x20;de&#x20;l&#39;Antiguitat&#x20;Tardana</a></td><td headers="t2" class="evenRowOddCol" ><a href="/43018103">ICAC</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173702">Arqueologia&#x20;del&#x20;Paisatge&#x20;(GIAP)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/43018103">ICAC</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173429">Arqueologia&#x20;Protohistòrica</a></td><td headers="t2" class="evenRowOddCol" ><a href="/43018103">ICAC</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175354">Arqueometria&#x20;i&#x20;Produccions&#x20;Artístiques&#x20;(ArPA)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/43018103">ICAC</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0688">Arquitectura&#x20;i&#x20;Serveis&#x20;Telemàtics</a></td><td headers="t2" class="evenRowOddCol" ><a href="/042">URV</a></td><td headers="t3" class="evenRowEvenCol" ><em>García López, Pedro Antonio</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1190">Arquitectura&#x20;i&#x20;territori</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>Fava, Nadia</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou175264">Arquitectura&#x20;i&#x20;territori</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Fava, Nadia</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0492">Arquitectura,&#x20;Territori&#x20;i&#x20;Paisatge</a></td><td headers="t2" class="oddRowOddCol" ><a href="/042">URV</a></td><td headers="t3" class="oddRowEvenCol" ><em>Sardà Ferran, Jordi</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1039">Arquitectures&#x20;Genètiques</a></td><td headers="t2" class="evenRowOddCol" ><a href="/062">UIC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Estévez Escalera, Alberto</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175085">Arrítmies&#x20;i&#x20;activitat&#x20;física</a></td><td headers="t2" class="oddRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="oddRowEvenCol" ><em>Guasch Casany, Eduard</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0712">Art&#x20;i&#x20;Cultura&#x20;d&#39;Època&#x20;Moderna&#x20;(ACEM)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/044">UdL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Company Climent, Joaquim</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0326">Art,&#x20;Arquitectura&#x20;i&#x20;Societat&#x20;Digital</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Polo Pujadas, Maria Magdalena</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1160">Artificial&#x20;Intelligence&#x20;for&#x20;Human&#x20;Well-being</a></td><td headers="t2" class="evenRowOddCol" ><a href="/054">UOC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Masip Rodo, David</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175094">Artropaties&#x20;inflamatòries&#x20;(GRAI)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="oddRowEvenCol" ><em>Sanmarti Sala, Raimon</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174184">ASTRAIA.&#x20;Grup&#x20;de&#x20;Recerca&#x20;en&#x20;Psicologia&#x20;Criminal&#x20;i&#x20;Forense</a></td><td headers="t2" class="evenRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Garrido Gaitán, Elena</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0643">Astronomia&#x20;i&#x20;Astrofísica&#x20;(AA)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Paredes Poy, Josep Maria; Julbe López, Francesc</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0029">ATEM&#x20;-&#x20;Analisi&#x20;i&#x20;Tecnologia&#x20;d&#39;Estructures&#x20;i&#x20;Materials</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Molins Borrell, Climent</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173411">Atenció&#x20;a&#x20;la&#x20;diversitat&#x20;(GRAD)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/060">UVic-UCC</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1004">Atenció&#x20;a&#x20;les&#x20;persones&#x20;en&#x20;el&#x20;final&#x20;de&#x20;la&#x20;vida</a></td><td headers="t2" class="evenRowOddCol" ><a href="/062">UIC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Balaguer Santamaría, Albert</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173539">Aterosclerosi,&#x20;malaltia&#x20;coronària&#x20;i&#x20;insuficiència&#x20;cardíaca</a></td><td headers="t2" class="oddRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="oddRowEvenCol" ><em>Sabate Tenas, Manuel</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174930">ATLAS</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08070544">IFAE</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174798">ATLAS&#x20;Pixels</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08070544">IFAE</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173844">Atomic&#x20;Manipulation&#x20;and&#x20;Spectroscopy</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G63277776">ICN2</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175087">Atomic&#x20;Quantum&#x20;Optics</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08071147">ICFO</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174739">Attoscience&#x20;And&#x20;Ultrafast&#x20;Optics</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08071147">ICFO</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174910">Audio&#x20;Signal&#x20;Processing&#x20;Lab&#x20;(ASP&#x20;lab)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/039">UPF</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0251">Aula&#x20;Musica&#x20;Poètica</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Josa Fernandez, Dolores</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1635">Autoimmunitat,Inflamació&#x20;i&#x20;Trombosi</a></td><td headers="t2" class="oddRowOddCol" ><a href="/042">URV</a></td><td headers="t3" class="oddRowEvenCol" ><em>Castro, Antoni</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1202">Automatització&#x20;i&#x20;Sistemes&#x20;Avançats&#x20;de&#x20;Control</a></td><td headers="t2" class="evenRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Vilanova Arbos, Ramon</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173489">AVALUACIO&#x20;DE&#x20;LES&#x20;POLITIQUES&#x20;I&#x20;PROGRAMES&#x20;DE&#x20;SALUT&#x20;PUBLICA</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="oddRowEvenCol" ><em>Continente Garcia, Xavier</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0952">B2SLab&#x20;-&#x20;Senyals&#x20;i&#x20;Sistemes&#x20;Biomedics</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Perera Lluna, Alexandre</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173837">Bacterial&#x20;Infections:&#x20;Antimicrobial&#x20;Therapies</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G64045719">IBEC</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174033">Ballester&#x20;Research&#x20;Group</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G43619550">ICIQ</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0397">BAMPLA&#x20;-&#x20;Disseny&#x20;i&#x20;Avaluacio&#x20;de&#x20;Xarxes&#x20;i&#x20;Serveis&#x20;de&#x20;Banda&#x20;Ampla</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Cervello Pastor, Cristina</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173941">Barcelona&#x20;Center&#x20;for&#x20;Banking&#x20;Studies&#x20;(Barcelona&#x20;CBS)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/039">UPF</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174792">Barcelona&#x20;Endothelium&#x20;Team</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Carreras Pons, Enric</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1352">Barcelona&#x20;Science&#x20;and&#x20;Technology&#x20;Studies&#x20;Group&#x20;STS-b</a></td><td headers="t2" class="evenRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Tirado Serrano, Francisco Javier</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0621">Bases&#x20;cel.lulars&#x20;i&#x20;Moleculars&#x20;dels&#x20;Trastorns&#x20;Sensorials</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Llorens Baucels, Jordi</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0648">Bases&#x20;cel·lulars&#x20;i&#x20;moleculars&#x20;en&#x20;neurodegeneració&#x20;i&#x20;neuroregeneració&#x20;(CMBNN)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Reina del Pozo, Manuel</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174690">BASES&#x20;MOLECULARS&#x20;DE&#x20;LES&#x20;MALALTIES</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="oddRowEvenCol" ><em>Fuentes Prior, Pablo</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1089">Bases&#x20;Moleculars&#x20;de&#x20;Processos&#x20;Fisiopatològics&#x20;Fonamentals</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Estebanez Perpiña, Eva; Stracker, Travis</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173931">Bases&#x20;moleculars&#x20;i&#x20;cel·lulars&#x20;de&#x20;la&#x20;inflamació.&#x20;Espectrometria&#x20;de&#x20;masses&#x20;estructural&#x20;i&#x20;biològica</a></td><td headers="t2" class="oddRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="oddRowEvenCol" ><em>Closa Autet, Daniel</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1165">BBT&#x20;-&#x20;Biomaterials,&#x20;Biomecanica&#x20;i&#x20;Enginyeria&#x20;de&#x20;Teixits</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Ginebra Molins, Maria Pau</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0740">BCN&#x20;SEER&#x20;-&#x20;Barcelona&#x20;Science&#x20;and&#x20;Engineering&#x20;Education&#x20;Research&#x20;Group</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Olmedo Torre, Noelia</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173611">Behavioral&#x20;Experimental&#x20;Sciences&#x20;Laboratory&#x20;(BESLab)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/039">UPF</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175036">Benestar&#x20;Animal</a></td><td headers="t2" class="oddRowOddCol" ><a href="/25016737">IRTA</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0520">BIBES.&#x20;Grup&#x20;de&#x20;Recerca&#x20;sobre&#x20;Biblioteques,&#x20;Educació&#x20;i&#x20;Societat</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Comalat Navarra, Maite</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0070">Bioanàlisi</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Barbosa Torralbo, Jose</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1706">BIOART&#x20;-&#x20;Analisi&#x20;de&#x20;Biosenyals&#x20;per&#x20;a&#x20;la&#x20;Rehabilitacio&#x20;i&#x20;la&#x20;Terapia</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Mañanas Villanueva, Miguel Angel</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1185">BIOCOM-SC&#x20;-&#x20;Grup&#x20;de&#x20;Biologia&#x20;Computacional&#x20;i&#x20;Sistemes&#x20;Complexos</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Echebarria Dominguez, Blas</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173854">Biodiversitat&#x20;i&#x20;Recursos&#x20;Marins&#x20;-&#x20;GR&#x20;MAR</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Muñoz Frigola, Marta</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174779">Biodiversitat,&#x20;Ecologia,&#x20;Tecnologia&#x20;i&#x20;Gestió&#x20;Ambiental&#x20;(BETA)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/060">UVic-UCC</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174599">Bioengineering&#x20;in&#x20;Reproductive&#x20;Health</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G64045719">IBEC</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173789">Bioenginyeria&#x20;teràpia&#x20;cel&#x20;lular&#x20;i&#x20;cirurgia&#x20;en&#x20;malformacions&#x20;congènites</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08072395">VHIR</a></td><td headers="t3" class="oddRowEvenCol" ><em>López Paredes, Manuel</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0325">Bioètica,&#x20;dret&#x20;i&#x20;societat</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Casado Gonzalez, Maria</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174959">Biofísica&#x20;respiratòria&#x20;i&#x20;bioenginyeria</a></td><td headers="t2" class="oddRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="oddRowEvenCol" ><em>Farre Ventura, Ramon</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0160">BIOGAP&#x20;-&#x20;Grup&#x20;de&#x20;Tractament&#x20;Biologic&#x20;de&#x20;Contaminants&#x20;Gasosos&#x20;i&#x20;Olors</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Gamisans Noguera, Xavier</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173684">Bioinformàtica&#x20;Clínica&#x20;i&#x20;Translacional</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08072395">VHIR</a></td><td headers="t3" class="oddRowEvenCol" ><em>De la Cruz Montserrat, Fco. Xavier</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou175141">Bioinformàtica&#x20;i&#x20;estadística&#x20;mèdica&#x20;(BEM)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/060">UVic-UCC</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174518">Bioinformatics</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Merkel, Angelika</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174344">Bioinspired&#x20;Interactive&#x20;Materials&#x20;and&#x20;Protocellular&#x20;Systems</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G64045719">IBEC</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174147">Biologia&#x20;Animal</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>Pons Ferran, Pere</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174818">Biologia&#x20;cel·lular&#x20;vascular</a></td><td headers="t2" class="evenRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="evenRowEvenCol" ><em>Egea Guri, Gustavo</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1746">Biologia&#x20;Computacional&#x20;i&#x20;Disseny&#x20;de&#x20;Fàrmacs</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Luque Garriga, Francisco Javier</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173520">Biologia&#x20;de&#x20;Sistemes&#x20;i&#x20;Mètodes&#x20;Estadístics&#x20;per&#x20;a&#x20;la&#x20;Recerca&#x20;Mèdica</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G25314394">IRBLleida</a></td><td headers="t3" class="evenRowEvenCol" ><em>Sorribas Tello, Albert; Rué Monné, Montserrat; Vaqueiro de Castro Alves, Rui Carlos</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0133">Biologia&#x20;de&#x20;sistemes&#x20;i&#x20;models&#x20;matemàtics&#x20;de&#x20;processos&#x20;biològics</a></td><td headers="t2" class="oddRowOddCol" ><a href="/044">UdL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Vaqueiro de Castro Alves, Rui Carlos</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0102">BIOLOGIA&#x20;EVOLUTIVA&#x20;DELS&#x20;PRIMATS</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Martinez Perez-Perez, Alejandro</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1611">BIOLOGIA&#x20;I&#x20;ECOLOGIA&#x20;EVOLUTIVES&#x20;DELS&#x20;TETRÀPODES.&#x20;APLICACIONS&#x20;A&#x20;LA&#x20;CONSERVACIO</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Sampera Trigueros, Carolina</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0499">Biologia&#x20;molecular&#x20;de&#x20;bacteris&#x20;patògens&#x20;i&#x20;estratègies&#x20;antimicrobianes</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Madrid Xufre, Cristina</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174705">Biologia&#x20;molecular&#x20;de&#x20;la&#x20;reproducció&#x20;i&#x20;el&#x20;desenvolupament</a></td><td headers="t2" class="oddRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="oddRowEvenCol" ><em>Oliva Virgili, Rafael</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174288">Biologia&#x20;Molecular&#x20;de&#x20;Llevats</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G25314394">IRBLleida</a></td><td headers="t3" class="evenRowEvenCol" ><em>Belli Martinez, Gemma</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174030">Biologia&#x20;vascular&#x20;hepàtica</a></td><td headers="t2" class="oddRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="oddRowEvenCol" ><em>Gracia Sancho, Jordi</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174683">Biomarcadores&#x20;Tumorales</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G64384969">VHIO</a></td><td headers="t3" class="evenRowEvenCol" ><em>Villanueva Cardus, Josep</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175169">BIOMARCADORS&#x20;DE&#x20;L&#39;EVOLUCIO&#x20;DE&#x20;LA&#x20;MALALTIA</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="oddRowEvenCol" ><em>Padro Capmany, Teresa</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1546">Biomarcadors&#x20;i&#x20;Metabolómica&#x20;Nutricional&#x20;i&#x20;dels&#x20;Aliments</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Andres Lacueva, Maria Cristina</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173981">Biomaterials&#x20;Avançats&#x20;i&#x20;Nanotecnologia&#x20;(BIMATEC)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>Vilaseca Morera, Fabiola</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174634">Biomaterials&#x20;for&#x20;Regenerative&#x20;Therapies</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G64045719">IBEC</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1313">Biomaterials&#x20;i&#x20;tècniques&#x20;en&#x20;Restauració&#x20;Dental&#x20;i&#x20;Endodòncia</a></td><td headers="t2" class="oddRowOddCol" ><a href="/062">UIC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Roig Cayon, Miguel</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0708">Biomaterials&#x20;per&#x20;a&#x20;la&#x20;Regeneració&#x20;de&#x20;Teixits</a></td><td headers="t2" class="evenRowOddCol" ><a href="/062">UIC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Perez Antoñanzas, Roman</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0973">BIOMEC&#x20;-&#x20;Grup&#x20;d&#39;Enginyeria&#x20;Biomecanica</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Font Llagunes, Josep Maria</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173537">Biomedical&#x20;Genomics</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G63971451">IRBBarcelona</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173583">Biomedical&#x20;Signal&#x20;Processing&#x20;and&#x20;Interpretation</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G64045719">IBEC</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou175030">Biomimetic&#x20;Systems&#x20;for&#x20;Cell&#x20;Engineering</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G64045719">IBEC</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174423">Biopatologia&#x20;i&#x20;tractament&#x20;de&#x20;les&#x20;arritmies&#x20;cardíaques</a></td><td headers="t2" class="oddRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="oddRowEvenCol" ><em>Mont Girbau, Josep Lluís</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174524">BIOQUIMICA&#x20;CARDIOVASCULAR</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="evenRowEvenCol" ><em>Sanchez Quesada, Jose Luis</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175067">Bioquímica&#x20;Clínica</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08072395">VHIR</a></td><td headers="t3" class="oddRowEvenCol" ><em>Rodríguez Frias, Francisco</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173749">Bioquímica&#x20;de&#x20;l&#39;Estrès&#x20;Oxidatiu</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G25314394">IRBLleida</a></td><td headers="t3" class="evenRowEvenCol" ><em>Ros Salvador, Joaquin</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173986">Bioquímica&#x20;del&#x20;Càncer</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>Peracaula Miro, Rosa</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0078">Bioquímica&#x20;i&#x20;Biologia&#x20;Molecular&#x20;del&#x20;Càncer</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Argiles Huguet, Jose Maria</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0673">BIOQUÍMICA&#x20;I&#x20;CLÍNICA&#x20;DEL&#x20;CÀNCER</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>De Llorens Duran, Rafael</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1415">Biorefinery&#x20;Technologies&#x20;(BIO-CORE)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/042">URV</a></td><td headers="t3" class="evenRowEvenCol" ><em>Salvado, Joan</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0014">BioremUAB:&#x20;Biodegradació&#x20;de&#x20;contaminants&#x20;industrials&#x20;i&#x20;valorització&#x20;de&#x20;residus</a></td><td headers="t2" class="oddRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Vicent Huguet, Maria Teresa</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou175367">Biosensors&#x20;for&#x20;bioengineering</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G64045719">IBEC</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174267">BIOSPIN&#x20;-&#x20;Biomedical&#x20;Signal&#x20;Processing&#x20;and&#x20;Interpretation</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Jané Campos, Raimon</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173773">Biostatistics&#x2F;Bioinformatics</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G63971451">IRBBarcelona</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1218">Biotecnologia&#x20;Ambiental</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Mata Alvarez, Joan</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1229">Biotecnologia&#x20;de&#x20;la&#x20;Reproducció&#x20;Animal</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Yeste Oliveras, Marc</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174918">Biotecnologia&#x20;de&#x20;la&#x20;Reproducció&#x20;Animal&#x20;i&#x20;Humana</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>Bonet Marull, Sergi</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0267">Biotecnologia&#x20;Enològica</a></td><td headers="t2" class="evenRowOddCol" ><a href="/042">URV</a></td><td headers="t3" class="evenRowEvenCol" ><em>Torija Martínez, María Jesús</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1623">BIT&#x20;-&#x20;Barcelona&#x20;Innovacio&#x20;en&#x20;Transport</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Robuste Anton, Francesc</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174692">Bo&#x20;Research&#x20;Group</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G43619550">ICIQ</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0082">BRAC:&#x20;Barcelona.&#x20;Recerca.&#x20;Art&#x20;i&#x20;Creació.&#x20;(Art&#x20;i&#x20;ciència.&#x20;Identitat&#x20;creativa&#x20;i&#x20;territori)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Nogue Font, Alexandre</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0974">Brainlab-Grup&#x20;de&#x20;Recrca&#x20;en&#x20;Neurociència&#x20;Cognitiva</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Escera Mico, Carles Enric</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174990">Breast&#x20;cancer</a></td><td headers="t2" class="oddRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Pujana Genestar, Miguel Angel</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou175287">Business&#x20;Analytics&#x20;Research&#x20;Grup&#x20;(BARG)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/039">UPF</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173468">Business&#x20;Network&#x20;Dynamics&#x20;(BUNED)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/041">URL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Longoni, Annachiara</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1797">C.I.E.N&#x20;Comunicació&#x20;Intercultural&#x20;i&#x20;Estratègies&#x20;de&#x20;Negociació</a></td><td headers="t2" class="evenRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Moyer Greer, Melissa</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174653">Cáncer&#x20;de&#x20;Mama&#x20;y&#x20;Melanoma</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G64384969">VHIO</a></td><td headers="t3" class="oddRowEvenCol" ><em>Saura Manich, Cristina</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1080">Cancer&#x20;Epigenetics</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Esteller Badosa, Manel</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0721">Cancer&#x20;Genetics</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Sanchez Cespedes, Montse</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou175263">Cancer&#x20;Heterogeneity&#x20;and&#x20;Hierarchies</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Rodilla Benito, Verónica</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174463">Càncer&#x20;i&#x20;Malalties&#x20;Hematològiques&#x20;Infantils</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08072395">VHIR</a></td><td headers="t3" class="oddRowEvenCol" ><em>Moreno Martín-Retortillo, Lucas</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173423">Cancer&#x20;Immunotherapy</a></td><td headers="t2" class="evenRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Alemany Bonastre, Ramon; Piulats Rodriguez, Josep Maria</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175014">CANCERS&#x20;D&#39;ORL</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="oddRowEvenCol" ><em>Quer Agusti, Miquel</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou175357">Canvi&#x20;Socioambiental</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Ribas Palom, Anna Maria</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175219">CAP&#x20;-&#x20;Grup&#x20;de&#x20;Computacio&#x20;d&#39;Altes&#x20;Prestacions</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Valero Cortes, Mateo</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1685">Caracterització&#x20;Analítica&#x20;de&#x20;Sistemes&#x20;i&#x20;Materials&#x20;(CASIMA)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Salvado Martin, Victoria de los Angeles</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1074">Caracterització&#x20;físicoquímica&#x20;i&#x20;estimació&#x20;de&#x20;l&#39;activitat&#x20;biològica&#x20;de&#x20;compostos&#x20;bioactius</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Roses Pascual, Marti</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173932">Caracterització&#x20;funcional&#x20;de&#x20;mecanismes&#x20;oncogènics&#x20;en&#x20;neoplàsies&#x20;limfoides</a></td><td headers="t2" class="evenRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="evenRowEvenCol" ><em>Amador Espinosa, Virginia</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0779">Caracteritzant&#x20;les&#x20;empreses&#x20;rendibles:&#x20;empresa&#x20;familiar&#x20;i&#x20;empresa&#x20;emprenedora&#x20;(CARENFA)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/044">UdL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Gallizo Larraz, Jose Luis</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174381">CARDIOLOGIA&#x20;CLINICA&#x20;I&#x20;TRANSLACIONAL</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="evenRowEvenCol" ><em>Guerra Ramos, Jose Maria</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173723">Cardiopaties&#x20;familiars&#x20;i&#x20;síndromes&#x20;relacionades&#x20;amb&#x20;mort&#x20;sobtada</a></td><td headers="t2" class="oddRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="oddRowEvenCol" ><em>Brugada Terradellas, Josep</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174225">Cardiovascular&#x20;Diseases</a></td><td headers="t2" class="evenRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Comin Colet, Josep</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1576">Care&#x20;and&#x20;Preparedness&#x20;in&#x20;the&#x20;Network&#x20;Society</a></td><td headers="t2" class="oddRowOddCol" ><a href="/054">UOC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Rodríguez Giralt, Israel</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0383">Carlos&#x20;Pujol,&#x20;literatura&#x20;i&#x20;humanisme</a></td><td headers="t2" class="evenRowOddCol" ><a href="/062">UIC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Vallès Botey, Teresa</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174510">CARTs&#x20;Cell&#x20;Therapy</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Briones Meijide, Javier</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0064">CATALISI&#x20;I&#x20;CINETICA&#x20;APLICADA</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Tejero Salvador, Javier</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0860">Catalonia&#x20;judaica</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Blasco Orellana, Meritxell</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1367">Càtedra&#x20;A3</a></td><td headers="t2" class="evenRowOddCol" ><a href="/044">UdL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Bacardit Dalmases, Anna</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175250">CATMech&#x20;-&#x20;Centre&#x20;Avancat&#x20;de&#x20;Tecnologies&#x20;Mecaniques</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Codina Macia, Esteban</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou175327">Cats.&#x20;Construction:&#x20;advanced&#x20;technologies&#x20;and&#x20;sustainability</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Chamorro Trenado, Miquel-Àngel</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1037">CBA&#x20;-&#x20;Sistemes&#x20;de&#x20;Comunicacions&#x20;i&#x20;Arquitectures&#x20;de&#x20;Banda&#x20;Ampla</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Domingo Pascual, Jordi</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174004">CCABA&#x20;-&#x20;Centre&#x20;de&#x20;Comunicacions&#x20;Avancades&#x20;de&#x20;Banda&#x20;Ampla</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Junyent, Gabriel</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173782">CCP&#x20;-&#x20;Centre&#x20;Catala&#x20;del&#x20;Plastic</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Maspoch Ruldua, Maria Lluisa</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174265">CD6&#x20;-&#x20;Centre&#x20;de&#x20;Desenvolupament&#x20;de&#x20;Sensors,&#x20;Instrumentacio&#x20;i&#x20;Sistemes</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Royo Royo, Santiago</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0108">CDAL&#x20;-&#x20;Centre&#x20;de&#x20;Disseny&#x20;d&#39;Aliatges&#x20;Lleugers&#x20;i&#x20;Tractaments&#x20;de&#x20;Superficie</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Baile Puig, Maria Teresa</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0344">CDEI-DM&#x20;-&#x20;Centre&#x20;de&#x20;Disseny&#x20;d&#39;Equips&#x20;Industrials-Dinamica&#x20;de&#x20;Maquines</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Martinez Miralles, Jordi Ramon</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0783">CDIF&#x20;-&#x20;Centre&#x20;de&#x20;Diagnostic&#x20;Industrial&#x20;i&#x20;Fluidodinamica</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Valero Ferrando, Mñ del Carmen</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1330">CDPAC&#x20;-&#x20;Centre&#x20;de&#x20;Documentació&#x20;de&#x20;Projectes&#x20;d&#39;Arquitectura&#x20;de&#x20;Catalunya</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a>, <a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Solaguren-Beascoa de Corral, Felix; Solaguren-Beascoa del Corral, Félix</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174422">CDPAC&#x20;-&#x20;Centre&#x20;de&#x20;Documentacio&#x20;de&#x20;Projectes&#x20;d&#39;Arquitectura&#x20;de&#x20;Catalunya</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Solaguren-Beascoa de Corral, Felix</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173383">CEBIM&#x20;-&#x20;Centre&#x20;de&#x20;Biotecnologia&#x20;Molecular</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Garriga Sole, Pere</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174651">Cefalea&#x20;i&#x20;dolor&#x20;neurològic</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08072395">VHIR</a></td><td headers="t3" class="oddRowEvenCol" ><em>Pozo Rosich, Patricia</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0030">CELBIOTECH&#x20;-&#x20;Grup&#x20;de&#x20;Recerca:&#x20;Enginyeria&#x20;Paperera</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a>, <a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Roncero Vivero, Maria Blanca; Grifoll Ruiz, Magdalena</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174371">Cell&#x20;Division&#x20;Laboratory</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G63971451">IRBBarcelona</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174743">Cell&#x20;Plasticity&#x20;and&#x20;Regeneration</a></td><td headers="t2" class="evenRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Guiu SAGARRA, Jordi</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173889">Cell&#x20;Preclinical&#x20;and&#x20;experimental&#x20;research&#x20;in&#x20;thoracic&#x20;tumors</a></td><td headers="t2" class="oddRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Muñoz Pinedo, Cristina; Nadal Alforja, Ernesto Samuel</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174043">Cell&#x20;Signaling</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G63971451">IRBBarcelona</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174361">Cell&#x20;signalling&#x20;and&#x20;bone&#x20;biology</a></td><td headers="t2" class="oddRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Ventura Pujol, Francesc</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173863">Cellular&#x20;and&#x20;molecular&#x20;basis&#x20;of&#x20;sensory&#x20;disorders</a></td><td headers="t2" class="evenRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Llorens Baucels, Jordi</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174054">Cellular&#x20;and&#x20;Molecular&#x20;Mechanobiology</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G64045719">IBEC</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174146">Cellular&#x20;and&#x20;Molecular&#x20;Neurobiology</a></td><td headers="t2" class="evenRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Llobet Berenguer, Artur</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174283">Cellular&#x20;and&#x20;Respiratory&#x20;Biomechanics</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G64045719">IBEC</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173862">Cellular&#x20;Plasticity&#x20;And&#x20;Disease</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G63971451">IRBBarcelona</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173671">Cellular&#x20;Systems&#x20;Genomics</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Mereu, Elisabetta</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173757">Células&#x20;Madre&#x20;y&#x20;Cáncer</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G64384969">VHIO</a></td><td headers="t3" class="evenRowEvenCol" ><em>Garcia Palmer, Hector</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1408">Cèl·lules&#x20;mare&#x20;i&#x20;medicina&#x20;regenerativa</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Canals Coll, Josep María</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1340">CEMAD&#x20;-&#x20;Caracteritzacio&#x20;electrica&#x20;de&#x20;materials&#x20;i&#x20;dispositius</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Garcia Garcia, Jose Eduardo</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1511">Centre&#x20;d&#39;Anàlisi&#x20;Econòmica&#x20;i&#x20;de&#x20;les&#x20;Polítiques&#x20;Socials&#x20;(CAEPS)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Paluzie Hernandez, Elisenda</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1593">Centre&#x20;d&#39;Estudis&#x20;sobre&#x20;Cultura,&#x20;Política&#x20;i&#x20;Societat&#x20;(CECUPS)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Rodriguez Morato, Arturo Julio</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175385">Centre&#x20;d&#39;Investigació&#x20;en&#x20;Salut&#x20;Laboral&#x20;(CISAL)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/039">UPF</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0804">CENTRE&#x20;DE&#x20;GENÈTICA&#x20;CARDIOVASCULAR</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Brugada Terradellas, Ramon</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0634">Centre&#x20;de&#x20;Lingüística&#x20;Teòrica</a></td><td headers="t2" class="oddRowOddCol" ><a href="/022">UAB</a>, <a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>Espinal Farre, Maria Teresa; Espinal Farré, M. Teresa</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1777">Centre&#x20;de&#x20;projecció&#x20;tèrmica:&#x20;ciència&#x20;i&#x20;tecnologia&#x20;de&#x20;projecció&#x20;tèrmica</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Garcia Cano, Irene</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174868">CENTRE&#x20;DE&#x20;RECERCA&#x20;EN&#x20;PATOLOGIA&#x20;INFECCIOSA&#x20;I&#x20;MICROBIOLOGIA&#x20;CLINICA&#x20;(CREPIMC)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="oddRowEvenCol" ><em>Navarro Risueño, Ferran</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1295">Centre&#x20;en&#x20;Canvi&#x20;Climàtic&#x20;(C3)</a></td><td headers="t2" class="evenRowOddCol" ><a href="/042">URV</a></td><td headers="t3" class="evenRowEvenCol" ><em>Brunet India, Manuela Catalina</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173983">Centre&#x20;Investigador&#x20;en&#x20;Art&#x20;Primitiu&#x20;i&#x20;Primitivisme</a></td><td headers="t2" class="oddRowOddCol" ><a href="/039">UPF</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0512">Centre&#x20;per&#x20;a&#x20;l&#39;Estudi&#x20;de&#x20;la&#x20;Interdependència&#x20;provincial&#x20;a&#x20;l&#39;Antiguitat&#x20;Clàssica(CEIPAC).</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Revilla Calvo, Victor</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0950">CEPIMA&#x20;-&#x20;Center&#x20;for&#x20;Process&#x20;and&#x20;Environment&#x20;Engineering</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Graells Sobre, Moises</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173629">CER-H2&#x20;-&#x20;Centre&#x20;Especific&#x20;de&#x20;Recerca&#x20;de&#x20;l&#39;Hidrogen&#x20;de&#x20;la&#x20;UPC</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Serra Prat, Maria</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1402">CERCLE&#x20;-&#x20;Cercle&#x20;d&#39;Arquitectura</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1522">Cercle&#x20;de&#x20;lingüística&#x20;aplicada</a></td><td headers="t2" class="evenRowOddCol" ><a href="/044">UdL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Llurda Giménez, Enric</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175184">CERpIE&#x20;-&#x20;Centre&#x20;Especific&#x20;de&#x20;Recerca&#x20;per&#x20;a&#x20;la&#x20;Millora&#x20;i&#x20;Innovacio&#x20;de&#x20;les&#x20;Empreses</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Rodriguez Mondelo, Pedro Manuel</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0392">CERTEC&#x20;-&#x20;Centre&#x20;d&#39;Estudis&#x20;del&#x20;Risc&#x20;Tecnologic</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Planas Cuchi, Eulalia</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173870">CETpD&#x20;-&#x20;Centre&#x20;d&#39;Estudis&#x20;Tecnologics&#x20;per&#x20;a&#x20;l&#39;Atencio&#x20;a&#x20;la&#x20;Dependencia&#x20;i&#x20;la&#x20;Vida&#x20;Autonoma</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Catala Mallofre, Andreu</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1640">CGA&#x20;-&#x20;Computational&#x20;Geometry&#x20;and&#x20;Applications</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Silveira Isoba, Rodrigo Ignacio</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173598">Chagas,&#x20;Parasitic&#x20;And&#x20;Other&#x20;Imported&#x20;Diseases</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08072841">ISGlobal</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1439">CHEMBIO&#x20;NANOMED</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Albericio Palomera, Fernando</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173447">Childhood&#x20;And&#x20;Environment</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08072841">ISGlobal</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0148">Chromatin&#x20;Biology&#x20;Laboratory</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Vaquero García, Alejandro</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175156">Chromatin&#x20;Structure&#x20;And&#x20;Function</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G63971451">IRBBarcelona</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0305">Chromatin,&#x20;Metabolism&#x20;and&#x20;Cell&#x20;Fate</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G65454308">IJC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Buschbeck, Marcus</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175324">CIBBIM-Nanomedicine.&#x20;Noves&#x20;Tecnologies&#x20;i&#x20;Microcirurgia&#x20;Craniofacial</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08072395">VHIR</a></td><td headers="t3" class="oddRowEvenCol" ><em>Bescós Atin, Coro</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174285">Cicle&#x20;Cel·lular</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G25314394">IRBLleida</a></td><td headers="t3" class="evenRowEvenCol" ><em>Torres Rosell, Jordi; Garí Marsol, Eloi</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0569">Cicle&#x20;cel·lular&#x20;eucariota</a></td><td headers="t2" class="oddRowOddCol" ><a href="/044">UdL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Garí Marsol, Eloi</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0933">CIEFMA&#x20;-&#x20;Centre&#x20;d&#39;Integritat&#x20;Estructural,&#x20;Fiabilitat&#x20;i&#x20;Micromecanica&#x20;dels&#x20;Materials</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Llanes Pitarch, Luis Miguel</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0583">CIRCUIT&#x20;-&#x20;Grup&#x20;de&#x20;Recerca&#x20;en&#x20;Circuits&#x20;i&#x20;Sistemes&#x20;de&#x20;Comunicacio</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Pala Schonwalder, Pere</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174316">CIRURGIA&#x20;CARDIACA</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="evenRowEvenCol" ><em>Montiel Serrano, Jose</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173388">Cirurgia&#x20;Experimental</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G25314394">IRBLleida</a></td><td headers="t3" class="oddRowEvenCol" ><em>Olsina Kissler, Jorge Juan</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174447">Cirurgia&#x20;general</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08072395">VHIR</a></td><td headers="t3" class="evenRowEvenCol" ><em>Armengol Carrasco, Manuel</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173978">CIRURGIA&#x20;GENERAL&#x20;I&#x20;DIGESTIVA</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="oddRowEvenCol" ><em>Moral Duarte, Antonio</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173434">CIRURGIA&#x20;PLASTICA</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08070763">IIBSantPau</a></td><td headers="t3" class="evenRowEvenCol" ><em>Masia Ayala, J. Jaume</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173709">Cirurgia&#x20;reconstructiva&#x20;de&#x20;l&#x20;aparell&#x20;locomotor</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08072395">VHIR</a></td><td headers="t3" class="oddRowEvenCol" ><em>Minguell Moñart, Juan</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174578">CISA&#x20;-&#x20;Grup&#x20;de&#x20;Recerca&#x20;en&#x20;Ciències&#x20;Socials&#x20;Aplicades</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Brugue Torruella, Joaquin</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1274">CITCEA&#x20;-&#x20;Centre&#x20;d&#39;Innovacio&#x20;Tecnologica&#x20;en&#x20;Convertidors&#x20;Estatics&#x20;i&#x20;Accionaments</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Montesinos Miracle, Daniel</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0341">CLiC-&#x20;Centre&#x20;de&#x20;LLenguatge&#x20;i&#x20;computació</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Taule Delor, Maria</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173536">Climate&#x20;And&#x20;Health</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08072841">ISGlobal</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174373">Clinical&#x20;Prevention</a></td><td headers="t2" class="evenRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Ramon Torrell, Josep M.</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0990">CNDS&#x20;-&#x20;Xarxes&#x20;de&#x20;Computadors&#x20;i&#x20;Sistemes&#x20;Distribuits</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Garcia Vidal, Jorge</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173654">CO2&#x20;Mitigation&#x20;Accelerated&#x20;By&#x20;Photons</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08071147">ICFO</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0388">CoDAlab&#x20;-&#x20;Control,&#x20;Modelitzacio,&#x20;Identificacio&#x20;i&#x20;Aplicacions</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Rodellar Benede, Jose Julian</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0463">Codificació,&#x20;Compressió&#x20;i&#x20;Seguretat&#x20;-&#x20;CCS</a></td><td headers="t2" class="evenRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Serra Sagrista, Joan</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1047">Cognició&#x20;&amp;&#x20;Context&#x20;i&#x20;les&#x20;Tecnologies&#x20;de&#x20;la&#x20;Informació&#x20;i&#x20;de&#x20;la&#x20;Comunicació&#x20;(COnTic)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a>, <a href="/044">UdL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Pifarré Turmo, Manuela; Pifarré Turmo, Manuela</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174659">Cognition&#x20;and&#x20;Brain&#x20;Plasticity</a></td><td headers="t2" class="evenRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Rodríguez Fornells, Antoni</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0273">Cognitive&#x20;NeuroLab</a></td><td headers="t2" class="oddRowOddCol" ><a href="/054">UOC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Muñoz Marrón, Elena</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173740">Colèstasi</a></td><td headers="t2" class="evenRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="evenRowEvenCol" ><em>Parés Darnaculleta, Albert</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou173826">Colorectal&#x20;Cancer</a></td><td headers="t2" class="oddRowOddCol" ><a href="/58863317">IDIBELL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Salazar Soler, Ramon; Moreno Aguado, Victor Raul</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173831">Colorectal&#x20;Cancer&#x20;Laboratory</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G63971451">IRBBarcelona</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174541">Colour&#x20;in&#x20;Context</a></td><td headers="t2" class="oddRowOddCol" ><a href="/08070817">CVC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Vanrell, Maria</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1087">COMBGRAPH&#x20;-&#x20;Combinatoria,&#x20;Teoria&#x20;de&#x20;Grafs&#x20;i&#x20;Aplicacions</a></td><td headers="t2" class="evenRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Fiol Mora, Miguel Angel</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175101">CommSensLab-UPC&#x20;-&#x20;Centre&#x20;Especific&#x20;de&#x20;Recerca&#x20;en&#x20;Comunicacio&#x20;i&#x20;Deteccio&#x20;UPC</a></td><td headers="t2" class="oddRowOddCol" ><a href="/024">UPC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Camps Carmona, Adriano Jose</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR0652">Communication&#x20;Networks&#x20;&amp;&#x20;Social&#x20;Change</a></td><td headers="t2" class="evenRowOddCol" ><a href="/054">UOC</a></td><td headers="t3" class="evenRowEvenCol" ><em>Borge Bravo, Rosa</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0610">Community&#x20;based&#x20;urbanism</a></td><td headers="t2" class="oddRowOddCol" ><a href="/062">UIC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Vall Casas, Pere</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174336">Comparative&#x20;Genomics</a></td><td headers="t2" class="evenRowOddCol" ><a href="/G63971451">IRBBarcelona</a></td><td headers="t3" class="evenRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174902">Competència&#x20;Interlingüística&#x20;i&#x20;Intercultural&#x20;en&#x20;l&#39;Ensenyament&#x20;i&#x20;Aprenentatge&#x20;de&#x20;Llengües&#x20;(CILCEAL)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/041">URL</a></td><td headers="t3" class="oddRowEvenCol" ><em>Gonzalez Davies, Maria</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1700">Competències,&#x20;Tecnologia&#x20;i&#x20;Societat&#x20;en&#x20;Educació&#x20;-&#x20;COMPETECS</a></td><td headers="t2" class="evenRowOddCol" ><a href="/044">UdL</a></td><td headers="t3" class="evenRowEvenCol" ><em>Carrera Farran, Fco. Javier</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou175249">Complex&#x20;Metabolic&#x20;Diseases&#x20;And&#x20;Mitochondria</a></td><td headers="t2" class="oddRowOddCol" ><a href="/G63971451">IRBBarcelona</a></td><td headers="t3" class="oddRowEvenCol" ><em></em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1015">Complex&#x20;metabolic&#x20;diseases&#x20;and&#x20;mitochondria</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Zorzano Olarte, Antonio</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0285">Complex&#x20;Systems&#x20;@&#x20;IN3</a></td><td headers="t2" class="oddRowOddCol" ><a href="/054">UOC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Borge Holthoefer, Javier</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1064">Complexity&#x20;Lab&#x20;Barcelona</a></td><td headers="t2" class="evenRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Perello Palou, Josep</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1376">Compostos&#x20;bioactius&#x20;dels&#x20;aliments</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Vidal Carou, Maria del Carmen</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174978">Comptabilitat&#x20;i&#x20;Matemàtiques&#x20;per&#x20;a&#x20;l&#39;Economia&#x20;i&#x20;l&#39;Empresa</a></td><td headers="t2" class="evenRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="evenRowEvenCol" ><em>Ferrer Comalat, Joan Carles</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0308">Computació&#x20;d`Altes&#x20;Prestacions&#x20;per&#x20;a&#x20;Aplicacions&#x20;Eficients&#x20;i&#x20;Simulació</a></td><td headers="t2" class="oddRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Suppi Boldrito, Remo Lucio</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou173765">Computació&#x20;translacional&#x20;en&#x20;cardiologia</a></td><td headers="t2" class="evenRowOddCol" ><a href="/Q5856414G">IDIBAPS</a></td><td headers="t3" class="evenRowEvenCol" ><em>Bijnens, Bart</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1707">Computational&#x20;Biochemistry&#x20;Lab&#x20;:&#x20;Rational&#x20;Design&#x20;of&#x20;Novel&#x20;Enzymes&#x20;(CompBioLab)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/043">UdG</a></td><td headers="t3" class="oddRowEvenCol" ><em>Osuna Oliveras, Silvia</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1323">Computational&#x20;BioNanoCat</a></td><td headers="t2" class="evenRowOddCol" ><a href="/022">UAB</a></td><td headers="t3" class="evenRowEvenCol" ><em>Sodupe Roure, Maria</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR0013">Computational&#x20;Materials&#x20;Sciencie&#x20;Laboratory&#x2F;&#x20;Laboratori&#x20;de&#x20;Ciència&#x20;de&#x20;Materials&#x20;Computacional</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Illas Riera, Francesc</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/cris/ou/ou174937">Computational&#x20;Paleobiology&#x20;Research&#x20;Group</a></td><td headers="t2" class="evenRowOddCol" ><a href="/08072553">ICP</a></td><td headers="t3" class="evenRowEvenCol" ><em>Fortuny, Josep</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/sgr/2017SGR1742">Computer&#x20;Vision&#x20;and&#x20;Machine&#x20;Learning&#x20;at&#x20;the&#x20;University&#x20;of&#x20;Barcelona&#x20;(CVMLUB)</a></td><td headers="t2" class="oddRowOddCol" ><a href="/004">UB</a></td><td headers="t3" class="oddRowEvenCol" ><em>Ivanova Radeva, Petia</em></td></tr>
+<tr><td headers="t1" class="evenRowEvenCol" ><a href="/sgr/2017SGR1591">Comunicació&#x20;i&#x20;cultura&#x20;digital</a></td><td headers="t2" class="evenRowOddCol" ><a href="/054">UOC</a></td><td headers="t3" class="evenRowEvenCol" ><em>San Cornelio Esquerdo, Gemma</em></td></tr>
+<tr><td headers="t1" class="oddRowEvenCol" ><a href="/cris/ou/ou174800">Comunicació&#x20;per&#x20;a&#x20;la&#x20;Transformació&#x20;de&#x20;lEsfera&#x20;Pública</a></td><td headers="t2" class="oddRowOddCol" ><a href="/054">UOC</a></td><td headers="t3" class="oddRowEvenCol" ><em>Clua Infante, Ana Maria</em></td></tr>
+</table></div>
+
+        </div>
+        
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+
+    
+    <br>
+    <div class="discovery-pagination-controls panel-body-foot">
+        <form action="simple-search" method="get">
+            <input type="hidden" value="crisou" name="location" />
+            <input type="hidden" value="" name="query" />
+            
+            <input type="hidden" id="filter_field_1" name="filter_field_1" value="resourcetype" />
+            <input type="hidden" id="filter_type_1" name="filter_type_1" value="equals" />
+            <input type="hidden" id="filter_value_1" name="filter_value_1" value="OrgUnits" />
+            
+            <label for="rpp">Resultats per pàgina</label>
+            <select name="rpp">
+                
+                <option value="50" >50</option>
+                
+                <option value="100" >100</option>
+                
+                <option value="150" >150</option>
+                
+                <option value="200" >200</option>
+                
+                <option value="250" >250</option>
+                
+                <option value="300" selected="selected">300</option>
+                
+            </select>
+
+            
+            <label for="sort_by">Ordenar per</label>
+            <select name="sort_by">
+                 <option value="crisou.name_sort" selected="selected">Nom del grup de recerca</option> <option value="crisou.university_sort" >Universitat o Centre de recerca</option> <option value="crisou.director_sort" >Investigador principal  </option>
+                <option value="score" >Rellevància</option>
+            </select>
+            
+            <label for="order">En ordre</label>
+            <select name="order">
+                <option value="ASC" selected="selected">Ascendent</option>
+                <option value="DESC" >Descendent</option>
+            </select>
+
+            <!--label for="etal">Autor/registre</label>
+           <select name="etal">
+
+               <option value="0" selected="selected">Tot</option>
+<option value="1" >1</option>
+                       <option value="5" >5</option>
+
+                       <option value="10" >10</option>
+
+                       <option value="15" >15</option>
+
+                       <option value="20" >20</option>
+
+                       <option value="25" >25</option>
+
+                       <option value="30" >30</option>
+
+                       <option value="35" >35</option>
+
+                       <option value="40" >40</option>
+
+                       <option value="45" >45</option>
+
+                       <option value="50" >50</option>
+
+           </select-->
+
+            <button class="btn btn-default" type="submit" name="submit_search"><i class="fa fa-refresh" title="Actualitzar"></i></button>
+
+            
+        </form>
+    </div>
+
+    
+    
+    
+    <div class="discovery-result-pagination row container">
+            
+            
+
+
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center py-4">
+                        
+
+                        <li class="page-link active border-0"><strong>1</strong></li>
+                        
+
+                        <li class="page-item"><a class="page-link border-0" href="/simple-search?query=&amp;location=crisou&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;etal=0&amp;start=300">2</a></li>
+                        
+
+                        <li class="page-item"><a class="page-link border-0" href="/simple-search?query=&amp;location=crisou&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;etal=0&amp;start=600">3</a></li>
+                        
+
+                        <li class="page-item"><a class="page-link border-0" href="/simple-search?query=&amp;location=crisou&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;etal=0&amp;start=900">4</a></li>
+                        
+                            <li class="page-item disabled">
+                                <a class="page-link border-0" href="#" aria-disabled="true">...</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link border-0" href="/simple-search?query=&amp;location=crisou&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;etal=0&amp;start=1800">7
+                                </a>
+                            </li>
+                        
+                            <li class="page-item mx-1"><a class="page-link rounded" href="/simple-search?query=&amp;location=crisou&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;etal=0&amp;start=300" tabindex="-1">següent &raquo;</a>
+                        
+                    </ul>
+                </nav>
+
+        <!-- give a content to the div -->
+    </div>
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div id="" class="col-lg-3">
+    
+        
+
+        <div class="fs-2 py-3">
+            <i class="fa fa-filter pe-2"></i>Filtres
+        </div>
+
+        <div id="facets" class="facetsBox">
+            
+            <div id="facet_location.coll" class="panel panel-success">
+
+                    <table class="table facet table-bordered align-middle">
+                        <thead style="background-color:#004357">
+                            <tr>
+                                <th class="text-center text-white" colspan="2">Per Universitat o Centre de recerca</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=299&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2566"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            294</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=305&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2552"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            234</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=300&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2554"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            219</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=298&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2551"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            213</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=306&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2553"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            125</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=344&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2784"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            106</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=308&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2558"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            92</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=320&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2612"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            71</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=338&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2790"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            69</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=325&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2786"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            64</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=310&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2732"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            62</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=301&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2557"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            61</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=304&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2567"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            59</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=307&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2564"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            57</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=328&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2673"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            37</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=360&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2787"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            36</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=347&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2684"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            35</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=346&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2683"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            33</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=302&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2632"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            30</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=359&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2815"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            29</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=303&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2562"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            25</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=314&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2589"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            19</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=343&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2797"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            19</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=334&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2819"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            17</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=341&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2817"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            17</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=321&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2774"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            15</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=358&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2724"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            12</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=319&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2613"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            10</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=345&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2682"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            10</td>
+                            </tr>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=location.coll&amp;filterquery=315&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    <img height="40px" class="border-0" src="/retrieve/2591"></img>
+                                </td>
+                                <td class="text-end facet">
+                                            8</td>
+                            </tr>
+                                <td colspan="2">
+
+                                
+                                <span class="pull-right"><a style="cursor: pointer" onclick="reLoadFacet('facet_location.coll','/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;location.coll_page=1')">següent &raquo;</a></span>
+                                
+                                
+                            </td>
+                        </tbody>
+                    </table>
+
+            </div>
+            <div id="facet_sgr" class="panel panel-success">
+
+                    <table class="table facet table-bordered align-middle">
+                        <thead style="background-color:#004357">
+                            <tr>
+                                <th class="text-center text-white" colspan="2">Per tipus de grup de recerca</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr class="border border-2 clickable-row"
+                                      data-href="/simple-search?query=&amp;location=crisou&amp;sort_by=crisou.name_sort&amp;order=asc&amp;rpp=300&amp;filter_field_1=resourcetype&amp;filter_type_1=equals&amp;filter_value_1=OrgUnits&amp;etal=0&amp;filtername=sgr&amp;filterquery=containssgr&amp;filtertype=equals">
+                                <td class="fw-bold text-center">
+                                    SGR
+                                </td>
+                                <td class="text-end facet">
+                                            969</td>
+                            </tr>
+                                
+                        </tbody>
+                    </table>
+
+            </div>
+            <script>
+                function reLoadFacet(facetId,url){
+                    if(facetId){
+                        facet = document.getElementById(facetId);
+                        fade(facet);
+
+                        if(XMLHttpRequest) var request = new XMLHttpRequest();
+                        else var request = new ActiveXObject("Microsoft.XMLHTTP");
+                        request.open("GET", url, true);
+                        request.responseType='document';
+                        request.send();
+                        request.onreadystatechange = function(){
+                            if(request.readyState == 4){
+                                if(request.status == 200){
+                                    facet.innerHTML = request.response.getElementById(facetId).innerHTML;
+                                    window.history.pushState(null, null, url);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                function fade(element) {
+                    var op = 1;  // initial opacity
+                    var timer = setInterval(function () {
+                        if (op <= 0.1){
+                            clearInterval(timer);
+                            unfade(element);
+                        }
+                        element.style.opacity = op;
+                        op -= op * 0.1;
+                    }, 15);
+                }
+
+                function unfade(element) {
+                    var op = 0.1;  // initial opacity
+                    var timer = setInterval(function () {
+                        if (op >= 1) clearInterval(timer);
+                        element.style.opacity = op;
+                        op += op * 0.1;
+                    }, 15);
+                }
+
+            </script>
+
+
+        </div>
+        
+    
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</main>
+
+<footer class="footer mt-auto py-3">
+    <div class="container">
+        <div class="row d-flex">
+            <div class="col-lg-auto col-md-6 col-12 text-center py-2 x-2">
+                <a class="fs-6 link-secondary text-decoration-none text-white"
+                   href="/accessible">Accessibilitat</a>
+            </div>
+            <div class="col-lg-auto col-md-6 col-12 text-center py-2 x-2">
+                <a class="fs-6 link-secondary text-decoration-none text-white"
+                   href="/legal">Avís legal, política de privacitat i de cookies</a>
+            </div>
+            <div class="col-lg-auto col-md-6 col-12 text-center py-2 x-2">
+                <a class="fs-6 link-secondary text-decoration-none text-white"
+                   href="/collaborations">Col·laboracions</a>
+            </div>
+
+            <div class="col-lg-auto col-md-6 col-12 text-center py-2 x-2">
+                <a class="fs-6 link-secondary text-decoration-none text-white"
+                   href="/intern">Ús intern</a>
+            </div>
+
+            <div class="ms-auto col-lg-auto col-md-6 col-12 text-center update rounded py-2 x-2">
+                    <span class="fs-6" style="color: #004357">Darrera actualització: Març 2022 / Propera actualització: Maig 2022</span>
+            </div>
+
+            <div class="ms-auto col-lg-auto col-md-6 col-12 text-center py-2 x-2">
+                <a href="https://www.csuc.cat/">
+                    <img src="/image/assets/logo-csuc.png" height="20px" alt="logo-csuc">
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Footer -->
+</body>
+</html>
+

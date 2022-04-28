@@ -1,0 +1,1 @@
+https://portalrecerca.csuc.cat/simple-search?query=&location=publications&filter_field_1=resourcetype&filter_type_1=equals&filter_value_1=Items&filter_field_2=itemtype&filter_type_2=notequals&filter_value_2=Phd+Thesis&sort_by=dc.contributor.authors_sort&order=asc&rpp=300&etal=0&start=0

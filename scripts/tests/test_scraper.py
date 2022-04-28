@@ -3,15 +3,22 @@
 Run tests with:
     python -m unittest
 
+Create pickle data with:
+    python -m tests pickle
+
 For coverage report run:
     coverage run -m unittest
     coverage report
-
 """
 import unittest
 from unittest.mock import patch
 import re
-from scrape import build_urls, get_urls, WebsiteDownError
+from requests_html import HTML
+from scrape import build_urls
+from src.scrape import scrape, get_urls, WebsiteDownError
+import logging
+
+logging.getLogger("asyncio").setLevel("ERROR")
 
 
 class TestURLs(unittest.TestCase):
@@ -71,33 +78,47 @@ class TestURLs(unittest.TestCase):
                 self.assertEqual(len(urls), self.n_urls)
 
 
-# class TestScrape(unittest.IsolatedAsyncioTestCase):
-#     n_urls = 1
+class TestScrape(unittest.IsolatedAsyncioTestCase):
+    n_urls = 1
+    items_list = ["author_urls", "paper_urls", "project_urls", "group_urls"]
 
-#     def setUp(self):
-#         patcher = patch("scripts.src.scrape.get_max_pages")
-#         self.addCleanup(patcher.stop)
-#         self.mock_get_max_pages = patcher.start()
-#         self.mock_get_max_pages.return_value = self.n_urls
+    def setUp(self):
+        patcher = patch("src.scrape.get_max_pages")
+        self.addCleanup(patcher.stop)
+        self.mock_get_max_pages = patcher.start()
+        self.mock_get_max_pages.return_value = self.n_urls
 
-#     async def test_scrape(self):
-#         batch_size = 10
-#         items = "author_urls"
-#         urls = build_urls(items=items)
-#         start_pos = 0
+    async def test_scrape_author_urls(self):
+        """Returns a list of URLs for the authors pages"""
+        for items in self.items_list:
+            with self.subTest(items=items):
+                with open(f"tests/{items}.html", "rb") as f:
+                    raw_html = f.read()
+                with open(f"tests/{items}.txt", "r") as f:
+                    url = f.read()
 
-#         # Create batch URLs
-#         batch_urls = [
-#             urls[i : i + batch_size] for i in range(start_pos, len(urls), batch_size)
-#         ]
-#         print(batch_urls)
+                html = HTML(url=url, html=raw_html)
+                batch_urls = [[url]]
 
-#         result = await scrape(
-#             items=items,
-#             urls=batch_urls,
-#         )
-#         print(result)
-#         self.assertEqual(result, [0, 1, 2])
+                with patch("src.scrape.retry_url") as mock_retry_url:
+                    mock_retry_url.return_value.html = html
+                    result = await scrape(
+                        items=items,
+                        urls=batch_urls,
+                    )
+
+                    self.assertEqual(len(result), 300)
+
+                    print(items)
+                    print(result[:10])
+                    print()
+
+                    if items == "author_urls":
+                        url_regex = re.compile(
+                            r"^orcid/[0-9X]{4}-[0-9X]{4}-[0-9X]{4}-[0-9X]{4}\b"
+                        )
+                        urls_match_regex = all([url_regex.match(url) for url in result])
+                        self.assertTrue(urls_match_regex)
 
 
 if __name__ == "__main__":
