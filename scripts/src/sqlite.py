@@ -20,7 +20,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.par
 log = logging.getLogger(__name__)
 
 
-def insert_urls(urls, items, date):
+def insert_urls(urls, items, date, db="recerca.db"):
     rows = []
     for url in urls:
         row = {}
@@ -31,7 +31,7 @@ def insert_urls(urls, items, date):
         row["date_created"] = date
         rows.append(row)
 
-    conn = sqlite3.connect("recerca.db")
+    conn = sqlite3.connect(db)
     with conn:
         # If new url: Insert.
         # If url exists (collides with unique url_stem constraint)
