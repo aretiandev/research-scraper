@@ -109,10 +109,6 @@ class TestScrape(unittest.IsolatedAsyncioTestCase):
 
                     self.assertEqual(len(result), 300)
 
-                    print(items)
-                    print(result[:10])
-                    print()
-
                     if items == "author_urls":
                         url_regex = re.compile(
                             r"^orcid/[0-9X]{4}-[0-9X]{4}-[0-9X]{4}-[0-9X]{4}\b"

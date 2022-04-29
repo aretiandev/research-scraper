@@ -19,3 +19,15 @@ Run:
 `snakemake --cores all --log-handler-script scripts/log_handler.py`
 
 You will need to put your Slack tokens in an `.env` file in order for the Slack integration to work.
+
+## Run tests
+All tests are run from the `scripts` folder:
+`cd scripts`
+
+Create intermediate files for tests with:
+`python -m tests pickle`
+
+Run tests:
+`python -m unittest`
+Silence output while running tests with `python -m unittest -b`
+
