@@ -2,21 +2,14 @@
 
 This project scrapes Portal de la Reserca. 
 
-## Setup
-Run Docker container:
-`docker compose up -d`
+## Install
+Run `make install`.
 
-Attach to container:
-`docker exec -it --user jovyan portalrecerca zsh`
-
-Install packages:
-`mamba env update --name base --file environment.yml`
-
-## Snakefile
-The project is self documented in the `Snakefile`.
-
-Run everything with the following command:
+## Snakemake
+Run full pipeline:
 `snakemake --cores all`
+
+The project is self documented in the `Snakefile`.
 
 ## Slack Integration
 Run:
