@@ -19,6 +19,9 @@ install_packages: ## Install required packages inside container
 snakemake: ## Run all Snakemake rules
 	snakemake --cores all
 
+test: ## Run tests
+	cd scripts; python -m unittest -b;
+
 help: ## View help
 	@awk 'BEGIN {FS="^#+ ?"; header=1; body=0}; \
 		  header == 1 {printf "\033[36m%s\033[0m\n", $$2} \
