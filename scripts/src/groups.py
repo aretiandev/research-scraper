@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 
 def create_group_networks(
-    input_nodes, input_groups, input_edges, output_nodes, output_edges
+    input_nodes, input_groups, input_edges, output_group_nodes, output_group_edges
 ):
 
     # Get Nodes
@@ -55,8 +55,8 @@ def create_group_networks(
     nodes_df = nodes_df.rename(columns={"url_id": "id", "name": "label"})
 
     # Save
-    nodes_df.to_csv(output_nodes, index=None)
-    log.info(f"Saved: {output_nodes}")
+    nodes_df.to_csv(output_group_nodes, index=None)
+    log.info(f"Saved: {output_group_nodes}")
 
     # Create group level edgelist
     log.info(f"Loading: {input_edges}")
@@ -80,5 +80,5 @@ def create_group_networks(
     edges_gp_df = edges_gp_df.groupby(["Source", "Target"]).sum().reset_index()
 
     # Save
-    edges_gp_df.to_csv(output_edges, index=None)
-    log.info(f"Saved: {output_edges}")
+    edges_gp_df.to_csv(output_group_edges, index=None)
+    log.info(f"Saved: {output_group_edges}")
