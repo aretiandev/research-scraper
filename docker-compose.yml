@@ -1,11 +1,9 @@
-version: '3'
 services:
   lab:
     container_name: portalrecerca
-    image: yufernando/jupyterlab:snakemake
+    build: .
     volumes:
       - .:/home/jovyan/work
-    working_dir: /home/jovyan/work/
     ports:
       - '8888:8888'
     restart: always
