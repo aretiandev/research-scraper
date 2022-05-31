@@ -1,3 +1,9 @@
+# Test files
+scripts/tests/author_urls.html
+scripts/tests/group_urls.html
+scripts/tests/paper_urls.html
+scripts/tests/project_urls.html
+
 # Python Cache and checkpoints
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
