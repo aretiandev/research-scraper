@@ -21,11 +21,16 @@ attach: ## Attach to running container
 	docker exec -it --user jovyan portalrecerca zsh
 
 install: ## Run docker container and install required packages
+	@if [ "$$(docker ps -aq -f name=portalrecerca)" ]; then \
+		echo "Container portalrecerca already exists.";   \
+		exit 1; \
+	fi
 	docker compose up -d
 	docker exec --user jovyan portalrecerca make install_packages
 	$(MAKE) attach
 
 install_packages: ## Install required packages inside container
+# https://github.com/mamba-org/mamba/issues/633#issuecomment-812272143
 	mamba env update --name base --file environment.yml
 
 snakemake: ## Run all Snakemake rules
