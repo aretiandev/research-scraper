@@ -2,7 +2,17 @@
 
 This project scrapes Portal de la Reserca. 
 
-## Setup
+
+# Instructions
+
+## Configuration
+Edit the following fields in `configuration.yml`:
+- date: current date. It is used for versioning files and folders.
+- institutions_list: list of institution pages to scrape.
+- threads_max: Snakemake parameter, use max number of CPU cores.
+- timeout: timeout in seconds between batch scraping to avoid crashing website.
+
+## Create Container
 Create and attach to JupyterLab container with required packages and open port 8888.
 ```
 docker compose up -d
@@ -22,6 +32,10 @@ snakemake --cores all
 ```
 
 The project is self documented in the `Snakefile`.
+
+All output is saved into `recerca.db` sqlite database and csv files in `data/[date_today]`.
+
+# Other features
 
 ## Slack Integration
 Run:

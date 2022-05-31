@@ -4,3 +4,4 @@ dependencies:
   - requests-html
   - python-dotenv
   - slack_sdk
+  - pyyaml

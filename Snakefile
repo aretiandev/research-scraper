@@ -20,13 +20,17 @@
 #   To avoid crashing the server set a low value for params.batch_size
 
 from scripts.src.process import get_date
+import yaml
+
+# Configuration options
+with open("configuration.yml") as f:
+    config = yaml.safe_load(f)
 
 # Setup
-# date_today = get_date()
-date_today = '20220427'
-institution_list = ['IGTP+', 'UPC_CIMNE', 'UB', 'UPF', 'UVic-UCC', 'UOC', 'Agrotecnio', 'CRAG', 'UdL', 'URV', 'UdG']
-threads_max = 16
-timeout = 1
+date_today = config.get('date', get_date())
+institution_list = config.get('institution_list')
+threads_max = config.get('threads_max')
+timeout = config.get('timeout')
 
 rule all:
     input:
@@ -58,7 +62,7 @@ rule data:
         f'data/{date_today}/{date_today}_{{item_name}}_data.csv'
     threads: threads_max
     params:
-        batch_size = 50,  # Debug
+        batch_size = 50,
         timeout = timeout
     script:
         "scripts/scrape.py"
