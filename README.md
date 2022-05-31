@@ -2,10 +2,18 @@
 
 This project scrapes Portal de la Reserca. 
 
-## Install
-Run `make install`.
+## Setup
+Create JupyterLab container with open port 8888 and install required packages.
+```
+make install
+```
+## Run Snakemake
+Attach to the running container
+```
+docker exec -it --user jovyan portalrecerca zsh
+```
+or `make attach`.
 
-## Snakemake
 Check everything is installed properly:
 ```
 snakemake --cores all --dry-run
