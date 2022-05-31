@@ -4,22 +4,17 @@
 # and creates nodes and edges for network visualization.
 #
 # Run everthing:
+#   snakemake --cores all
+#
+# Run with Slack notifications
 #   snakemake --cores all --log-handler-script scripts/log_handler.py
-#
-# Note: this should be run from within a Docker container as root to avoid file permission errors
-#
-# Test if website is online:
-#   snakemake ping_and_run -c1
-#
-# Useful rules:
-#   snakemake --cores all --log-handler-script scripts/log_handler.py
-#   snakemake ping_and_run -c1
-#   snakemake dag -c1
-#   snakemake rulegraph -c1
 #
 # View DAG or Rulegraph:
 #   snakemake dag -c1
 #   snakemake rulegraph -c1
+#
+# Test if website is online:
+#   snakemake ping_and_run -c1
 #
 # Tips:
 #   To avoid crashing the server set a low value for params.batch_size
