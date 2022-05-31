@@ -50,3 +50,5 @@ python -m unittest
 
 Silence output while running tests with `python -m unittest -b`.
 
+# Notes
+When working from inside the container, you can git add and commit changes but not push them to the remote, since the container does not have the necessary keys.
