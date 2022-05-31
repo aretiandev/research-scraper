@@ -2,10 +2,10 @@
 
 This project scrapes Portal de la Reserca. 
 
-
 # Instructions
 
 ## Configuration
+
 Edit the following fields in `configuration.yml`:
 - date: current date. It is used for versioning files and folders.
 - institutions_list: list of institution pages to scrape.
@@ -13,6 +13,7 @@ Edit the following fields in `configuration.yml`:
 - timeout: timeout in seconds between batch scraping to avoid crashing website.
 
 ## Create Container
+
 Create and attach to JupyterLab container with required packages and open port 8888.
 ```
 docker compose up -d
@@ -21,6 +22,7 @@ docker exec -it --user jovyan portalrecerca zsh
 Or `make run`.
 
 ## Run Snakemake
+
 From within the container, check everything is installed properly:
 ```
 snakemake --cores all --dry-run
@@ -38,6 +40,7 @@ All output is saved into `recerca.db` sqlite database and csv files in `data/[da
 # Other features
 
 ## Slack Integration
+
 Run:
 ```
 snakemake --cores all --log-handler-script scripts/log_handler.py
@@ -65,4 +68,5 @@ python -m unittest
 Silence output while running tests with `python -m unittest -b`.
 
 # Notes
+
 When working from inside the container, you can git add and commit changes but not push them to the remote, since the container does not have the necessary keys.
