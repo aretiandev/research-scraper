@@ -6,11 +6,18 @@ This project scrapes Portal de la Reserca.
 
 ## Configuration
 
-Edit the following fields in `configuration.yml`:
-- date: current date. It is used for versioning files and folders.
-- institutions_list: list of institution pages to scrape.
-- threads_max: Snakemake parameter, use max number of CPU cores.
-- timeout: timeout in seconds between batch scraping to avoid crashing website.
+Edit `config.py`:
+- DATE: current date for versioning files and folders.
+- INSTITUTIONS_LIST: list of institutions to scrape.
+- THREADS_MAX: Snakemake parameter. Recommended: max number of CPU cores.
+- TIMEOUT: timeout in seconds between batches avoid crashing website.
+- SLACK_BOT_TOKEN: Token for notifications.
+- SLACK_MEMBER_ID: Member ID for notifications.
+
+Set current date (if not set will default to today):
+```
+export DATE=20220601
+```
 
 ## Create Container
 
