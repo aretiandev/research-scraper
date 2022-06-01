@@ -46,7 +46,7 @@ Run:
 snakemake --cores all --log-handler-script scripts/slack.py
 ```
 
-You will need to put your Slack tokens in an `.env` file in order for the Slack integration to work.
+You will need to put `SLACK_BOT_TOKEN` and `SLACK_MEMBER_ID` in an `.env` file in the root directory.
 
 ## Run tests
 
