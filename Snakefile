@@ -3,6 +3,9 @@
 # Scrapes information from Portal de la Recerca for authors, papers, projects and groups
 # and creates nodes and edges for network visualization.
 #
+# Set date (if not set will default to today):
+#   export DATE=20220601
+#
 # Run everthing:
 #   snakemake --cores all
 #
@@ -19,18 +22,14 @@
 # Tips:
 #   To avoid crashing the server set a low value for params.batch_size
 
-from scripts.src.process import get_date
-import yaml
+from config import Config
 
-# Configuration options
-with open("configuration.yml") as f:
-    config = yaml.safe_load(f)
-
-# Setup
-date_today = config.get('date', get_date())
-institution_list = config.get('institution_list')
-threads_max = config.get('threads_max')
-timeout = config.get('timeout')
+date_today = Config.DATE
+institution_list = Config.INSTITUTION_LIST
+threads_max = Config.THREADS_MAX
+timeout = Config.TIMEOUT
+SLACK_BOT_TOKEN = Config.SLACK_BOT_TOKEN
+SLACK_MEMBER_ID = Config.SLACK_MEMBER_ID
 
 rule all:
     input:
@@ -41,6 +40,9 @@ rule all:
         f'data/{date_today}/{date_today}_project_data.csv'
 
 rule ping_and_run:
+    params:
+        SLACK_BOT_TOKEN = SLACK_BOT_TOKEN,
+        SLACK_MEMBER_ID = SLACK_MEMBER_ID
     script:
         "scripts/ping_and_run.py"
 

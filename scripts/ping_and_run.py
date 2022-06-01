@@ -1,13 +1,10 @@
-import os
 import subprocess
-from dotenv import load_dotenv
 from src.bot import send_slack_message, ping_and_wait
 
 
 def main():
-    load_dotenv()
-    slack_token = os.environ["SLACK_BOT_TOKEN"]
-    slack_member_id = os.environ["SLACK_MEMBER_ID"]
+    slack_token = snakemake.params.get("SLACK_BOT_TOKEN")  # type: ignore # noqa
+    slack_member_id = snakemake.params.get("SLACK_MEMBER_ID")  # type: ignore # noqa
 
     # channel = "#proj-city_barcelona"
     channel = slack_member_id
