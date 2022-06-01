@@ -1,6 +1,6 @@
-# Portal de la Reserca Scraping Project
+# Research Scraper
 
-This project scrapes Portal de la Reserca. 
+This project scrapes researcher information, papers, projects and groups for Portal de la Reserca. 
 
 # Instructions
 
