@@ -12,6 +12,7 @@ Main functions:
 
 import pandas as pd
 from requests_html import HTMLSession, AsyncHTMLSession
+import requests.adapters
 import datetime
 import time
 import asyncio
@@ -695,6 +696,9 @@ async def scrape(
     for i, batch in enumerate(urls[batch_start:]):
 
         s = AsyncHTMLSession()
+        # https://stackoverflow.com/a/18845952/10688326
+        adapter = requests.adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100)
+        s.mount("https://", adapter)
 
         t1 = time.perf_counter()
 
