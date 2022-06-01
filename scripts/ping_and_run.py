@@ -35,7 +35,7 @@ def main():
         "--cores",
         "all",
         "--log-handler-script",
-        "scripts/log_handler.py",
+        "scripts/slack.py",
     ]
     subprocess.run(smk_command)
 

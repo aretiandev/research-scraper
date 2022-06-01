@@ -7,7 +7,7 @@
 #   snakemake --cores all
 #
 # Run with Slack notifications
-#   snakemake --cores all --log-handler-script scripts/log_handler.py
+#   snakemake --cores all --log-handler-script scripts/slack.py
 #
 # View DAG or Rulegraph:
 #   snakemake dag -c1

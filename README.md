@@ -43,7 +43,7 @@ All output is saved into `recerca.db` sqlite database and csv files in `data/[da
 
 Run:
 ```
-snakemake --cores all --log-handler-script scripts/log_handler.py
+snakemake --cores all --log-handler-script scripts/slack.py
 ```
 
 You will need to put your Slack tokens in an `.env` file in order for the Slack integration to work.
