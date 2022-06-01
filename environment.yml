@@ -5,3 +5,5 @@ dependencies:
   - python-dotenv
   - slack_sdk
   - pyyaml
+  - html5lib
+
