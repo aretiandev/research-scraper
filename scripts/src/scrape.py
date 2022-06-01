@@ -717,7 +717,7 @@ async def scrape(
             ]  # Flatten result
 
         if out_file:
-            result_df = result_df.append(batch_result, ignore_index=True)
+            result_df = pd.concat([result_df, batch_result], ignore_index=True)
             result_df.to_csv(out_file, index=None)
             log.debug(f"Saved all data up to batch {i}: {out_file}")
 
