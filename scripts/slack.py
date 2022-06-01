@@ -31,8 +31,10 @@ def log_handler(msg):
     elif msg_level == "job_finished":
         message = f":white_check_mark: Finished job {msg['jobid']}."
     elif msg_level == "progress":
-        message = f":construction: {msg['done']} of {msg['total']} steps " + \
-                  f"({msg['done']/msg['total']*100:.0f}%) done"
+        message = (
+            f":construction: {msg['done']} of {msg['total']} steps "
+            + f"({msg['done']/msg['total']*100:.0f}%) done"
+        )
     elif msg_level == "job_error":
         message = f"Error in rule `{msg['name']}`: jobid {msg['jobid']}"
     elif msg_level == "error":
