@@ -25,10 +25,13 @@ async def fetch(session, url, output_folder, output_file):
     async with session.get(url) as response:
         try:
             html_doc = await response.text()
-            with open(f"{output_folder}/{output_file}.html", "w") as f:
-                f.write(html_doc)
-        except Exception:
+        except Exception as e:
+            html_doc = e
             log.exception(f"Exception in fetch(): url: {url}, file: {output_file}.")
+            with open("{output_folder}/errors.txt", "a") as f:
+                f.write(f"{output_file}.txt")
+        with open(f"{output_folder}/{output_file}.html", "w") as f:
+            f.write(html_doc)
 
 
 async def fetch_with_sem(session, url, output_folder, output_file, sem, rate):
