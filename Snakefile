@@ -65,6 +65,10 @@ rule fetch_papers:
   output: expand("output/papers/{paper_number}.html", paper_number=range(n_papers))
   script: "scripts/fetch_html.py"
 
+rule prune:
+  script: "scripts/prune.py"
+
+########
 
 rule ping_and_run:
     params:
@@ -73,16 +77,17 @@ rule ping_and_run:
     script:
         "scripts/ping_and_run.py"
 
-rule urls:
-    output: 
-        f"data/{date_today}/{date_today}_{{item_name}}_urls.csv"
-    threads: 
-        threads_max
-    params:
-        batch_size = 50,
-        timeout = timeout
-    script: 
-        "scripts/scrape.py"
+  
+# rule urls:
+#     output: 
+#         f"data/{date_today}/{date_today}_{{item_name}}_urls.csv"
+#     threads: 
+#         threads_max
+#     params:
+#         batch_size = 50,
+#         timeout = timeout
+#     script: 
+#         "scripts/scrape.py"
 
 rule data:
     input:
