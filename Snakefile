@@ -55,6 +55,11 @@ rule fetch_catalog:
   params: target = "catalog"
   script: "scripts/fetch_html.py"
 
+rule fetch_papers:
+  input: expand("output/catalog/{url_number}.done", url_number=range(n_catalog_urls))
+  output: expand("output/papers/{paper_number}.html", paper_number=range(n_papers))
+  script: "scripts/fetch_html.py"
+
 
 rule ping_and_run:
     params:
