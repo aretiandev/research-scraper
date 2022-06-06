@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 
 def configLogger(
@@ -27,7 +28,9 @@ def configLogger(
 
     # Configure file output
     if filename is not None:
-        fh = logging.FileHandler(filename=filename, mode="w")
+        Path(filename).parent.mkdir(exist_ok=True)
+        # fh = logging.FileHandler(filename=filename, mode="w")
+        fh = logging.FileHandler(filename=filename, mode="a")
         fh_formatter = logging.Formatter(fmt=fmt, datefmt=datefmt)
         fh.setFormatter(fh_formatter)
         fh.setLevel(file_level.upper())
