@@ -10,25 +10,44 @@ Main functions:
     insert_groups()
 """
 
-import os
-import sys
-import sqlite3
 import logging
+import os
+import sqlite3
+import sys
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 
 log = logging.getLogger(__name__)
 
 
-def insert_urls(urls, items, date, db="recerca.db"):
+def insert_html(html, date, conn):
+    row = {}
+    row["html"] = html
+    row["date_created"] = date
+    row["current"] = 1
+    row["parsed"] = 0
+
+    with conn:
+        conn.execute(
+            """
+            INSERT INTO catalog
+                ( html,  date_created,  current,  parsed)
+            VALUES
+                (:html, :date_created, :current, :parsed)
+            """,
+            row,
+        )
+
+
+def insert_urls(urls, items, date, db="saopaulo.db"):
     rows = []
     for url in urls:
         row = {}
         row["items"] = items
         row["url_stem"] = url
+        row["date_created"] = date
         row["current"] = 1
         row["url_scraped"] = 0
-        row["date_created"] = date
         rows.append(row)
 
     conn = sqlite3.connect(db)
@@ -43,7 +62,7 @@ def insert_urls(urls, items, date, db="recerca.db"):
                 ( items, url_stem, date_created, current, url_scraped)
             VALUES
                 (:items,:url_stem,:date_created,:current,:url_scraped)
-            ON CONFLICT DO UPDATE SET current=1,date_created=:date_created
+            ON CONFLICT DO UPDATE SET current=1
             """,
             rows,
         )
