@@ -66,7 +66,7 @@ rule parse_catalog:
   script: "scripts/parse_html.py"
 
 rule fetch_papers:
-  input: expand("output/catalog/{url_number}.done", url_number=range(n_catalog_urls))
+  # input: expand("output/catalog/{url_number}.done", url_number=range(n_catalog_urls))
   output: expand("output/papers/{paper_number}.html", paper_number=range(n_papers))
   script: "scripts/fetch_html.py"
 
