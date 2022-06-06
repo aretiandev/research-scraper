@@ -7,7 +7,7 @@ Fetches all pages from the search results in Repositorio.
 Output: "output/{target}/{url_number}.html"
 """
 import asyncio
-import logging
+import random
 import sqlite3
 import time
 from contextlib import closing
@@ -23,21 +23,23 @@ log = configLogger(snakemake.rule, snakemake.config["logfile"])  # type: ignore 
 async def fetch(session, url, output_folder, output_file):
     """Fetch HTML from url"""
     async with session.get(url) as response:
-        html_doc = await response.text()
-    # out_file = url.split("&page=")[1]
-    with open(f"{output_folder}/{output_file}.html", "w") as f:
-        f.write(html_doc)
+        try:
+            html_doc = await response.text()
+            with open(f"{output_folder}/{output_file}.html", "w") as f:
+                f.write(html_doc)
+        except Exception:
+            log.exception(f"Exception in fetch(): url: {url}, file: {output_file}.")
 
 
 async def fetch_with_sem(session, url, output_folder, output_file, sem, rate):
     """Fetch HTML from url with Semaphore"""
     async with sem:
         t1 = time.perf_counter()
-        result = await fetch(session, url, output_folder, output_file)
-        await asyncio.sleep(rate)
+        sleep_task = asyncio.create_task(asyncio.sleep(rate + random.random()))
+        await fetch(session, url, output_folder, output_file)
+        await sleep_task
         t2 = time.perf_counter()
         log.debug(f"Fetched in {t2-t1:.0f} seconds.")
-        return result
 
 
 async def fetch_all(urls, output_folder, limit, rate):
