@@ -22,6 +22,7 @@
 # Tips:
 #   To avoid crashing the server set a low value for params.batch_size
 
+from datetime import datetime
 from pathlib import Path
 from scripts.src.utils import get_date
 from dotenv import load_dotenv
@@ -33,6 +34,10 @@ configfile: 'config.yml'
 
 date_today = os.environ.get('date') or config.get('date') or get_date()
 config['date'] = date_today
+date_now = datetime.now().strftime("%Y%m%d.%H%M%S")
+Path(config["logfile"]).parent.mkdir(exist_ok=True)
+logfile = Path(config["logfile"]).parent / f"{date_now}_{Path(config['logfile']).name}"
+config["logfile"] = logfile
 institution_list = config['institutions']
 threads_max = config['threads_max']
 timeout = config['timeout']

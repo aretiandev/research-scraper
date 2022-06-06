@@ -1,8 +1,9 @@
 date: 
 n_catalog_urls: 500
 n_papers: 10000
-limit: 50
+limit: 100
 rate: 10
+logfile: "log/snakemake.log"
 
 threads_max: 16
 timeout: 1

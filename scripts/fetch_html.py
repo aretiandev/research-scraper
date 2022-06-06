@@ -17,7 +17,7 @@ import aiohttp
 
 from src.logging import configLogger
 
-log = logging.getLogger(snakemake.rule)  # type: ignore # noqa
+log = configLogger(snakemake.rule, snakemake.config["logfile"])  # type: ignore # noqa
 
 
 async def fetch(session, url, output_folder, output_file):
@@ -55,7 +55,6 @@ def main():
     rate = snakemake.config["rate"]  # type: ignore # noqa
 
     if rule == "fetch_catalog":
-        configLogger(filename="log/snakemake.log", file_level="debug", console_level="info")
         n_catalog_urls = snakemake.config["n_catalog_urls"]  # type: ignore # noqa
         url_root = "https://repositorio.usp.br/result.php?filter%5B0%5D=unidadeUSP%3A%22EP%22&fields%5B0%5D=name&fields%5B1%5D=author.person.name&fields%5B2%5D=authorUSP.name&fields%5B3%5D=about&fields%5B4%5D=description&fields%5B5%5D=unidadeUSP&page="
         urls = [url_root + str(i) for i in range(1, n_catalog_urls + 1)]

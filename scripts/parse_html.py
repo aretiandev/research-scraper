@@ -7,13 +7,12 @@ Parse HTML from catalog and extract links to papers.
 Input: "output/{target}/{url_number}.html"
 Output: rows in "saopaulo.db"
 """
-import logging
-
 from bs4 import BeautifulSoup
 
+from src.logging import configLogger
 from src.sqlite import insert_urls
 
-log = logging.getLogger(snakemake.rule)  # type: ignore # noqa
+log = configLogger(snakemake.rule, snakemake.config['logfile'])  # type: ignore # noqa
 
 
 def get_paper_urls(catalog_html):
