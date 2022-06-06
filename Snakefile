@@ -22,7 +22,10 @@
 # Tips:
 #   To avoid crashing the server set a low value for params.batch_size
 
-from config import Config
+from pathlib import Path
+from scripts.src.utils import get_date
+from dotenv import load_dotenv
+load_dotenv()
 
 
 # Configuration
@@ -42,6 +45,16 @@ n_catalog_urls = config['n_catalog_urls']
 n_papers = config.get('n_papers') or 10000
 
 Path('output').mkdir(exist_ok=True)
+
+
+rule all: 
+  input: expand("output/papers/{paper_number}.html", paper_number=range(n_papers))
+
+rule fetch_catalog:
+  output: expand("output/catalog/{url_number}.html", url_number=range(n_catalog_urls))
+  params: target = "catalog"
+  script: "scripts/fetch_html.py"
+
 
 rule ping_and_run:
     params:
