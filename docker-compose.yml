@@ -1,6 +1,6 @@
 services:
   lab:
-    container_name: portalrecerca
+    container_name: saopaulo
     build: .
     volumes:
       - .:/home/jovyan/work
