@@ -1,0 +1,21 @@
+date: 
+n_catalog_urls: 500
+n_papers: 10000
+limit: 50
+rate: 10
+
+threads_max: 16
+timeout: 1
+institutions: [
+  "IGTP+",
+  "UPC_CIMNE",
+  "UB",
+  "UPF",
+  "UVic-UCC",
+  "UOC",
+  "Agrotecnio",
+  "CRAG",
+  "UdL",
+  "URV",
+  "UdG",
+]
