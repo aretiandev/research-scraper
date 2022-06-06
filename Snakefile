@@ -24,25 +24,29 @@
 
 from config import Config
 
-date_today = Config.DATE
-institution_list = Config.INSTITUTION_LIST
-threads_max = Config.THREADS_MAX
-timeout = Config.TIMEOUT
-SLACK_BOT_TOKEN = Config.SLACK_BOT_TOKEN
-SLACK_MEMBER_ID = Config.SLACK_MEMBER_ID
 
-rule all:
-    input:
-        expand(f'data/{date_today}/{date_today}_nodes_{{institution}}.csv', institution=institution_list),
-        expand(f'data/{date_today}/{date_today}_edges_{{institution}}.csv', institution=institution_list),
-        expand(f'data/{date_today}/{date_today}_group_nodes_{{institution}}.csv', institution=institution_list),
-        expand(f'data/{date_today}/{date_today}_group_edges_{{institution}}.csv', institution=institution_list),
-        f'data/{date_today}/{date_today}_project_data.csv'
+# Configuration
+configfile: 'config.yml'
+
+date_today = os.environ.get('date') or config.get('date') or get_date()
+config['date'] = date_today
+institution_list = config['institutions']
+threads_max = config['threads_max']
+timeout = config['timeout']
+
+slack_bot_token = os.environ.get('SLACK_BOT_TOKEN')
+slack_member_id = os.environ.get('SLACK_MEMBER_ID')
+signing_secret = os.environ.get("SIGNING_SECRET")
+
+n_catalog_urls = config['n_catalog_urls']
+n_papers = config.get('n_papers') or 10000
+
+Path('output').mkdir(exist_ok=True)
 
 rule ping_and_run:
     params:
-        SLACK_BOT_TOKEN = SLACK_BOT_TOKEN,
-        SLACK_MEMBER_ID = SLACK_MEMBER_ID
+        slack_bot_token = slack_bot_token,
+        slack_member_id = slack_member_id
     script:
         "scripts/ping_and_run.py"
 
