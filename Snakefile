@@ -21,6 +21,9 @@
 #
 # Tips:
 #   To avoid crashing the server set a low value for params.batch_size
+#
+# Configuration:
+#   n_papers: number of papers to fetch and parse
 
 from datetime import datetime
 from pathlib import Path
@@ -39,6 +42,7 @@ Path(config["logfile"]).parent.mkdir(exist_ok=True)
 logfile = Path(config["logfile"]).parent / f"{date_now}_{Path(config['logfile']).name}"
 config["logfile"] = logfile
 institution_list = config['institutions']
+
 threads_max = config['threads_max']
 timeout = config['timeout']
 
@@ -47,13 +51,16 @@ slack_member_id = os.environ.get('SLACK_MEMBER_ID')
 signing_secret = os.environ.get("SIGNING_SECRET")
 
 n_catalog_urls = config['n_catalog_urls']
-n_papers = config.get('n_papers') or 10000
+config['n_papers'] = config.get('n_papers') or 10000
+n_papers = config['n_papers']
 
 Path('output').mkdir(exist_ok=True)
 
 
 rule all: 
-  input: expand("output/papers/{paper_number}.html", paper_number=range(n_papers))
+  input: 
+    expand("output/gephi/{institution}_nodes.csv", institution=institution_list),
+    expand("output/gephi/{institution}_edges.csv", institution=institution_list),
 
 rule fetch_catalog:
   output: expand("output/catalog/{url_number}.html", url_number=range(n_catalog_urls))
@@ -70,17 +77,48 @@ rule fetch_papers:
   output: expand("output/papers/{paper_number}.html", paper_number=range(n_papers))
   script: "scripts/fetch_html.py"
 
+rule parse_papers:
+  input: "output/papers/{institution}/{paper_number}.html"
+  output: touch("output/papers/{institution}/{paper_number}.done")
+  script: "scripts/parse_html.py"
+
+rule output_edges:
+  input: expand("output/papers/{{institution}}/{paper_number}.done", paper_number=range(n_papers))
+  output: "output/gephi/{institution}_edges.csv"
+  script: "scripts/output_edges.py"
+
+rule output_nodes:
+  input: expand("output/papers/{{institution}}/{paper_number}.done", paper_number=range(n_papers))
+  output: "output/gephi/{institution}_nodes.csv"
+  script: "scripts/output_nodes.py"
+
+# Chore scripts
 rule prune:
   script: "scripts/prune.py"
 
+rule create_tables:
+  script: "scripts/create_tables.py"
+
+rule dag:
+    output:
+        f"figs/{date_today}_dag.png"
+    shell:
+        "snakemake --dag | dot -Tpng > {output}"
+
+rule rulegraph:
+    output:
+        f"figs/{date_today}_rulegraph.png"
+    shell:
+        "snakemake --rulegraph | dot -Tpng > {output}"
+
 ########
 
-rule ping_and_run:
-    params:
-        slack_bot_token = slack_bot_token,
-        slack_member_id = slack_member_id
-    script:
-        "scripts/ping_and_run.py"
+# rule ping_and_run:
+#     params:
+#         slack_bot_token = slack_bot_token,
+#         slack_member_id = slack_member_id
+#     script:
+#         "scripts/ping_and_run.py"
 
   
 # rule urls:
@@ -94,79 +132,25 @@ rule ping_and_run:
 #     script: 
 #         "scripts/scrape.py"
 
-rule data:
-    input:
-        f'data/{date_today}/{date_today}_{{item_name}}_urls.csv'
-    output:
-        f'data/{date_today}/{date_today}_{{item_name}}_data.csv'
-    threads: threads_max
-    params:
-        batch_size = 50,
-        timeout = timeout
-    script:
-        "scripts/scrape.py"
+# rule data:
+#     input:
+#         f'data/{date_today}/{date_today}_{{item_name}}_urls.csv'
+#     output:
+#         f'data/{date_today}/{date_today}_{{item_name}}_data.csv'
+#     threads: threads_max
+#     params:
+#         batch_size = 50,
+#         timeout = timeout
+#     script:
+#         "scripts/scrape.py"
 
-rule clean:
-    input:
-        f'data/{date_today}/{date_today}_{{item_name}}_data.csv'
-    output:
-        f'data/{date_today}/{date_today}_{{item_name}}_clean.csv'
-    script:
-        "scripts/clean.py"
-
-rule filter_authors:
-    input:
-        f'data/{date_today}/{date_today}_author_clean.csv',
-    output:
-        f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv'
-    script:
-        "scripts/filter_authors.py"
-
-rule filter_papers:
-    input:
-        f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv',
-        f'data/{date_today}/{date_today}_paper_clean.csv'
-    output:
-        f'data/{date_today}/{date_today}_papers_{{institution}}.csv',
-        f'data/{date_today}/{date_today}_papers_{{institution}}_2plus.csv'
-    script:
-        "scripts/filter_papers.py"
-
-rule create_edges:
-    input:
-        f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv',
-        f'data/{date_today}/{date_today}_papers_{{institution}}_2plus.csv'
-    output:
-        f'data/{date_today}/{date_today}_edges_{{institution}}.csv'
-    script:
-        "scripts/create_edges.py"
-
-rule add_nodes_stats:
-    input:
-        f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv',
-        f'data/{date_today}/{date_today}_papers_{{institution}}.csv',
-        f'data/{date_today}/{date_today}_group_data.csv',
-    output:
-        f'data/{date_today}/{date_today}_nodes_{{institution}}.csv'
-    script:
-        "scripts/add_nodes_stats.py"
-
-rule create_group_networks:
-    input:
-        f'data/{date_today}/{date_today}_nodes_{{institution}}.csv',
-        f'data/{date_today}/{date_today}_group_data.csv',
-        f'data/{date_today}/{date_today}_edges_{{institution}}.csv'
-    output:
-        f'data/{date_today}/{date_today}_group_nodes_{{institution}}.csv',
-        f'data/{date_today}/{date_today}_group_edges_{{institution}}.csv'
-    script:
-        "scripts/create_group_networks.py"
-
-rule dag:
-    output:
-        f"figs/{date_today}_dag.png"
-    shell:
-        "snakemake --dag | dot -Tpng > {output}"
+# rule clean:
+#     input:
+#         f'data/{date_today}/{date_today}_{{item_name}}_data.csv'
+#     output:
+#         f'data/{date_today}/{date_today}_{{item_name}}_clean.csv'
+#     script:
+#         "scripts/clean.py"
 
 rule rulegraph:
     output:
