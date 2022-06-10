@@ -10,14 +10,23 @@ Main functions:
     insert_groups()
 """
 
+import itertools
 import logging
 import os
 import sqlite3
 import sys
+from contextlib import closing
+
+# import yaml
+
+# from src.logging import configLogger
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 
 log = logging.getLogger(__name__)
+# with open("config.yml") as f:
+# config = yaml.safe_load(f)
+# log = configLogger(__name__, config["logfile"])
 
 
 def insert_html(html, date, conn):
@@ -39,11 +48,11 @@ def insert_html(html, date, conn):
         )
 
 
-def insert_urls(urls, items, date, db="saopaulo.db"):
+def insert_urls(urls, institution, date, db="saopaulo.db"):
     rows = []
     for url in urls:
         row = {}
-        row["items"] = items
+        row["institution"] = institution
         row["url_stem"] = url
         row["date_created"] = date
         row["current"] = 1
