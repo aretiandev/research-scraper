@@ -63,18 +63,17 @@ rule all:
     expand("output/gephi/{institution}_edges.csv", institution=institution_list),
 
 rule fetch_catalog:
-  output: expand("output/catalog/{url_number}.html", url_number=range(n_catalog_urls))
-  params: target = "catalog"
+  output: expand("output/catalog/{institution}/{url_number}.html", institution=institution_list, url_number=range(n_catalog_urls))
   script: "scripts/fetch_html.py"
 
 rule parse_catalog:
-  input: "output/catalog/{url_number}.html"
-  output: touch("output/catalog/{url_number}.done")
+  input: "output/catalog/{institution}/{url_number}.html"
+  output: touch("output/catalog/{institution}/{url_number}.done")
   script: "scripts/parse_html.py"
 
 rule fetch_papers:
-  # input: expand("output/catalog/{url_number}.done", url_number=range(n_catalog_urls))
-  output: expand("output/papers/{paper_number}.html", paper_number=range(n_papers))
+  input: expand("output/catalog/{institution}/{url_number}.done", institution=institution_list, url_number=range(n_catalog_urls)) # Comment out: run from here
+  output: expand("output/papers/{institution}/{paper_number}.html", institution=institution_list, paper_number=range(n_papers))   # Comment out: run from next
   script: "scripts/fetch_html.py"
 
 rule parse_papers:
@@ -152,25 +151,67 @@ rule rulegraph:
 #     script:
 #         "scripts/clean.py"
 
-rule rulegraph:
-    output:
-        f"figs/{date_today}_rulegraph.png"
-    shell:
-        "snakemake --rulegraph | dot -Tpng > {output}"
+# rule filter_authors:
+#     input:
+#         f'data/{date_today}/{date_today}_author_clean.csv',
+#     output:
+#         f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv'
+#     script:
+#         "scripts/filter_authors.py"
 
-rule create_symlinks:
-    params:
-        target="20220419",
-        date_today=date_today
-    shell:
-        """
-        mkdir -p data/{date_today}
-        ln -s ../{params.target}/{params.target}_author_urls.csv data/{date_today}/{date_today}_author_urls.csv
-        ln -s ../{params.target}/{params.target}_author_data.csv data/{date_today}/{date_today}_author_data.csv
-        ln -s ../{params.target}/{params.target}_paper_urls.csv data/{date_today}/{date_today}_paper_urls.csv
-        ln -s ../{params.target}/{params.target}_paper_data.csv data/{date_today}/{date_today}_paper_data.csv
-        ln -s ../{params.target}/{params.target}_group_urls.csv data/{date_today}/{date_today}_group_urls.csv
-        ln -s ../{params.target}/{params.target}_group_data.csv data/{date_today}/{date_today}_group_data.csv
-        ln -s ../{params.target}/{params.target}_project_urls.csv data/{date_today}/{date_today}_project_urls.csv
-        ln -s ../{params.target}/{params.target}_project_data.csv data/{date_today}/{date_today}_project_data.csv
-        """
+# rule filter_papers:
+#     input:
+#         f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv',
+#         f'data/{date_today}/{date_today}_paper_clean.csv'
+#     output:
+#         f'data/{date_today}/{date_today}_papers_{{institution}}.csv',
+#         f'data/{date_today}/{date_today}_papers_{{institution}}_2plus.csv'
+#     script:
+#         "scripts/filter_papers.py"
+
+# rule create_edges:
+#     input:
+#         f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv',
+#         f'data/{date_today}/{date_today}_papers_{{institution}}_2plus.csv'
+#     output:
+#         f'data/{date_today}/{date_today}_edges_{{institution}}.csv'
+#     script:
+#         "scripts/create_edges.py"
+
+# rule add_nodes_stats:
+#     input:
+#         f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv',
+#         f'data/{date_today}/{date_today}_papers_{{institution}}.csv',
+#         f'data/{date_today}/{date_today}_group_data.csv',
+#     output:
+#         f'data/{date_today}/{date_today}_nodes_{{institution}}.csv'
+#     script:
+#         "scripts/add_nodes_stats.py"
+
+# rule create_group_networks:
+#     input:
+#         f'data/{date_today}/{date_today}_nodes_{{institution}}.csv',
+#         f'data/{date_today}/{date_today}_group_data.csv',
+#         f'data/{date_today}/{date_today}_edges_{{institution}}.csv'
+#     output:
+#         f'data/{date_today}/{date_today}_group_nodes_{{institution}}.csv',
+#         f'data/{date_today}/{date_today}_group_edges_{{institution}}.csv'
+#     script:
+#         "scripts/create_group_networks.py"
+
+# rule create_symlinks:
+#     params:
+#         target="20220419",
+#         date_today=date_today
+#     shell:
+#         """
+#         mkdir -p data/{date_today}
+#         ln -s ../{params.target}/{params.target}_author_urls.csv data/{date_today}/{date_today}_author_urls.csv
+#         ln -s ../{params.target}/{params.target}_author_data.csv data/{date_today}/{date_today}_author_data.csv
+#         ln -s ../{params.target}/{params.target}_paper_urls.csv data/{date_today}/{date_today}_paper_urls.csv
+#         ln -s ../{params.target}/{params.target}_paper_data.csv data/{date_today}/{date_today}_paper_data.csv
+#         ln -s ../{params.target}/{params.target}_group_urls.csv data/{date_today}/{date_today}_group_urls.csv
+#         ln -s ../{params.target}/{params.target}_group_data.csv data/{date_today}/{date_today}_group_data.csv
+#         ln -s ../{params.target}/{params.target}_project_urls.csv data/{date_today}/{date_today}_project_urls.csv
+#         ln -s ../{params.target}/{params.target}_project_data.csv data/{date_today}/{date_today}_project_data.csv
+#         """
