@@ -1,22 +1,29 @@
 date: 
-n_catalog_urls: 500
-n_papers: 10000
-limit: 100
-rate: 10
+n_catalog_urls: 10
+# n_catalog_urls: 100
+# n_catalog_urls: 500
+n_papers: 200
+# n_papers: 200
+# n_papers: 1000 # For IEE
+# n_papers: 2000
+# n_papers: 10000
+n_edges: 100
+# n_edges: 10000
+limit: 200
+rate: 5
 logfile: "log/snakemake.log"
+institutions: ["EP", "FM"]
+# institutions: ["EP", "FM", "IF", "FEA", "IEE"]
+# institutions: ["EP"]
+# institutions: ["FM"]
+# institutions: ["IF"]
+# institutions: ["FEA"]
+# institutions: ["IEE"]
+# institutions: ["ICMC"]
+# institutions: ["FAU"]
+# institutions: ["IQ"]
+# institutions: ["EACH"]
+# institutions: ["FZEA"]
 
 threads_max: 16
 timeout: 1
-institutions: [
-  "IGTP+",
-  "UPC_CIMNE",
-  "UB",
-  "UPF",
-  "UVic-UCC",
-  "UOC",
-  "Agrotecnio",
-  "CRAG",
-  "UdL",
-  "URV",
-  "UdG",
-]
