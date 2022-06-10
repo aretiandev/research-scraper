@@ -28,6 +28,11 @@ docker exec -it --user jovyan portalrecerca zsh
 ```
 Or `make run`.
 
+## Create tables
+```
+python scripts/create_tables.py
+```
+
 ## Run Snakemake
 
 From within the container, check everything is installed properly:
