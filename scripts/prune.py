@@ -15,24 +15,6 @@ def main(db):
     subprocess.run(["rm", "saopaulo.db"])
     log.info("Deleted 'saopaulo.db'.")
 
-    conn = sqlite3.connect(db)
-    c = conn.cursor()
-
-    c.execute(
-        """CREATE TABLE IF NOT EXISTS urls (
-            id INTEGER PRIMARY KEY,
-            items TEXT,
-            url_stem TEXT UNIQUE,
-            date_created TEXT,
-            current INTEGER,
-            url_scraped INTEGER
-            )"""
-    )
-
-    conn.commit()
-    conn.close()
-    log.info("Created 'saopaulo.db' and table 'urls'.")
-
 
 if __name__ == "__main__":
     db = "saopaulo.db"
