@@ -58,15 +58,67 @@ def insert_urls(urls, items, date, db="saopaulo.db"):
         # There is no need to check for data updates since url_stem is the data itself.
         conn.executemany(
             """
-            INSERT INTO urls
-                ( items, url_stem, date_created, current, url_scraped)
+            INSERT INTO papers
+                ( institution, url_stem, date_created, current, url_scraped)
             VALUES
-                (:items,:url_stem,:date_created,:current,:url_scraped)
+                (:institution, :url_stem,:date_created,:current,:url_scraped)
             ON CONFLICT DO UPDATE SET current=1
             """,
             rows,
         )
     conn.close()
+
+
+def insert_paper(input_paper, db="saopaulo.db"):
+    paper = input_paper.copy()
+    if_empty_then_None = ["authors", "orcids", "author_urls", "subjects", "institution"]
+    for key in if_empty_then_None:
+        paper[key] = paper.get(key)
+    list_to_string = ["authors", "orcids", "author_urls", "subjects"]
+    for key in list_to_string:
+        paper[key] = str(paper.get(key, "")) or None
+
+    with closing(sqlite3.connect(db)) as conn:
+        with conn:
+            conn.execute(
+                """
+                UPDATE papers 
+                SET
+                    authors = :authors,
+                    orcids = :orcids,
+                    author_urls = :author_urls,
+                    subjects = :subjects,
+                    current = 1,
+                    url_scraped = 1
+                WHERE paper_id = :paper_id
+                AND institution = :institution
+                AND orcids IS NULL
+                """,
+                paper,
+            )
+
+
+def insert_edges(orcids, institution, date, db="saopaulo.db"):
+    nonempty_orcids = [x for x in orcids if x]
+    if len(nonempty_orcids) <= 1:
+        return
+    pairs = itertools.combinations(nonempty_orcids, 2)
+    pairs = [pair + (institution, date) for pair in pairs]
+
+    with closing(sqlite3.connect(db)) as conn:
+        with conn:
+            conn.executemany(
+                """
+            INSERT OR IGNORE INTO edges 
+            ( Source, Target, institution, date_created )
+            VALUES 
+            (:Source, :Target, :institution, :date_created)
+            """,
+                pairs,
+            )
+
+
+###############
 
 
 def insert_papers(papers, date):
