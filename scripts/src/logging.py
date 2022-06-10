@@ -5,19 +5,17 @@ from pathlib import Path
 
 def configLogger(
     name=None,
-    filename=None,
+    logfile=None,
     level="debug",
     file_level="debug",
     console_level="info",
     fmt="%(asctime)s %(name)s %(levelname)s: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 ):
-    """Configure Logger
-
-    If name=None, configures the root logger."""
+    """Configure Root Logger and return named logger."""
 
     # Get root logger
-    logger = logging.getLogger(name=name)
+    logger = logging.getLogger()
     logger.setLevel(level.upper())
 
     # Configure console output
@@ -28,11 +26,15 @@ def configLogger(
     logger.addHandler(sh)
 
     # Configure file output
-    if filename is not None:
-        fh = logging.FileHandler(filename=filename, mode="a")
+    if logfile is not None:
+        fh = logging.FileHandler(filename=logfile, mode="a")
         fh_formatter = logging.Formatter(fmt=fmt, datefmt=datefmt)
         fh.setFormatter(fh_formatter)
         fh.setLevel(file_level.upper())
         logger.addHandler(fh)
 
-    return logger
+    # Return named logger
+    if name is not None:
+        return logging.getLogger(name)
+    else:
+        return logger
