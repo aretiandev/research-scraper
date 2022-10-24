@@ -12,7 +12,68 @@ n_edges: 100
 limit: 200
 rate: 5
 logfile: "log/snakemake.log"
-institutions: ["EP", "FM"]
+institutions: ["ICMC"]
+# institutions: ["IFSC"]
+# institutions: ["IGc"] # error
+# institutions: ["IME"]
+# institutions: ["IF"]
+# institutions: ["EP"]
+# institutions: ["EEL"]
+# institutions: ["EESC"]
+# institutions: ["FAU"] # error
+# institutions: ["IAU"]
+# institutions: ["FM"]
+# institutions: ["FMRP"]
+# institutions: ["FMVZ"]
+# institutions: ["FO"]
+# institutions: ["FOB"]
+# institutions: ["FORP"]
+# institutions: ["FSP"]
+# institutions: ["IB"]
+# institutions: ["ICB"]
+# institutions: ["EE"]
+# institutions: ["EERP"]
+# institutions: ["EEFE"]
+# institutions: ["EEFERP"]
+# institutions: ["ESALQ"]
+# institutions: ["FCF"]
+# institutions: ["FCFRP"]
+# institutions: ["IMT"]
+# institutions: ["IP"]
+# institutions: ["IQ"]
+# institutions: ["IQSC"] # error
+
+# institutions: ["FEA"] # done
+
+# institutions: ["EACH"]
+# institutions: ["ECA"]
+# institutions: ["FD"]
+# institutions: ["FDRP"]
+# institutions: ["FEARP"]
+# institutions: ["FE"]
+# institutions: ["FFCLRP"]
+# institutions: ["FFLCH"] # error
+
+# institutions: ["FZEA"]
+# institutions: ["IAG"]
+# institutions: ["IRI"]
+# institutions: ["IO"]
+# institutions: ["CEBIMAR"]
+# institutions: ["CDCC"] # error
+# institutions: ["CENA"]
+# institutions: ["HRAC"]
+# institutions: ["HU"]
+
+# institutions: ["IEE"] # done
+
+# institutions: ["IEB"]
+# institutions: ["MAE"]
+# institutions: ["MAC"]
+# institutions: ["MZ"]
+# institutions: ["MP"]
+
+# OLD:
+# institutions: ["EP", "FM"]
 # institutions: ["EP", "FM", "IF", "FEA", "IEE"]
 # institutions: ["EP"]
 # institutions: ["FM"]
@@ -24,6 +85,7 @@ institutions: ["EP", "FM"]
 # institutions: ["IQ"]
 # institutions: ["EACH"]
 # institutions: ["FZEA"]
+
 
 threads_max: 16
 timeout: 1

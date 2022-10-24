@@ -1,5 +1,10 @@
 # TODO
 
+
+## Update 10/12/2022
+
+I will do one institution at a time.
+
 ## Problem
 
 When creating the paper_id column, I am assuming the papers table is ordered by institution. That is not the case. The url_stem column is created in the parse_catalog rule which runs in parallel, meaning urls are not created by institution but in a random order. 

@@ -2,6 +2,8 @@ import sqlite3
 import sys
 from contextlib import closing
 
+import yaml
+
 from src.logging import configLogger
 
 log = configLogger("create_tables")  # type: ignore # noqa
@@ -63,11 +65,27 @@ def main(db):
                 """
             )
 
-    log.info("Created 'saopaulo.db' and tables: 'papers', 'edges'.")
+    log.info(f"Created {db} and tables: 'papers', 'edges'.")
 
 
 if __name__ == "__main__":
-    db = "saopaulo.db"
+    # Get institution from config.yml
+    with open('config.yml') as f:
+        config = yaml.safe_load(f)
+        try:
+            institution = config.get('institutions')[0]
+            db = f"saopaulo_{institution}.db"
+        except TypeError:
+            pass
+
+    # Override if supplied in command line
     if len(sys.argv) > 1:
         db = sys.argv[1]
+
+    # If not set, use saopaulo.db as default
+    try: 
+        db
+    except NameError:
+        db = "saopaulo.db"
+
     main(db)

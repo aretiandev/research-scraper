@@ -1,6 +1,6 @@
 # Research Scraper
 
-This project scrapes researcher information, papers, projects and groups for [Portal de la Reserca.](https://portalrecerca.csuc.cat/)
+This project scrapes researcher information, papers, projects and groups from the [Sao Paulo University Repository.](https://repositorio.usp.br/)
 
 # Instructions
 
@@ -24,7 +24,7 @@ export DATE=20220601
 Create and attach to JupyterLab container with required packages and open port 8888.
 ```
 docker compose up -d
-docker exec -it --user jovyan portalrecerca zsh
+docker exec -it --user jovyan saopaulo zsh
 ```
 Or `make run`.
 

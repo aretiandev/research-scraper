@@ -83,14 +83,17 @@ def main():
         paper_urls = parse_catalog_html(html_doc)
         # log.info(f"Parsed catalog HTML: {paper_urls}")
         log.info(f"Parsed catalog HTML from {institution}: {input_file}")
-        insert_urls(paper_urls, institution, date)
+        insert_urls(paper_urls, institution, date, db=f"saopaulo_{institution}.db")
     elif rule == "parse_papers":
         paper = parse_paper_html(html_doc)
         paper["paper_id"] = Path(input_file).stem
         paper["institution"] = institution
-        insert_paper(paper)
+        print("")
+        print("Inserting paper:", paper)
+        print("")
+        insert_paper(paper, db=f"saopaulo_{institution}.db")
         if len(paper["orcids"]):
-            insert_edges(paper["orcids"], institution, date)
+            insert_edges(paper["orcids"], institution, date, db=f"saopaulo_{institution}.db")
 
 
 if __name__ == "__main__":

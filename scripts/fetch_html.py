@@ -11,6 +11,7 @@ import random
 import sqlite3
 import time
 import traceback
+from requests_html import HTMLSession
 from contextlib import closing
 from pathlib import Path
 
@@ -69,6 +70,13 @@ def main():
         n_catalog_urls = snakemake.config["n_catalog_urls"]  # type: ignore # noqa
         url_template = "https://repositorio.usp.br/result.php?filter%5B0%5D=unidadeUSP%3A%22{}%22&fields%5B0%5D=name&fields%5B1%5D=author.person.name&fields%5B2%5D=authorUSP.name&fields%5B3%5D=about&fields%5B4%5D=description&fields%5B5%5D=unidadeUSP&page={}"
 
+        session = HTMLSession()
+
+        r = session.get(url_template.format(institution, 1))
+        print(r.html)
+        raise Exception('My exception!')
+        
+
         urls = []
         for institution in institution_list:
             urls_institution = [
@@ -83,7 +91,7 @@ def main():
         # Fill paper_id columns
         counts = []
         for institution in institution_list:
-            with closing(sqlite3.connect("saopaulo.db")) as conn:
+            with closing(sqlite3.connect(f"saopaulo_{institution}.db")) as conn:
                 with conn:
                     count_cursor = conn.execute("SELECT COUNT(*) FROM papers where institution=(?)", (institution,))
                     count = count_cursor.fetchall()[0][0]
@@ -99,26 +107,26 @@ def main():
         log.info(f"paper_ids: {paper_ids}")
 
         log.info(f"Before filling paper_ids:")
-        with closing(sqlite3.connect("saopaulo.db")) as conn:
+        with closing(sqlite3.connect(f"saopaulo_{institution}.db")) as conn:
             with conn:
                 result = conn.execute("SELECT * FROM papers LIMIT 10;")
                 log.info(result.fetchall())
-        with closing(sqlite3.connect("saopaulo.db")) as conn:
+        with closing(sqlite3.connect(f"saopaulo_{institution}.db")) as conn:
             with conn:
                 conn.executemany(
                     "UPDATE papers SET paper_id=(?) WHERE id=(?)",
                     paper_ids,
                 )
         log.info(f"After filling paper_ids:")
-        with closing(sqlite3.connect("saopaulo.db")) as conn:
+        with closing(sqlite3.connect(f"saopaulo_{institution}.db")) as conn:
             with conn:
-                result = conn.execute("SELECT * FROM papers LIMIT 10;")
+                result = conn.execute("SELECT * FROM papers LIMIT 105;")
                 log.info(result.fetchall())
 
         # Get list of urls
         urls = []
         for institution in institution_list:
-            with closing(sqlite3.connect("saopaulo.db")) as conn:
+            with closing(sqlite3.connect(f"saopaulo_{institution}.db")) as conn:
                 with conn:
                     # count_cursor = conn.execute("SELECT COUNT(*) FROM papers where institution=(?)", (institution,))
                     # count = count_cursor.fetchall()[0][0]

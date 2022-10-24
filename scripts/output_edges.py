@@ -14,7 +14,9 @@ from src.logging import configLogger
 log = configLogger(snakemake.rule, snakemake.config["logfile"])  # type: ignore # noqa
 
 
-def main(db="saopaulo.db"):
+def main():
+    institution = snakemake.wildcards.institution  # type: ignore # noqa
+    db = f"saopaulo_{institution}.db"
     out_file = snakemake.output[0]  # type: ignore # noqa
 
     with closing(sqlite3.connect(db)) as conn:
