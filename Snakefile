@@ -30,6 +30,7 @@ threads_max = Config.THREADS_MAX
 timeout = Config.TIMEOUT
 SLACK_BOT_TOKEN = Config.SLACK_BOT_TOKEN
 SLACK_MEMBER_ID = Config.SLACK_MEMBER_ID
+database = Config.DATABASE
 
 rule all:
     input:
@@ -53,7 +54,8 @@ rule urls:
         threads_max
     params:
         batch_size = 50,
-        timeout = timeout
+        timeout = timeout,
+        database = database
     script: 
         "scripts/scrape.py"
 
@@ -65,7 +67,8 @@ rule data:
     threads: threads_max
     params:
         batch_size = 50,
-        timeout = timeout
+        timeout = timeout,
+        database = database
     script:
         "scripts/scrape.py"
 

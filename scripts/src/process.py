@@ -14,12 +14,12 @@ import logging
 log = logging.getLogger(__name__)
 
 
-def insert_nodes(nodes, date):
+def insert_nodes(nodes, date, database="recerca.db"):
     for node in nodes:
         node["current"] = 1
         node["date_created"] = date
 
-    conn = sqlite3.connect("../recerca.db")
+    conn = sqlite3.connect(f"../{database}")
     with conn:
         # Set current = 0 for existing records
         conn.executemany(
@@ -164,7 +164,7 @@ def clean(items, input, output):
         clean_papers(input, output)
 
 
-def filter_authors(input, output, institution, out_sql=False):
+def filter_authors(input, output, institution, out_sql=False, database="recerca.db"):
     """
     Filter authors by institution.
 
@@ -203,11 +203,17 @@ def filter_authors(input, output, institution, out_sql=False):
 
     # Save to SQLite
     if out_sql:
-        insert_nodes(authors_inst_df.to_dict("records"))
+        insert_nodes(authors_inst_df.to_dict("records"), database=database)
 
 
 def add_nodes_stats(
-    input_authors, input_papers, input_groups, output, institution, out_sql=False
+    input_authors,
+    input_papers,
+    input_groups,
+    output,
+    institution,
+    out_sql=False,
+    database="recerca.db",
 ):
     """
     Filter authors by institution.
@@ -295,7 +301,7 @@ def add_nodes_stats(
 
     # Save to SQLite
     if out_sql:
-        insert_nodes(authors_inst_df.to_dict("records"))
+        insert_nodes(authors_inst_df.to_dict("records"), database=database)
 
 
 def filter_papers(

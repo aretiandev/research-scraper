@@ -659,7 +659,13 @@ def get_urls(items, n_pages=None):
 
 # Main Entrypoint
 async def scrape(
-    items, urls, batch_start=0, out_file=None, out_sql=False, timeout=None
+    items,
+    urls,
+    batch_start=0,
+    out_file=None,
+    out_sql=False,
+    timeout=None,
+    database="recerca.db",
 ):
     """Main entry function to scrape Portal de la Reserca.
 
@@ -725,7 +731,7 @@ async def scrape(
             log.debug(f"Writing to database. Batch: {i}. # URLS: {len(batch_result)}.")
             date_today = out_file.split("/")[-1][:8] if out_file else None
             if items in ["paper_urls", "author_urls", "project_urls", "group_urls"]:
-                insert_urls(batch_result, items, date_today, db="recerca.db")
+                insert_urls(batch_result, items, date_today, db=database)
             elif items == "paper_data":
                 insert_papers(batch_result, date_today)
             elif items == "author_data":

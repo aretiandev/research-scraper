@@ -48,6 +48,7 @@ def main():
     # Parameters
     batch_size = snakemake.params.get("batch_size")  # type: ignore # noqa
     timeout = snakemake.params.get("timeout")  # type: ignore # noqa
+    database = snakemake.params.get("database")  # type: ignore # noqa
     out_file = snakemake.output[0]  # type: ignore # noqa
     items = out_file.split("/")[-1].split(".")[0][9:]
 
@@ -78,6 +79,7 @@ def main():
                     out_file=out_file,
                     out_sql=True,
                     timeout=timeout,
+                    database=database,
                 )
             )
             break
@@ -111,7 +113,7 @@ def main():
     if items in ["author_urls", "paper_urls", "group_urls", "project_urls"]:
         if out_file is not None:
             date_today = out_file.split("/")[-1][:8]
-            conn = sqlite3.connect("recerca.db")
+            conn = sqlite3.connect(database)
             with conn:
                 conn.execute(
                     "UPDATE urls SET current = 0 WHERE date_created != ?", (date_today,)
