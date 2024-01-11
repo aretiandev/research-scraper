@@ -10,21 +10,23 @@ Main functions:
     scrape_group()
 """
 
-import pandas as pd
-from requests_html import HTMLSession, AsyncHTMLSession
-import requests.adapters
-import datetime
-import time
 import asyncio
+import datetime
+import logging
 import os
 import sys
-import logging
+import time
+
+import pandas as pd
+import requests.adapters
+from requests_html import AsyncHTMLSession, HTMLSession
+
 from .sqlite import (
-    insert_urls,
-    insert_papers,
     insert_authors,
     insert_groups,
+    insert_papers,
     insert_projects,
+    insert_urls,
 )
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
@@ -694,7 +696,6 @@ async def scrape(
         result_df = pd.DataFrame()
 
     for i, batch in enumerate(urls[batch_start:]):
-
         s = AsyncHTMLSession()
         # https://stackoverflow.com/a/18845952/10688326
         adapter = requests.adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100)

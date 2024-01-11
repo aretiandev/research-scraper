@@ -1,6 +1,8 @@
 import os
-from scripts.src.process import get_date
+
 from dotenv import load_dotenv
+
+from scripts.src.process import get_date
 
 load_dotenv()
 
@@ -9,16 +11,16 @@ class Config:
     DATE = os.environ.get("DATE") or get_date()
     INSTITUTION_LIST = [
         "IGTP+",
-        "UPC_CIMNE",
-        "UB",
-        "UPF",
-        "UVic-UCC",
-        "UOC",
-        "Agrotecnio",
-        "CRAG",
-        "UdL",
-        "URV",
-        "UdG",
+        # "UPC_CIMNE",
+        # "UB",
+        # "UPF",
+        # "UVic-UCC",
+        # "UOC",
+        # "Agrotecnio",
+        # "CRAG",
+        # "UdL",
+        # "URV",
+        # "UdG",
     ]
     THREADS_MAX = 16
     TIMEOUT = 1
