@@ -1,6 +1,8 @@
 import os
-from scripts.src.process import get_date
+
 from dotenv import load_dotenv
+
+from scripts.src.process import get_date
 
 load_dotenv()
 
