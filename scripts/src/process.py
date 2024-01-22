@@ -65,13 +65,18 @@ def get_date():
 
 
 def assign_to_group(row, institution_list, label):
-    """Helper function for institution group assignment."""
+    """Adds supplied label to list of institutions."""
     if bool(set(row["institution"]) & set(institution_list)):
         inst_groups = row["institution"].copy()
         inst_groups.append(label)
         return inst_groups
     else:
         return row["institution_group"]
+
+
+def add_institution(row, institution):
+    """Extends list of institutions based on institution_2 column"""
+    pass
 
 
 def add_acronym(row):
@@ -131,6 +136,47 @@ def clean_authors(input, output):
     authors_df["institution_group"] = authors_df["institution_group"].apply(
         lambda x: list(set(x))
     )
+
+    # TODO
+    # Add label to IRSJD researchers
+    # Pseudo code: if institution_2 == "Sant Joan de Deu", add IRSJD label to institution_group
+    selected_institution = "Institut de Recerca Sant Joan de Déu"
+    institution_label = "IRSJD"
+
+    authors_df.loc[
+        authors_df["institution_2"] == selected_institution, "institution_group"
+    ].apply(lambda x: x.append(institution_label))
+
+    # new_institution = authors_df.loc[
+    #     authors_df["institution_2"] == selected_institution, "institution"
+    # ].apply(lambda x: x.append(institution_label))
+    # authors_df.loc[
+    #     authors_df["institution_2"] == selected_institution, "institution"
+    # ] = new_institution
+
+    # print("len(new_institution")
+    # print(len(new_institution))
+    # print(new_institution.head())
+
+    # Debug
+    # print(authors_df["institution"].head())
+    # print(authors_df["institution"].head()[0])
+
+    def identify_institution(x):
+        if x == []:
+            return 0
+        try:
+            if "IRSJD" in x:
+                return 1
+        except Exception:
+            print(x)
+        return 0
+
+    test_length = authors_df["institution_group"].apply(identify_institution).sum()
+    # 20230129 2pm: Problem description: some of the rows are empty lists therefore raises an exception that Nonetype is not iterable. solution: write a function that skips the empty lists
+    print(f"authors in IRSJD: {test_length}")
+    if test_length == 0:
+        raise Exception("No authors in IRSJD")
 
     # Save
     authors_df.to_csv(output, index=None)
@@ -196,6 +242,16 @@ def filter_authors(input, output, institution, out_sql=False, database="recerca.
     log.info("Adding projects and groups.")
     authors_inst_df["n_projects"] = authors_inst_df["projects"].apply(len)
     authors_inst_df["n_groups"] = authors_inst_df["groups"].apply(len)
+
+    # Debug
+    if len(authors_inst_df) == 0:
+        print("ERROR: Empty dataframe")
+        print(f"Institution: {institution}")
+        print(authors_inst_df)
+        print(authors_df["institution_group"].apply(lambda x: institution in x).sum())
+        print(authors_df["institution_group"].head())
+        print(input)
+        raise Exception("Empty DataFrame.")
 
     # Save
     authors_inst_df.to_csv(output, index=None)
@@ -320,6 +376,11 @@ def filter_papers(
     # Load authors
     log.info(f"Loading '{input_authors}'.")
     authors_inst_df = pd.read_csv(input_authors)
+    # Debug
+    print(f"Getting authors from {institution}")
+    print(authors_inst_df.head())
+    print("From original csv:")
+    print(input_authors)
     # Load papers
     log.info(f"Loading '{input_papers}'.")
     papers_df = pd.read_csv(input_papers, converters={"orcids": eval})

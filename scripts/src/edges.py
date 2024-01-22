@@ -8,7 +8,10 @@ import pandas as pd
 from itertools import combinations
 import logging
 
+# from .logging import configLogger
+
 log = logging.getLogger(__name__)
+# configLogger(filename="log/snakemake.log", file_level="debug", console_level="info")
 
 
 def get_date():
@@ -36,7 +39,14 @@ def create_edges(input_authors, input_papers, output, institution):
     log.info(f"Institution: {institution}.")
     # Load papers with coauthors list
     log.info(f"{institution} - Loading papers.")
-    papers_df = pd.read_csv(input_papers, converters={"orcids": eval})
+    # Debug
+    try:
+        papers_df = pd.read_csv(input_papers, converters={"orcids": eval})
+    except:
+        print("ERROR")
+        print(input_papers)
+        raise
+
     papers = papers_df["orcids"].copy()
 
     # Get unique list of authors from papers

@@ -6,7 +6,8 @@ load_dotenv()
 
 
 class Config:
-    DATE = os.environ.get("DATE") or get_date()
+    # DATE = os.environ.get("DATE") or get_date()
+    DATE = "20240122"
     INSTITUTION_LIST = [
         "IGTP+",
         # "UPC_CIMNE",
@@ -19,6 +20,9 @@ class Config:
         # "UdL",
         # "URV",
         # "UdG",
+        # "IRSJD",
+        # "URL",
+        # "UIC",
     ]
     THREADS_MAX = 16
     TIMEOUT = 1

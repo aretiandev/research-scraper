@@ -76,4 +76,13 @@ Silence output while running tests with `python -m unittest -b`.
 
 # Notes
 
+## Git
 When working from inside the container, you can git add and commit changes but not push them to the remote, since the container does not have the necessary keys.
+
+## Graphviz
+In order to produce the DAG and Rulegraph you need to install the dot program: `sudo apt install graphviz`
+
+## JupyterLab
+To access the Jupyterlab server from a web browser visit `https:/IPaddress:8888` and use the token obtained from running `jupyter server list`
+
+
