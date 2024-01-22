@@ -31,6 +31,7 @@ timeout = Config.TIMEOUT
 SLACK_BOT_TOKEN = Config.SLACK_BOT_TOKEN
 SLACK_MEMBER_ID = Config.SLACK_MEMBER_ID
 database = Config.DATABASE
+batch_size = Config.BATCH_SIZE
 
 rule all:
     input:
@@ -53,7 +54,7 @@ rule urls:
     threads: 
         threads_max
     params:
-        batch_size = 50,
+        batch_size = batch_size,
         timeout = timeout,
         database = database
     script: 
@@ -66,7 +67,7 @@ rule data:
         f'data/{date_today}/{date_today}_{{item_name}}_data.csv'
     threads: threads_max
     params:
-        batch_size = 50,
+        batch_size = batch_size,
         timeout = timeout,
         database = database
     script:

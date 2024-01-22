@@ -32,3 +32,4 @@ class Config:
     SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN")
     SLACK_MEMBER_ID = os.environ.get("SLACK_MEMBER_ID")
     SIGNING_SECRET = os.environ.get("SIGNING_SECRET")
+    BATCH_SIZE = 10
