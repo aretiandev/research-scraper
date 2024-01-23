@@ -17,11 +17,11 @@ help: ## View help
 	| sort \
 	| awk 'BEGIN {FS=":.*##[ \t]+"}; {printf "\033[36m%-20s\033[0m%s\n", $$1, $$2}'
 
-run: ## Build, run and attach to container
+docker: ## Build, run and attach to container
 	docker compose up -d 
 	docker exec -it --user jovyan portalrecerca zsh
 
-snakemake: ## Run all Snakemake rules
+run: ## Run all Snakemake rules
 	snakemake --cores all
 
 test: ## Run tests
