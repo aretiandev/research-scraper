@@ -1,5 +1,9 @@
 FROM yufernando/jupyterlab:snakemake
 
+USER root
+
+RUN apt update && apt upgrade -y && apt install -y graphviz
+
 USER jovyan
 
 WORKDIR /home/jovyan/work
