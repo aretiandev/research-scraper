@@ -5,11 +5,12 @@ Process module:
 Collection of helpers to filter data by institution and add variables to nodelist.
 """
 
-import numpy as np
-import pandas as pd
+import logging
 import sqlite3
 from ast import literal_eval
-import logging
+
+import numpy as np
+import pandas as pd
 
 log = logging.getLogger(__name__)
 
@@ -162,21 +163,21 @@ def clean_authors(input, output):
     # print(authors_df["institution"].head())
     # print(authors_df["institution"].head()[0])
 
-    def identify_institution(x):
-        if x == []:
-            return 0
-        try:
-            if "IRSJD" in x:
-                return 1
-        except Exception:
-            print(x)
-        return 0
+    # def identify_institution(x):
+    #     if x == []:
+    #         return 0
+    #     try:
+    #         if "IRSJD" in x:
+    #             return 1
+    #     except Exception:
+    #         print(x)
+    #     return 0
 
-    test_length = authors_df["institution_group"].apply(identify_institution).sum()
-    # 20230129 2pm: Problem description: some of the rows are empty lists therefore raises an exception that Nonetype is not iterable. solution: write a function that skips the empty lists
-    print(f"authors in IRSJD: {test_length}")
-    if test_length == 0:
-        raise Exception("No authors in IRSJD")
+    # test_length = authors_df["institution_group"].apply(identify_institution).sum()
+    # # 20230129 2pm: Problem description: some of the rows are empty lists therefore raises an exception that Nonetype is not iterable. solution: write a function that skips the empty lists
+    # print(f"authors in IRSJD: {test_length}")
+    # if test_length == 0:
+    #     raise Exception("No authors in IRSJD")
 
     # Save
     authors_df.to_csv(output, index=None)

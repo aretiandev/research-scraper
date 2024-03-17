@@ -9,9 +9,10 @@ load_dotenv()
 
 class Config:
     # DATE = os.environ.get("DATE") or get_date()
-    DATE = "20240122"
+    DATE = "20240316"
     INSTITUTION_LIST = [
-        "IGTP+",
+        "ICFO",
+        # "IGTP+",
         # "UPC_CIMNE",
         # "UB",
         # "UPF",
