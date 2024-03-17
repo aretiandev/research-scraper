@@ -9,7 +9,7 @@ load_dotenv()
 
 class Config:
     # DATE = os.environ.get("DATE") or get_date()
-    DATE = "20240316"
+    DATE = "20240317"
     INSTITUTION_LIST = [
         "ICFO",
         # "IGTP+",
@@ -28,9 +28,9 @@ class Config:
         # "UIC",
     ]
     THREADS_MAX = 16
-    TIMEOUT = 1
     DATABASE = "espluges.db"
     SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN")
     SLACK_MEMBER_ID = os.environ.get("SLACK_MEMBER_ID")
     SIGNING_SECRET = os.environ.get("SIGNING_SECRET")
-    BATCH_SIZE = 5
+    BATCH_SIZE = 10
+    TIMEOUT = 1

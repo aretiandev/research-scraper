@@ -47,6 +47,12 @@ def get_max_pages(url):
     if r.url == "https://portalrecerca.manteniment.csuc.cat":
         raise WebsiteDownError(url)
     pagination_items = r.html.find("div.discovery-result-pagination ul.pagination li")
+
+    if len(pagination_items) == 0:
+        return 0
+    elif len(pagination_items) == 1:
+        return 1
+
     max_pages_str = (
         pagination_items[-2]
         .text.split("\n")[0]
@@ -123,7 +129,7 @@ async def scrape_author(s, url, item="profile", attempts=10):
         scrape_dict = {
             "label": "Surnames, Name",
             "id": "ORCID",
-            "institution_2": "Universities or CERCA centres",
+            "institution_2": "Universities or Research centres",
         }
 
         try:
@@ -567,7 +573,7 @@ async def scrape_url(s, url, items="author_data", attempts=10):
         return result
 
 
-def get_urls(items, n_pages=None):
+def get_urls(items, institution, n_pages=None):
     """Get list of URLs to pass to scrape()
 
     Args:
@@ -590,6 +596,9 @@ def get_urls(items, n_pages=None):
         + "&order={order}"
         + "&rpp={rpp}"
         + "&etal=0"
+        + "&filtername=location.coll"
+        + "&filtertype=equals"
+        + "&filterquery=359"
         + "&start="
     )
 

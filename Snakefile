@@ -39,7 +39,7 @@ rule all:
         expand(f'data/{date_today}/{date_today}_edges_{{institution}}.csv', institution=institution_list),
         expand(f'data/{date_today}/{date_today}_group_nodes_{{institution}}.csv', institution=institution_list),
         expand(f'data/{date_today}/{date_today}_group_edges_{{institution}}.csv', institution=institution_list),
-        f'data/{date_today}/{date_today}_project_data.csv'
+        expand(f'data/{date_today}/{date_today}_project_data_{{institution}}.csv', institution=institution_list)
 
 rule ping_and_run:
     params:
@@ -50,21 +50,22 @@ rule ping_and_run:
 
 rule urls:
     output: 
-        f"data/{date_today}/{date_today}_{{item_name}}_urls.csv"
+        f"data/{date_today}/{date_today}_{{item_name}}_urls_{{institution}}.csv"
     threads: 
         threads_max
     params:
         batch_size = batch_size,
         timeout = timeout,
-        database = database
+        database = database,
+        institution_list = institution_list
     script: 
         "scripts/scrape.py"
 
 rule data:
     input:
-        f'data/{date_today}/{date_today}_{{item_name}}_urls.csv'
+        f'data/{date_today}/{date_today}_{{item_name}}_urls_{{institution}}.csv'
     output:
-        f'data/{date_today}/{date_today}_{{item_name}}_data.csv'
+        f'data/{date_today}/{date_today}_{{item_name}}_data_{{institution}}.csv'
     threads: threads_max
     params:
         batch_size = batch_size,
@@ -75,15 +76,15 @@ rule data:
 
 rule clean:
     input:
-        f'data/{date_today}/{date_today}_{{item_name}}_data.csv'
+        f'data/{date_today}/{date_today}_{{item_name}}_data_{{institution}}.csv'
     output:
-        f'data/{date_today}/{date_today}_{{item_name}}_clean.csv'
+        f'data/{date_today}/{date_today}_{{item_name}}_clean_{{institution}}.csv'
     script:
         "scripts/clean.py"
 
 rule filter_authors:
     input:
-        f'data/{date_today}/{date_today}_author_clean.csv',
+        f'data/{date_today}/{date_today}_author_clean_{{institution}}.csv',
     output:
         f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv'
     script:
@@ -92,7 +93,7 @@ rule filter_authors:
 rule filter_papers:
     input:
         f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv',
-        f'data/{date_today}/{date_today}_paper_clean.csv'
+        f'data/{date_today}/{date_today}_paper_clean_{{institution}}.csv'
     output:
         f'data/{date_today}/{date_today}_papers_{{institution}}.csv',
         f'data/{date_today}/{date_today}_papers_{{institution}}_2plus.csv'
@@ -112,7 +113,7 @@ rule add_nodes_stats:
     input:
         f'data/{date_today}/{date_today}_nodestemp_{{institution}}.csv',
         f'data/{date_today}/{date_today}_papers_{{institution}}.csv',
-        f'data/{date_today}/{date_today}_group_data.csv',
+        f'data/{date_today}/{date_today}_group_data_{{institution}}.csv',
     output:
         f'data/{date_today}/{date_today}_nodes_{{institution}}.csv'
     script:
@@ -121,7 +122,7 @@ rule add_nodes_stats:
 rule create_group_networks:
     input:
         f'data/{date_today}/{date_today}_nodes_{{institution}}.csv',
-        f'data/{date_today}/{date_today}_group_data.csv',
+        f'data/{date_today}/{date_today}_group_data_{{institution}}.csv',
         f'data/{date_today}/{date_today}_edges_{{institution}}.csv'
     output:
         f'data/{date_today}/{date_today}_group_nodes_{{institution}}.csv',

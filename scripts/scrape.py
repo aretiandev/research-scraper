@@ -13,14 +13,14 @@ log = logging.getLogger(__name__)
 url_root = "https://portalrecerca.csuc.cat/"
 
 
-def build_urls(items):
+def build_urls(items, institution):
     """Build URLs for urls and data rules"""
 
-    # Build URls for url rules
+    # Build URLs for url rules
     if items in ["author_urls", "paper_urls", "group_urls", "project_urls"]:
         while True:
             try:
-                urls = get_urls(items=items)
+                urls = get_urls(items=items, institution=institution)
                 break
             except WebsiteDownError:
                 message = (
@@ -31,7 +31,10 @@ def build_urls(items):
 
     # Build URls for data rules
     elif items in ["author_data", "paper_data", "group_data", "project_data"]:
-        item_urls = pd.read_csv(snakemake.input[0])  # type: ignore # noqa
+        try:
+            item_urls = pd.read_csv(snakemake.input[0])  # type: ignore # noqa
+        except pd.errors.EmptyDataError:
+            return []
         item_urls = list(set(item_urls["0"]))
         item_urls.sort()
         if items == "paper_data":
@@ -51,9 +54,16 @@ def main():
     timeout = snakemake.params.get("timeout")  # type: ignore # noqa
     database = snakemake.params.get("database")  # type: ignore # noqa
     out_file = snakemake.output[0]  # type: ignore # noqa
-    items = out_file.split("/")[-1].split(".")[0][9:]
+    items = out_file.split("/")[-1].split(".")[0][9:].rsplit("_", 1)[0]
+    # institution_list = snakemake.params.get("institution_list")  # type: ignore # noqa
+    institution = snakemake.wildcards.institution  # type: ignore # noqa
 
-    urls = build_urls(items=items)
+    urls = build_urls(items=items, institution=institution)
+    if not urls:
+        result_df = pd.DataFrame()
+        result_df.to_csv(out_file, index=None)
+        log.debug(f"No {items} found. Saved empty dataframe: {out_file}")
+        return
 
     # Batch size and start_pos
     if batch_size is None:

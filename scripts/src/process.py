@@ -86,6 +86,7 @@ def add_acronym(row):
         "IJC": "Institut de Recerca contra la Leucèmia Josep Carreras",
         "IrsiCaixa": "IrsiCaixa AIDS Research Institute",
         "CRAG": "Centre de Recerca en Agrigenòmica",
+        "ICFO": "Fundació Institut de Ciències Fotòniques",
     }
     for acronym, name in acronym_dict.items():
         if row["institution_2"] == name:
@@ -226,8 +227,20 @@ def filter_authors(input, output, institution, out_sql=False, database="recerca.
     authors_df = pd.read_csv(input)
 
     # Extract authors from institution
-    mask = authors_df["institution_group"].apply(lambda x: institution in x)
-    authors_inst_df = authors_df.copy()[mask]
+    # mask = authors_df["institution_group"].apply(lambda x: institution in x)
+    # authors_inst_df = authors_df.copy()[mask]
+
+    # Select all authors (since they are all in the institution)
+    authors_inst_df = authors_df.copy()
+
+    # Add ICFO to institution and institution group
+    # if institution == "ICFO":
+    #     authors_inst_df["institution"] = authors_inst_df["institution"].apply(
+    #         lambda x: x.append(institution)
+    #     )
+    #     authors_inst_df["institution_group"] = authors_inst_df[
+    #         "institution_group"
+    #     ].apply(lambda x: x.append(institution))
 
     # Calculate number of affiliations
     authors_inst_df["n_affiliations"] = authors_inst_df.copy()["institution"].apply(len)
@@ -338,9 +351,12 @@ def add_nodes_stats(
     def get_group_names(lst, df_groups):
         groups_names = []
         for group_id in lst:
-            group_name = df_groups.loc[df_groups["url_id"] == group_id, "name"].values[
-                0
-            ]
+            try:
+                group_name = df_groups.loc[
+                    df_groups["url_id"] == group_id, "name"
+                ].values[0]
+            except IndexError:
+                group_name = ""
             groups_names.append(group_name)
         return groups_names
 
