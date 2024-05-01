@@ -598,7 +598,8 @@ def get_urls(items, institution, n_pages=None):
         + "&etal=0"
         + "&filtername=location.coll"
         + "&filtertype=equals"
-        + "&filterquery=359"
+        # + "&filterquery=359"
+        + "&filterquery=320"
         + "&start="
     )
 
