@@ -1,7 +1,5 @@
 # Research Scraper
 
-***I just made an edit in one of the Python scripts.***
-
 This project scrapes researcher information, papers, projects and groups for [Portal de la Reserca.](https://portalrecerca.csuc.cat/)
 
 # Instructions
