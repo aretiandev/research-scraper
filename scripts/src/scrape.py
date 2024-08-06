@@ -582,6 +582,10 @@ def get_urls(items, institution, n_pages=None):
     Returns:
         urls (list): list of URLs.
     """
+
+
+    # testing
+    
     url_template = (
         "https://portalrecerca.csuc.cat/simple-search?"
         + "query="
@@ -598,13 +602,32 @@ def get_urls(items, institution, n_pages=None):
         + "&etal=0"
         + "&filtername=location.coll"
         + "&filtertype=equals"
-        # + "&filterquery=359"
-        + "&filterquery=320"
+        + "&filterquery={filterquery}" 
         + "&start="
     )
+    
+    institution_search_fields = {
+        "ICFO": {"filterquery": "359"},
+        "IDIBELL": {"filterquery": "320"},
+        "UPC": {"filterquery": "305"},
+        "IGTP+": {"filterquery": "349"},
+        "UPC-CIMNE": {"filterquery": "337"},
+        "UB": {"filterquery": "299"},
+        "UPF": {"filterquery": "306"},
+        "UVic-UCC": {"filterquery": "302"},
+        "UOC": {"filterquery": "304"},
+        "Agrotecnio": {"filterquery": "321"},
+        "CRAG": {"filterquery": "342"},
+        "UdL": {"filterquery": "301"},
+        "URV": {"filterquery": "308"},
+        "UdG": {"filterquery": "300"},
+        "IRSJD": {"filterquery": "362"},
+        "URL": {"filterquery": "307"},
+        "UIC": {"filterquery": "303"},
+    }
 
-    if items == "author_urls":
-        search_fields = {
+    base_search_fields = {
+        "author_urls": {
             "location": "crisrp",
             "filter_field_1": "resourcetype",
             "filter_type_1": "equals",
@@ -615,10 +638,8 @@ def get_urls(items, institution, n_pages=None):
             "sort_by": "crisrp.fullName_sort",
             "order": "asc",
             "rpp": "300",
-        }
-
-    elif items == "paper_urls":
-        search_fields = {
+        },
+        "paper_urls": {
             "location": "publications",
             "filter_field_1": "resourcetype",
             "filter_type_1": "equals",
@@ -629,10 +650,8 @@ def get_urls(items, institution, n_pages=None):
             "sort_by": "dc.contributor.authors_sort",
             "order": "asc",
             "rpp": "300",
-        }
-
-    elif items == "project_urls":
-        search_fields = {
+        },
+        "project_urls": {
             "location": "crisproject",
             "filter_field_1": "resourcetype",
             "filter_type_1": "equals",
@@ -643,10 +662,8 @@ def get_urls(items, institution, n_pages=None):
             "sort_by": "crisrp.title_sort",
             "order": "asc",
             "rpp": "300",
-        }
-
-    elif items == "group_urls":
-        search_fields = {
+        },
+        "group_urls": {
             "location": "crisou",
             "filter_field_1": "resourcetype",
             "filter_type_1": "equals",
@@ -657,7 +674,15 @@ def get_urls(items, institution, n_pages=None):
             "sort_by": "crisou.name_sort",
             "order": "asc",
             "rpp": "300",
-        }
+        },
+    }
+
+    # Get the base search fields for the items
+    search_fields = base_search_fields.get(items, {}).copy()
+    
+    # Update the search fields with the institution-specific filterquery
+    if institution in institution_search_fields:
+        search_fields.update(institution_search_fields[institution])
 
     url_root = url_template.format(**search_fields)
 
@@ -667,6 +692,7 @@ def get_urls(items, institution, n_pages=None):
     urls = [url_root + str(page * 300) for page in range(n_pages)]
 
     return urls
+
 
 
 # Main Entrypoint
