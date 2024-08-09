@@ -15,7 +15,7 @@ class Config:
         # "IDIBELL",
         "UPC",
         # "IGTP+",
-        # "UPC_CIMNE",
+        # "UPC-CIMNE",
         # "UB",
         # "UPF",
         # "UVic-UCC",
