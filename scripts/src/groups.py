@@ -14,8 +14,6 @@ def create_group_networks(
     input_nodes, input_groups, input_edges, output_group_nodes, output_group_edges
 ):
 
-    # Get Nodes
-    log.info(f"Loading: {input_nodes}")
     author_df = pd.read_csv(input_nodes, converters={"groups": eval})
 
     # Filter nodelist for researchers with nonempty research groups
@@ -24,34 +22,34 @@ def create_group_networks(
 
     # Clean data
     author_gp_lst = list(author_gp_df["id"].unique())
-    author_gp_df.loc[:, "url_id"] = author_gp_df.loc[:, "groups"].apply(
-        lambda x: x[0][1:]
-    )
 
-    # Create group level nodelist
+    author_gp_df = author_gp_df.copy()
+    author_gp_df.loc[:,"url_id"] = author_gp_df["groups"].apply(lambda x: x[0][1:])
 
     # Get group names
     group_df = pd.read_csv(input_groups)
-
     group_df["url_id"] = group_df["url"].str[31:]
 
-    group_df = group_df[["name", "url_id"]]
+    if 'researcher_names' in group_df.columns:
+        group_df = group_df[["name", "principal_names", "researcher_names", "url_id"]]    
+        group_df['principal_names'] = group_df['principal_names'].apply(lambda x: x if isinstance(x, list) else ([] if pd.isna(x) else [x]))
+        group_df['researcher_names'] = group_df['researcher_names'].apply(lambda x: x if isinstance(x, list) else ([] if pd.isna(x) else [x]))
+
+        # Combine the lists from 'principal_names' and 'researcher_names' into 'total_names'
+        group_df['total_names'] = group_df.apply(lambda row: row['principal_names'] + row['researcher_names'], axis=1)
+    else:
+        group_df = group_df[["name", "principal_names", "url_id"]]    
+        group_df =group_df.rename(columns={'principal_names':'total_names'})
+
     author_gp_df = author_gp_df.merge(group_df, how="left", on="url_id")
+    author_gp_df = author_gp_df[['id', 'label', 'institution_2', 'department', 'institution', 'institution_group',
+            'n_publications', 'n_articles', 'n_chapters', 'n_books', 'n_other',
+            'url_id', 'name', 'total_names']]
 
-    # Collapse at group level
-    nodes_df = author_gp_df.groupby("url_id").first().reset_index()
+    qual_nodes_df = author_gp_df.groupby("url_id")[["name","institution","institution_2", "institution_group", "department","total_names"]].first().reset_index()
+    quant_nodes_df = author_gp_df.groupby("url_id").sum()
 
-    nodes_df = nodes_df[
-        [
-            "url_id",
-            "name",
-            "institution",
-            "institution_2",
-            "department",
-            "institution_group",
-            "n_publications",
-        ]
-    ]
+    nodes_df = qual_nodes_df.merge(quant_nodes_df, how='left', on='url_id')
     nodes_df = nodes_df.rename(columns={"url_id": "id", "name": "label"})
 
     # Save
