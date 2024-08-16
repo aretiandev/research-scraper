@@ -606,7 +606,7 @@ def get_urls(items, institution, n_pages=None):
         + "&start="
     )
     
-    institution_search_fields = {
+   institution_search_fields = {
         "ICFO": {"filterquery": "359"},
         "IDIBELL": {"filterquery": "320"},
         "UPC": {"filterquery": "305"},
@@ -624,7 +624,48 @@ def get_urls(items, institution, n_pages=None):
         "IRSJD": {"filterquery": "362"},
         "URL": {"filterquery": "307"},
         "UIC": {"filterquery": "303"},
+        "VHIR": {"filterquery": "310"},
+        "IDIBAPS": {"filterquery": "344"},
+        "CSIC": {"filterquery": "368"},
+        "RDR": {"filterquery": "371"},
+        "IRSantPau": {"filterquery": "338"},
+        "IDIAPJGol": {"filterquery": "369"},
+        "IMIM": {"filterquery": "325"},
+        "IRBLleida": {"filterquery": "328"},
+        "ICN2": {"filterquery": "343"},
+        "I3PT": {"filterquery": "367"},
+        "IBEC": {"filterquery": "346"},
+        "IRBBarcelona": {"filterquery": "347"},
+        "IEEC": {"filterquery": "330"},
+        "IISPV": {"filterquery": "348"},
+        "IRTA": {"filterquery": "314"},
+        "IDIBGI": {"filterquery": "350"},
+        "CREAF": {"filterquery": "333"},
+        "IREC": {"filterquery": "331"},
+        "ICIQ": {"filterquery": "334"},
+        "IFAE": {"filterquery": "358"},
+        "ISGlobal": {"filterquery": "345"},
+        "ICRA": {"filterquery": "351"},
+        "IPHES": {"filterquery": "323"},
+        "CTFC": {"filterquery": "329"},
+        "CRG": {"filterquery": "352"},
+        "IrsiCaixa": {"filterquery": "340"},
+        "ICP": {"filterquery": "318"},
+        "CRM": {"filterquery": "332"},
+        "ICAC": {"filterquery": "315"},
+        "TecnoCampus": {"filterquery": "370"},
+        "i2CAT": {"filterquery": "327"},
+        "IJC": {"filterquery": "360"},
+        "CED": {"filterquery": "324"},
+        "INEFC": {"filterquery": "366"},
+        "CTTC": {"filterquery": "336"},
+        "UAO": {"filterquery": "313"},
+        "VHIO": {"filterquery": "341"},
+        "IBEI": {"filterquery": "364"},
+        "ICRPC": {"filterquery": "316"},
+        "CREI": {"filterquery": "335"}
     }
+
 
     base_search_fields = {
         "author_urls": {
