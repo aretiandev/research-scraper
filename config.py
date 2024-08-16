@@ -26,7 +26,6 @@ class Config:
         #"IRSJD",
         #"URL",
         #"UIC",
-        
         "UB",
         #"UPC-CIMNE",
         #VHIR,
