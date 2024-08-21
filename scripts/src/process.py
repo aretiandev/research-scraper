@@ -253,7 +253,13 @@ def filter_authors(input, output, institution, out_sql=False, database="recerca.
     ].apply(lambda x: x[0])
 
     # Add projects and groups
-    log.info("Adding projects and groups.")
+    def safe_eval(x):
+        if isinstance(x, str):  # Only evaluate if x is a string
+            return eval(x)
+        return []
+ 
+    authors_inst_df['projects'] = authors_inst_df['projects'].apply(safe_eval)
+    authors_inst_df['groups'] = authors_inst_df['groups'].apply(safe_eval)
     authors_inst_df["n_projects"] = authors_inst_df["projects"].apply(len)
     authors_inst_df["n_groups"] = authors_inst_df["groups"].apply(len)
 

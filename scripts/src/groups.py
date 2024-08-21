@@ -56,14 +56,17 @@ def create_group_networks(
     group_df['n_researchers'] = group_df['total_names'].apply(len)
 
     full_author_gp_df = full_author_gp_df.merge(group_df, how="left", on="url_id")
-    full_author_gp_df = full_author_gp_df[['url_id', 'name', 'institution', 'institution_2','institution_group', 'department', 'total_names', 'n_researchers',
+    full_author_gp_df = full_author_gp_df[['url_id', 'name', 'institution', 'institution_2','institution_group', 'department', 'total_names', 'n_researchers', 'projects', 'n_projects',
             'n_publications', 'n_articles', 'n_chapters', 'n_books', 'n_other']]
+ 
+    columns_to_sum = ['projects', 'n_projects', 'n_publications', 'n_articles', 'n_chapters', 'n_books', 'n_other']
 
-    columns_to_sum = ['n_publications', 'n_articles', 'n_chapters', 'n_books', 'n_other']
-    
-    
+    # Create the initial aggregation dictionary
     agg_dict = {col: 'first' for col in full_author_gp_df.columns if col not in columns_to_sum}
     agg_dict.update({col: 'sum' for col in columns_to_sum})
+
+    # Update the rule for 'projects' to concatenate lists instead of summing
+    agg_dict['projects'] = lambda x: sum(x, []))
     
     nodes_df = full_author_gp_df.groupby('url_id').agg(agg_dict)
     nodes_df = nodes_df.rename(columns={"url_id": "id", "name": "label"})
