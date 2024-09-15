@@ -30,18 +30,29 @@ def build_urls(items, institution):
                 ping_and_wait(url_root, slack_msg=message, notifications=1)
 
     # Build URls for data rules
-    elif items in ["author_data", "paper_data", "group_data", "project_data"]:
+    elif items in ["author_data", "paper_data", "group_data", "project_data", 'paper_data1']:
         try:
             item_urls = pd.read_csv(snakemake.input[0])  # type: ignore # noqa
         except pd.errors.EmptyDataError:
             return []
         item_urls = list(set(item_urls["0"]))
         item_urls.sort()
-        if items == "paper_data":
+        
+        #the idea is, instead of using paper_urlsleftover, to read the paper_urls, sort it, and then read paper_data, and truncate the sorted paper_urls according to the length of paper_data. that way, the code base doesn't have to change. I can manually extend paper_data0 between runs
+        if items in ["paper_data", 'paper_data1']:
             urls = [url_root + url + "?mode=full" for url in item_urls]
         else:
             urls = [url_root + url for url in item_urls]
-
+            
+        if items == 'paper_data1':
+            done_data = pd.read_csv(snakemake.input[1])
+            skip = len(done_data)
+            urls = urls[skip:]
+    
+#     elif items == 'paper_urlsleftover':
+#         urls_leftover = pd.read_csv(f'/Users/calebyee/downloads/research-scraper-master/data/20240811/20240811_paper_urlsleftover_UB.csv')
+#         urls = urls_leftover['0'].tolist()
+        
     return urls
 
 
@@ -55,9 +66,8 @@ def main():
     database = snakemake.params.get("database")  # type: ignore # noqa
     out_file = snakemake.output[0]  # type: ignore # noqa
     items = out_file.split("/")[-1].split(".")[0][9:].rsplit("_", 1)[0]
-    # institution_list = snakemake.params.get("institution_list")  # type: ignore # noqa
-    institution = snakemake.wildcards.institution  # type: ignore # noqa
-
+    institution_list = snakemake.params.get("institution_list")  # type: ignore # noqa
+    institution = snakemake.wildcards.institution  # type: ignore # noq    
     urls = build_urls(items=items, institution=institution)
     if not urls:
         result_df = pd.DataFrame()
@@ -82,6 +92,9 @@ def main():
                 urls[i : i + batch_size]
                 for i in range(start_pos, len(urls), batch_size)
             ]
+            
+            if 'article/doi/10.1103/physrevd.95.012006' in batch_urls:
+                return
 
             asyncio.run(
                 scrape(

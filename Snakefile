@@ -35,12 +35,13 @@ batch_size = Config.BATCH_SIZE
 
 rule all:
     input:
-        # expand(f'data/{date_today}/{date_today}_nodes_{{institution}}.csv', institution=institution_list),
-        # expand(f'data/{date_today}/{date_today}_edges_{{institution}}.csv', institution=institution_list),
-        # expand(f'data/{date_today}/{date_today}_group_nodes_{{institution}}.csv', institution=institution_list),
-        # expand(f'data/{date_today}/{date_today}_group_edges_{{institution}}.csv', institution=institution_list),
-        # expand(f'data/{date_today}/{date_today}_project_data_{{institution}}.csv', institution=institution_list)
-        expand(f'data/{date_today}/{date_today}_group_data_{{institution}}.csv', institution=institution_list)
+        expand(f'data/{date_today}/{date_today}_nodes_{{institution}}.csv', institution=institution_list),
+        expand(f'data/{date_today}/{date_today}_edges_{{institution}}.csv', institution=institution_list),
+        expand(f'data/{date_today}/{date_today}_group_nodes_{{institution}}.csv', institution=institution_list),
+        expand(f'data/{date_today}/{date_today}_group_edges_{{institution}}.csv', institution=institution_list),
+        expand(f'data/{date_today}/{date_today}_project_data_{{institution}}.csv', institution=institution_list),
+        expand(f'data/{date_today}/{date_today}_group_data_{{institution}}.csv', institution=institution_list),
+        expand(f'data/{date_today}/{date_today}_internal_gp_edges_{{institution}}.csv', institution=institution_list),
 
 rule ping_and_run:
     params:
@@ -74,7 +75,7 @@ rule data:
         database = database
     script:
         "scripts/scrape.py"
-
+        
 rule clean:
     input:
         f'data/{date_today}/{date_today}_{{item_name}}_data_{{institution}}.csv'
@@ -130,6 +131,15 @@ rule create_group_networks:
         f'data/{date_today}/{date_today}_group_edges_{{institution}}.csv'
     script:
         "scripts/create_group_networks.py"
+        
+rule filter_edges:
+    input:
+        f'data/{date_today}/{date_today}_group_data_{{institution}}.csv',
+        f'data/{date_today}/{date_today}_group_edges_{{institution}}.csv'
+    output:
+        f'data/{date_today}/{date_today}_internal_gp_edges_{{institution}}.csv'
+    script:
+        "scripts/filter_group_edges.py"
 
 rule dag:
     output:

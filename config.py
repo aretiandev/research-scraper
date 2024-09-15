@@ -9,7 +9,7 @@ load_dotenv()
 
 class Config:
     # DATE = os.environ.get("DATE") or get_date()
-    DATE = "20240317"
+    DATE = "20240905"
     INSTITUTION_LIST = [
         #"ICFO",
         #"IDIBELL",
@@ -25,50 +25,62 @@ class Config:
         #"UdG",
         #"IRSJD",
         #"URL",
-        #"UIC",
-        "UB",
-        #"UPC-CIMNE",
-        #VHIR,
-        #IDIBAPS,
-        #CSIC,
-        #RDR,
-        #IRSantPau,
-        #IDIAPJGol,
-        #IMIM,
-        #IRBLleida,
-        #ICN2,
-        #I3PT,
-        #IBEC,
-        #IRBBarcelona,
-        #IEEC,
-        #IISPV,
-        #IRTA,
-        #IDIBGI,
-        #CREAF,
-        #IREC,
-        #ICIQ,
-        #IFAE,
-        #ISGlobal,
-        #ICRA,
-        #IPHES,
-        #CTFC,
-        #CRG,
-        #IrsiCaixa,
-        #ICP,
-        #CRM,
-        #ICAC,
-        #TecnoCampus,
-        #i2CAT,
-        #IJC,
-        #CED,
-        #INEFC,
-        #CTTC,
-        #UAO,
-        #VHIO,
-        #IBEI,
-        #ICRPC,
-        #CREI
+        #"UIC", 
+        #"UB",
+        
+        #"VHIR",
+        #"IRSantPau",
+        
+        #"IMIM",
+        #"IRBLleida",
+        #"ICN2",
+        #"I3PT",
+        #"IDIBAPS",
+        #"CSIC",
+        #"RDR",
+        #"IDIAPJGol",
+        #"IBEC",
+        #"IRBBarcelona",
+        #"IEEC",
+        #"IISPV",
+        #"IRTA",
+        #"IDIBGI",
+        
+        #"CREAF",
+        #"IREC",
+        #"ICIQ",
+        
+         #"IFAE",
+         #"ISGlobal",
+         #"ICRA",
+         #"IPHES",
+         #"CTFC",
+        
+        #"CRG",
+        
+        #"IrsiCaixa",
+        
+        #"ICP",
+        #"CRM",
+        
+        #"ICAC",
+        #"TecnoCampus",
+        #"i2CAT",
+        #"IJC",
+        #"CED",
+        #"INEFC",
+        
+        #"CTTC",
+        
+        #"UAO",
+        #"VHIO",
+        #"IBEI",
+        #"ICRPC",
+        #"CREI"
+        
+        "UPC-CIMNE",
     ]
+    
     THREADS_MAX = 16
     DATABASE = "espluges.db"
     SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN")

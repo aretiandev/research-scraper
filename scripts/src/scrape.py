@@ -21,6 +21,7 @@ import pandas as pd
 import requests.adapters
 from requests_html import AsyncHTMLSession, HTMLSession
 
+
 from .sqlite import (
     insert_authors,
     insert_groups,
@@ -96,13 +97,15 @@ Response: {r}"""
             raise
         except Exception as e:
             print("Exception: ", e)
-            time.sleep(1)
+            wait = 2 ** attempt
+            time.sleep(wait * 0.5)
             pass
     else:
         log.info(f"No attempts left for url: {url}")
         r = None
 
     return r
+    
 
 
 async def scrape_author(s, url, item="profile", attempts=10):
@@ -207,8 +210,13 @@ async def scrape_project(s, url, tab="information", attempts=10):
         url = url + "?onlytab=true&locale=en"
 
         r = await retry_url(s, url, attempts)
+        
+        try:
+            tables_lst = pd.read_html(r.text)
+        except ValueError:
+            print("No tables found in the HTML content.")
+            tables_lst = []
 
-        tables_lst = pd.read_html(r.text)
         table = tables_lst[0].set_index(0).to_dict()[1]
 
         attr_keys = {
@@ -454,7 +462,7 @@ async def scrape_url(s, url, items="author_data", attempts=10):
 
         return group
 
-    elif items == "paper_data":
+    elif items in ["paper_data", "paper_data1"]:
         paper = {}
         paper["url"] = url
         paper["url_stem"] = url[32:].split("?")[0]
@@ -466,8 +474,17 @@ async def scrape_url(s, url, items="author_data", attempts=10):
         try:
             title = r.html.find("title", first=True)
             table = r.html.find("table.table", first=True)
-            rows = table.find("tr")
-        except Exception:
+
+            # Check if table is found
+            if table:
+                rows = table.find("tr")
+                #print(f"Found {len(rows)} rows in the table.")
+            else:
+                print("Table not found on the page.")
+                rows = []
+
+        except Exception as e:
+            print(f"Exception encountered: {e}")
             paper["status_code"] = r.status_code
             try:
                 if not_found_msg in title.text:
@@ -477,11 +494,11 @@ async def scrape_url(s, url, items="author_data", attempts=10):
 
             return paper
 
+        # Process each row in the table
         for row in rows:
-            # Get columns in row
             columns = row.find("td")
 
-            # Skip if empty row
+            # Skip empty rows
             if len(columns) == 0:
                 continue
 
@@ -502,19 +519,17 @@ async def scrape_url(s, url, items="author_data", attempts=10):
                 "Appears in Collections:": "appears_in_collections",
             }
 
+            # Check if the first column matches any of the attributes
             for row_index in attributes.keys():
                 if columns[0].text == row_index:
                     paper[attributes[row_index]] = columns[1].text
+                    #print(f"Extracted {attributes[row_index]}: {columns[1].text}")
 
-        # Get authors ORCid'ss
+        # Get authors ORCIDs
         simple_url = url.split("?")[0] + "?mode=simple"
-
         r = await retry_url(s, simple_url, attempts)
 
         try:
-            title = r.html.find("title", first=True)
-            table = r.html.find("table.table", first=True)
-            rows = table.find("tr")
             authors = r.html.find("table.table a.authority.author")
             author_hrefs = []
             for author in authors:
@@ -522,17 +537,10 @@ async def scrape_url(s, url, items="author_data", attempts=10):
                 if href[:7] == "/orcid/":
                     href = href[7:]
                 author_hrefs.append(href)
-        except Exception:
+            paper["orcids"] = author_hrefs
+        except Exception as e:
+            print(f"Exception encountered while fetching ORCIDs: {e}")
             paper["status_code"] = r.status_code
-            try:
-                if not_found_msg in title.text:
-                    paper["status_description"] = "Title: not found"
-            except Exception:
-                pass
-
-            return paper
-
-        paper["orcids"] = author_hrefs
 
         return paper
 
@@ -582,9 +590,6 @@ def get_urls(items, institution, n_pages=None):
     Returns:
         urls (list): list of URLs.
     """
-
-
-    # testing
     
     url_template = (
         "https://portalrecerca.csuc.cat/simple-search?"
@@ -606,7 +611,7 @@ def get_urls(items, institution, n_pages=None):
         + "&start="
     )
     
-   institution_search_fields = {
+    institution_search_fields = {
         "ICFO": {"filterquery": "359"},
         "IDIBELL": {"filterquery": "320"},
         "UPC": {"filterquery": "305"},
@@ -665,7 +670,6 @@ def get_urls(items, institution, n_pages=None):
         "ICRPC": {"filterquery": "316"},
         "CREI": {"filterquery": "335"}
     }
-
 
     base_search_fields = {
         "author_urls": {
@@ -735,13 +739,12 @@ def get_urls(items, institution, n_pages=None):
     return urls
 
 
-
 # Main Entrypoint
 async def scrape(
     items,
     urls,
     batch_start=0,
-    out_file=None,
+    out_file = True,
     out_sql=False,
     timeout=None,
     database="recerca.db",
@@ -783,7 +786,7 @@ async def scrape(
         # https://stackoverflow.com/a/18845952/10688326
         adapter = requests.adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100)
         s.mount("https://", adapter)
-
+    
         t1 = time.perf_counter()
 
         tasks = (scrape_url(s, url, items=items) for url in batch)

@@ -181,7 +181,7 @@ def clean_authors(input, output):
     #     raise Exception("No authors in IRSJD")
 
     # Save
-    authors_df.to_csv(output, index=None)
+    authors_df.to_csv(output, index=False)
     log.info(f"Saved '{output}'.")
 
 
@@ -201,7 +201,7 @@ def clean_papers(input, output):
     papers_df.loc[mask, "orcids"] = pd.Series([[] for _ in range(len(mask))])
 
     # Save
-    papers_df.to_csv(output, index=None)
+    papers_df.to_csv(output, index=False)
     log.info(f"Saved '{output}'.")
 
 
@@ -224,6 +224,11 @@ def filter_authors(input, output, institution, out_sql=False, database="recerca.
     log.info(f"Processing institution group: {institution}.")
 
     # Load authors
+    def safe_eval(x):
+        if isinstance(x, str):  # Only evaluate if x is a string
+            return eval(x)
+        return []
+    
     authors_df = pd.read_csv(input)
 
     # Extract authors from institution
@@ -243,9 +248,9 @@ def filter_authors(input, output, institution, out_sql=False, database="recerca.
     #     ].apply(lambda x: x.append(institution))
 
     # Calculate number of affiliations
-    authors_inst_df["n_affiliations"] = authors_inst_df.copy()["institution"].apply(len)
+    authors_inst_df["n_affiliations"] = authors_inst_df.copy()["institution"].apply(safe_eval).apply(len)
 
-    # Calculate if single or multiple affilations
+    # Calculate if single or multiple affilationsx
     authors_inst_df["single_affiliation"] = "Multiple affiliations"
     mask = authors_inst_df["n_affiliations"] == 1
     authors_inst_df.loc[mask, "single_affiliation"] = authors_inst_df.loc[
@@ -253,11 +258,8 @@ def filter_authors(input, output, institution, out_sql=False, database="recerca.
     ].apply(lambda x: x[0])
 
     # Add projects and groups
-    def safe_eval(x):
-        if isinstance(x, str):  # Only evaluate if x is a string
-            return eval(x)
-        return []
- 
+    log.info("Adding projects and groups.")
+    
     authors_inst_df['projects'] = authors_inst_df['projects'].apply(safe_eval)
     authors_inst_df['groups'] = authors_inst_df['groups'].apply(safe_eval)
     authors_inst_df["n_projects"] = authors_inst_df["projects"].apply(len)
@@ -274,7 +276,7 @@ def filter_authors(input, output, institution, out_sql=False, database="recerca.
         raise Exception("Empty DataFrame.")
 
     # Save
-    authors_inst_df.to_csv(output, index=None)
+    authors_inst_df.to_csv(output, index=False)
     log.info(f"Saved '{output}'.")
 
     # Save to SQLite
@@ -351,8 +353,12 @@ def add_nodes_stats(
     papers.apply(lambda x: add_publication_stats(x), axis=1)
 
     # Add groups names
-    df_groups = pd.read_csv(input_groups)
-    df_groups["url_id"] = df_groups["url"].str[30:]
+    try:
+        df_groups = pd.read_csv(input_groups)
+        df_groups["url_id"] = df_groups["url"].str[30:]
+    except (pd.errors.EmptyDataError, FileNotFoundError) as e:
+        log.warning(f"No data found in groups file {input_groups}. Skipping group processing.")
+        df_groups = pd.DataFrame(columns=["url_id", "name"])
 
     def get_group_names(lst, df_groups):
         groups_names = []
@@ -367,6 +373,8 @@ def add_nodes_stats(
         return groups_names
 
     # Merge
+    
+    
     authors_inst_df["groups_names"] = authors_inst_df["groups"].apply(
         lambda x: get_group_names(x, df_groups)
     )
@@ -376,7 +384,8 @@ def add_nodes_stats(
 
     # Save
     log.info(f"Saved: {output}")
-    authors_inst_df.to_csv(output, index=None)
+    
+    authors_inst_df.to_csv(output, index=False)
 
     # Save to SQLite
     if out_sql:
@@ -420,8 +429,8 @@ def filter_papers(
     papers_inst_2plus_df = papers_df[mask_1plus][mask_2plus]
 
     # Save
-    papers_inst_1plus_df.to_csv(output_papers, index=None)
-    papers_inst_2plus_df.to_csv(output_papers_2plus, index=None)
+    papers_inst_1plus_df.to_csv(output_papers, index=False)
+    papers_inst_2plus_df.to_csv(output_papers_2plus, index=False)
     log.info(f"Saved '{output_papers}'.")
     log.info(f"Saved '{output_papers_2plus}'.")
 
